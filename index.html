@@ -1456,6 +1456,47 @@ document.addEventListener('DOMContentLoaded',()=>{
     style="width:48px;height:48px;border-radius:50%;background:#0a0a0a;color:#fff;border:none;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.25);">⬇</button>
   <button onclick="importarDados()" title="Importar backup"
     style="width:48px;height:48px;border-radius:50%;background:#fff;color:#0a0a0a;border:2px solid #0a0a0a;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);">⬆</button>
+  <button onclick="enviarParaSheets()" title="Enviar dados ao supervisor"
+    style="width:48px;height:48px;border-radius:50%;background:#1a7a4a;color:#fff;border:none;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.25);">📤</button>
 </div>
+
+<script>
+var SHEETS_URL='https://script.google.com/macros/s/AKfycbzcRtp2I7IQSRcIKA16pkTapKO-ev6iDGZ3KNKwXQEHID6tNVYOdpu95WmGddd_j74WAg/exec';
+
+function enviarParaSheets(){
+  if(db.length===0){alert('Nenhuma cirurgia para enviar.');return;}
+  var medico=getNomeMedico();
+  var btn=document.querySelector('button[onclick="enviarParaSheets()"]');
+  var originalText=btn.textContent;
+  btn.textContent='⏳';
+  btn.disabled=true;
+
+  var payload=JSON.stringify({medico:medico,cirurgias:db});
+
+  fetch(SHEETS_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:payload
+  }).then(function(){
+    btn.textContent='✓';
+    btn.style.background='#0a6630';
+    setTimeout(function(){
+      btn.textContent=originalText;
+      btn.style.background='#1a7a4a';
+      btn.disabled=false;
+    },2500);
+    localStorage.setItem('sheets_last_sync',new Date().toISOString());
+  }).catch(function(err){
+    btn.textContent='✗';
+    btn.style.background='#c0392b';
+    setTimeout(function(){
+      btn.textContent=originalText;
+      btn.style.background='#1a7a4a';
+      btn.disabled=false;
+    },2500);
+  });
+}
+</script>
 
 </html>
