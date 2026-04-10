@@ -1,0 +1,2908 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CataractControl</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="CataractControl">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230a0a0a'/%3E%3Cpath d='M30 90 C55 55 125 55 150 90 C125 125 55 125 30 90Z' stroke='white' stroke-width='6' fill='none'/%3E%3Ccircle cx='90' cy='90' r='28' stroke='white' stroke-width='6' fill='none'/%3E%3Ccircle cx='90' cy='90' r='11' fill='white'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/json,%7B%22name%22%3A%22CataractControl%22%2C%22short_name%22%3A%22CataractControl%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0a0a%22%2C%22theme_color%22%3A%22%230a0a0a%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%2520viewBox%3D'0%25200%2520180%2520180'%253E%253Crect%2520width%3D'180'%2520height%3D'180'%2520rx%3D'40'%2520fill%3D'%25230a0a0a'%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+<style>
+:root{
+  --black:#0a0a0a;
+  --dark:#1a1a1a;
+  --mid:#444;
+  --muted:#888;
+  --light:#ccc;
+  --border:#e0e0e0;
+  --bg:#f7f7f5;
+  --card:#ffffff;
+  --text:#0a0a0a;
+  --accent:#0a0a0a;
+  --r:12px;--rs:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
+
+/* HEADER */
+.header{background:var(--black);padding:16px 20px 14px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.header-logo{display:flex;align-items:center;gap:10px}
+.header-logo svg{width:34px;height:34px;flex-shrink:0}
+.header-title{font-family:Georgia,'Times New Roman',serif;color:#fff;font-size:1.15rem;letter-spacing:0.2px;line-height:1}
+.header-title span{font-style:italic;color:#ccc}
+.header-sub{color:#666;font-size:0.65rem;font-weight:300;margin-top:3px;letter-spacing:0.5px;text-transform:uppercase}
+.header-date{color:#999;font-size:0.68rem;font-weight:300;text-align:right;letter-spacing:0.3px}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--black);display:flex;z-index:200;border-top:1px solid #222}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 13px;cursor:pointer;border:none;background:none;color:#555;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.58rem;font-weight:700;gap:4px;transition:color 0.2s;letter-spacing:0.5px;text-transform:uppercase;position:relative}
+.nav-btn.active{color:#fff}
+.nav-btn svg{width:20px;height:20px}
+.nav-badge{position:absolute;top:7px;right:calc(50% - 18px);background:#fff;color:#000;border-radius:8px;font-size:0.52rem;font-weight:900;padding:1px 5px;min-width:16px;text-align:center;line-height:1.4;letter-spacing:0}
+
+/* PAGES */
+.page{display:none;padding:16px}
+.page.active{display:block}
+
+/* TYPOGRAPHY */
+.sec-title{font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--black);margin-bottom:3px}
+.sec-sub{font-size:0.72rem;color:var(--muted);margin-bottom:16px;letter-spacing:0.2px}
+
+/* CARDS */
+.card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:3px;font-size:0.62rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.badge-ok{background:#f0f0f0;color:#333;border:1px solid #ddd}
+.badge-warn{background:var(--black);color:#fff}
+.badge-gold{background:#f5f5f5;color:#555;border:1px solid #ddd}
+.badge-teal{background:var(--dark);color:#fff}
+.badge-navy{background:#f0f0f0;color:#555;border:1px solid #ddd}
+.badge-t2{background:#f0f0f0;color:#333;border:1px solid #ccc}
+.badge-t2xp{background:#1a1a1a;color:#fff}
+.badge-t3{background:#0a0a0a;color:#fff}
+
+/* ALERTS */
+.alert-card{border-radius:var(--r);padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid var(--border);background:var(--card);transition:border-color 0.15s}
+.alert-card:active{border-color:var(--black)}
+.alert-urgent{border-left:3px solid var(--black);background:#fafafa}
+.alert-today{border-left:3px solid var(--dark);background:#fafafa}
+.alert-soon{border-left:3px solid #aaa;background:#fafafa}
+.alert-info{flex:1}
+.alert-name{font-weight:700;font-size:0.88rem;color:var(--black)}
+.alert-detail{font-size:0.7rem;color:var(--muted);margin-top:2px;letter-spacing:0.2px}
+.alert-day{font-weight:700;font-size:0.72rem;letter-spacing:0.3px}
+.alert-day-urgent{color:var(--black)}
+.alert-day-today{color:var(--dark)}
+.alert-day-soon{color:#777}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.stat-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;text-align:center}
+.stat-num{font-family:Georgia,'Times New Roman',serif;font-size:2.2rem;color:var(--black);line-height:1}
+.stat-label{font-size:0.63rem;color:var(--muted);margin-top:5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase}
+.stat-card.accent{background:var(--black);border-color:var(--black)}
+.stat-card.accent .stat-num{color:#fff}
+.stat-card.accent .stat-label{color:#666}
+.stat-card#stat-atrasos-card:active{background:#f0f0f0}
+
+/* FORM */
+.form-section{margin-bottom:22px}
+.form-section-title{font-size:0.65rem;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--black)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:0.68rem;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.5px;text-transform:uppercase}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--border);font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.88rem;color:var(--text);background:#fff;transition:border-color 0.2s;outline:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--black)}
+.field textarea{resize:none;min-height:72px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pill-group{display:flex;gap:6px;flex-wrap:wrap}
+.pill-opt{display:none}
+.pill-label{padding:6px 13px;border-radius:3px;border:1.5px solid var(--border);font-size:0.72rem;font-weight:700;cursor:pointer;color:var(--muted);transition:all 0.15s;white-space:nowrap;letter-spacing:0.3px}
+.pill-opt:checked+.pill-label{background:var(--black);color:#fff;border-color:var(--black)}
+
+/* DATE SHORTCUT PILLS */
+.date-shortcuts{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.date-sc{padding:5px 12px;border-radius:3px;border:1.5px solid var(--border);font-size:0.68rem;font-weight:700;cursor:pointer;color:var(--muted);background:#fff;transition:all 0.15s;letter-spacing:0.3px;white-space:nowrap}
+.date-sc:active{background:#f0f0f0}
+.date-sc.active-sc{background:var(--black);color:#fff;border-color:var(--black)}
+
+/* BUTTONS */
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px;border-radius:var(--rs);border:none;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.18s;letter-spacing:0.5px;text-transform:uppercase}
+.btn-primary{background:var(--black);color:#fff}
+.btn-primary:active{background:#333}
+.btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border)}
+.btn-danger{background:#f5f5f5;color:#888;border:1.5px solid var(--border)}
+.btn-indicate{background:#f7f7f5;color:var(--black);border:1.5px solid var(--black);margin-bottom:10px}
+
+/* ATRASO REGISTER BTN */
+.atraso-reg-btn{font-size:0.65rem;font-weight:700;color:#fff;background:var(--black);border:none;border-radius:4px;padding:5px 10px;cursor:pointer;font-family:inherit;letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;flex-shrink:0}
+
+/* DETAIL */
+.detail-back{display:flex;align-items:center;gap:6px;color:var(--black);font-size:0.78rem;font-weight:700;cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:inherit;padding:0;letter-spacing:0.5px;text-transform:uppercase}
+.detail-hero{background:var(--black);border-radius:var(--r);padding:22px;margin-bottom:14px}
+.detail-patient-name{font-family:Georgia,'Times New Roman',serif;font-size:1.45rem;color:#fff;line-height:1.25}
+.detail-patient-sub{color:#666;font-size:0.72rem;margin-top:5px;letter-spacing:0.3px}
+.detail-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
+.detail-chip{background:rgba(255,255,255,0.08);color:#aaa;padding:4px 10px;border-radius:3px;font-size:0.65rem;letter-spacing:0.3px;border:1px solid rgba(255,255,255,0.1)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.info-item{background:var(--card);border-radius:var(--rs);border:1px solid var(--border);padding:12px}
+.info-label{font-size:0.6rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.6px}
+.info-value{font-size:0.9rem;font-weight:700;color:var(--black);margin-top:4px}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;flex-shrink:0}
+.tl-dot-done{background:var(--black);color:#fff}
+.tl-dot-active{background:var(--dark);color:#fff;box-shadow:0 0 0 3px #ddd}
+.tl-dot-pending{background:#f0f0f0;color:#aaa;border:1.5px solid var(--border)}
+.tl-dot-overdue{background:#555;color:#fff}
+.tl-content{flex:1}
+.tl-title{font-size:0.85rem;font-weight:700;color:var(--black);letter-spacing:0.2px}
+.tl-date{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.tl-obs{font-size:0.78rem;color:var(--text);margin-top:6px;background:var(--bg);border-radius:6px;padding:8px;border:1px solid var(--border)}
+.tl-obs-empty{font-size:0.72rem;color:var(--muted);font-style:italic;margin-top:4px}
+.tl-add-btn{font-size:0.7rem;color:#fff;font-weight:700;background:var(--black);border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-family:inherit;margin-top:8px;display:block;letter-spacing:0.4px;text-transform:uppercase}
+
+/* PATIENT LIST */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-wrap input{padding-left:36px;background:var(--card)}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.patient-list-item{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s;display:flex;align-items:center;gap:12px}
+.patient-list-item:active{border-color:var(--black)}
+.patient-avatar{width:38px;height:38px;border-radius:50%;background:var(--black);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Georgia,'Times New Roman',serif;font-size:0.95rem;flex-shrink:0;font-style:italic}
+.patient-info{flex:1;min-width:0}
+.patient-name{font-weight:700;font-size:0.9rem;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.patient-meta{font-size:0.68rem;color:var(--muted);margin-top:2px;letter-spacing:0.2px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:300;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:90vh;overflow-y:auto}
+.modal-handle{width:36px;height:3px;background:var(--border);border-radius:4px;margin:0 auto 18px}
+.modal-title{font-family:Georgia,'Times New Roman',serif;font-size:1.15rem;color:var(--black);margin-bottom:18px}
+
+/* FILTERS */
+.filter-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
+.filter-tab{padding:6px 14px;border-radius:3px;border:1.5px solid var(--border);font-size:0.68rem;font-weight:700;cursor:pointer;background:var(--card);color:var(--muted);white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:0.4px}
+.filter-tab.active{background:var(--black);color:#fff;border-color:var(--black)}
+
+/* ANALYTICS */
+.analytics-section{margin-bottom:22px}
+.analytics-title{font-size:0.65rem;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--black)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.bar-label{font-size:0.72rem;color:var(--text);width:140px;flex-shrink:0;font-weight:400}
+.bar-track{flex:1;height:8px;background:#ebebeb;border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;background:var(--black);transition:width 0.7s cubic-bezier(.4,0,.2,1)}
+.bar-val{font-size:0.72rem;font-weight:700;color:var(--muted);width:24px;text-align:right}
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px}
+.kpi-box{background:var(--card);border-radius:var(--rs);padding:14px 8px;text-align:center;border:1px solid var(--border)}
+.kpi-num{font-family:Georgia,'Times New Roman',serif;font-size:1.6rem;color:var(--black)}
+.kpi-lbl{font-size:0.6rem;color:var(--muted);margin-top:4px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.compl-tag{display:inline-block;background:#f5f5f5;color:#555;border-radius:3px;padding:5px 10px;font-size:0.7rem;font-weight:700;margin:3px;border:1px solid var(--border)}
+
+/* FILA (indicação contralateral) */
+.fila-item{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;transition:opacity 0.3s,transform 0.3s}
+.fila-item.done-anim{opacity:0;transform:translateX(40px)}
+.fila-check-wrap{padding-top:2px;flex-shrink:0}
+.fila-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.18s;flex-shrink:0}
+.fila-check:active{background:#f0f0f0}
+.fila-check.checked{background:var(--black);border-color:var(--black)}
+.fila-check svg{display:none}
+.fila-check.checked svg{display:block}
+.fila-body{flex:1;min-width:0}
+.fila-name{font-weight:700;font-size:0.9rem;color:var(--black)}
+.fila-sub{font-size:0.68rem;color:var(--muted);margin-top:2px}
+.fila-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.fila-obs{font-size:0.75rem;color:var(--mid);margin-top:6px;font-style:italic}
+.difficulty-row{display:flex;gap:8px;margin-top:4px}
+.diff-pill{padding:4px 12px;border-radius:3px;font-size:0.68rem;font-weight:700;letter-spacing:0.4px;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.15s}
+.diff-pill.selected-T2{background:#f0f0f0;color:#333;border-color:#ccc}
+.diff-pill.selected-T2xP{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.diff-pill.selected-T3{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+
+/* Indicated badge in detail */
+.indicated-banner{background:#f7f7f5;border:1.5px solid var(--black);border-radius:var(--r);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.indicated-banner-icon{font-size:1.1rem}
+.indicated-banner-text{font-size:0.78rem;color:var(--black);font-weight:700}
+.indicated-banner-sub{font-size:0.68rem;color:var(--muted);margin-top:1px}
+
+/* INTERCORRÊNCIAS ACCORDION */
+.step-btn{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;margin-bottom:6px;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;transition:border-color 0.15s}
+.step-btn.has-sel{border-color:var(--black);background:#fafafa}
+.step-btn-left{display:flex;align-items:center;gap:8px}
+.step-btn-num{width:22px;height:22px;border-radius:50%;background:var(--black);color:#fff;font-size:0.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-btn-num.has-sel{background:var(--black)}
+.step-btn-label{font-size:0.78rem;font-weight:700;color:var(--black);text-align:left}
+.step-btn-count{font-size:0.65rem;font-weight:700;color:#fff;background:var(--black);border-radius:8px;padding:1px 6px;display:none}
+.step-btn-count.visible{display:inline-block}
+.step-arrow{color:var(--muted);font-size:0.7rem;transition:transform 0.2s;flex-shrink:0}
+.step-arrow.open{transform:rotate(180deg)}
+.step-compl-list{display:none;background:#fafafa;border:1.5px solid var(--black);border-radius:var(--rs);margin-bottom:8px;overflow:hidden}
+.step-compl-list.open{display:block}
+.step-compl-item{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s}
+.step-compl-item:last-child{border-bottom:none}
+.step-compl-item:active{background:#f0f0f0}
+.step-compl-item.selected{background:#f0f0f0}
+.step-compl-check{width:18px;height:18px;border-radius:3px;border:1.5px solid var(--border);background:#fff;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all 0.15s}
+.step-compl-check.checked{background:var(--black);border-color:var(--black)}
+.step-compl-check svg{display:none}
+.step-compl-check.checked svg{display:block}
+.step-compl-text{flex:1}
+.step-compl-name{font-size:0.78rem;font-weight:700;color:var(--black)}
+.step-compl-detail{font-size:0.65rem;color:var(--muted);margin-top:2px;line-height:1.4}
+.step-sem-btn{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 14px;font-size:0.75rem;font-weight:700;color:var(--muted);cursor:pointer;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:0.3px;margin-bottom:6px;text-align:center;transition:all 0.15s}
+.step-sem-btn.selected{background:var(--black);color:#fff;border-color:var(--black)}
+.interc-tag{background:#f0f0f0;color:#333;border:1px solid #ddd;border-radius:3px;padding:3px 8px;font-size:0.65rem;font-weight:700}
+
+/* MAPA CIRÚRGICO */
+.mapa-item{background:var(--card);border-radius:var(--r);border:1.5px solid var(--border);padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;transition:border-color 0.15s,background 0.15s;cursor:pointer}
+.mapa-item.selected{border-color:var(--black);background:#f9f9f9}
+.mapa-item.already-exists{opacity:0.5;cursor:default}
+.mapa-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all 0.18s}
+.mapa-check.checked{background:var(--black);border-color:var(--black)}
+.mapa-check svg{display:none}
+.mapa-check.checked svg{display:block}
+.mapa-body{flex:1;min-width:0}
+.mapa-nome{font-weight:700;font-size:0.88rem;color:var(--black);margin-bottom:3px}
+.mapa-info{font-size:0.68rem;color:var(--muted);line-height:1.5}
+.mapa-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.mapa-dif-badge{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:2px;letter-spacing:0.4px;text-transform:uppercase}
+.mapa-dif-T2{background:#f0f0f0;color:#333;border:1px solid #ccc}
+.mapa-dif-T2XP{background:#1a1a1a;color:#fff}
+.mapa-dif-T3{background:#0a0a0a;color:#fff}
+.mapa-exists-tag{font-size:0.6rem;font-weight:700;padding:2px 8px;border-radius:2px;background:#f0f0f0;color:#888;border:1px solid #ddd}
+
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.empty-icon{font-size:2.2rem;margin-bottom:10px}
+.empty-txt{font-size:0.82rem;letter-spacing:0.2px}
+.no-scroll{overflow:hidden}
+.divider{height:1px;background:var(--border);margin:14px 0}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3 17 C8 9 26 9 31 17 C26 25 8 25 3 17Z" stroke="white" stroke-width="1.5" fill="none"/>
+      <circle cx="17" cy="17" r="6" stroke="white" stroke-width="1.5" fill="none"/>
+      <circle cx="17" cy="17" r="2.5" fill="white"/>
+      <circle cx="19.5" cy="14.5" r="1" fill="white" opacity="0.5"/>
+      <line x1="17" y1="3" x2="17" y2="7" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="15" y1="5" x2="19" y2="5" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M10 10.5 Q8.5 8 9 6" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.5"/>
+      <path d="M24 10.5 Q25.5 8 25 6" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.5"/>
+    </svg>
+    <div>
+      <div class="header-title">Cataract<span>Control</span></div>
+      <div class="header-sub" id="header-nome-sub">CataractControl</div>
+    </div>
+  </div>
+  <div class="header-date" id="headerDate"></div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div style="margin-bottom:18px;margin-top:6px">
+    <div class="sec-title" id="home-saudacao">Olá, Dr. Casseb</div>
+    <div class="sec-sub">Alertas e retornos de pós-operatório</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card accent"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Cirurgias</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-alerts">0</div><div class="stat-label">Retornos pend.</div></div>
+    <div class="stat-card" id="stat-atrasos-card" onclick="goPage('atrasos')" style="cursor:pointer;position:relative"><div class="stat-num" id="stat-compl">0</div><div class="stat-label">Em atraso</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-today">0</div><div class="stat-label">Retornos hoje</div></div>
+  </div>
+  <div class="sec-title" style="font-size:0.95rem;margin-bottom:12px">Alertas de retorno</div>
+  <div id="alerts-list"></div>
+</div>
+
+<!-- ATRASOS -->
+<div class="page" id="page-atrasos">
+  <button class="detail-back" onclick="goPage('home')">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Início
+  </button>
+  <div style="margin-bottom:18px">
+    <div class="sec-title">Retornos em Atraso</div>
+    <div class="sec-sub" id="atrasos-sub">Consultas não realizadas</div>
+  </div>
+  <div id="atrasos-list"></div>
+</div>
+
+<!-- PACIENTES -->
+<div class="page" id="page-pacientes">
+  <div style="margin-top:6px;margin-bottom:12px">
+    <div class="sec-title">Pacientes</div>
+    <div class="sec-sub" id="patient-count-sub"></div>
+  </div>
+  <div class="search-wrap">
+    <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Buscar por nome…" oninput="renderPatients()">
+  </div>
+  <div class="filter-tabs">
+    <div class="filter-tab active" onclick="setFilter('all',this)">Todos</div>
+    <div class="filter-tab" onclick="setFilter('Faros',this)">Faros</div>
+    <div class="filter-tab" onclick="setFilter('Intuitiv',this)">Intuitiv</div>
+    <div class="filter-tab" onclick="setFilter('Signature',this)">Signature</div>
+    <div class="filter-tab" onclick="setFilter('compl',this)">⚠ Compl.</div>
+  </div>
+  <div id="patient-list"></div>
+</div>
+
+<!-- DETALHE -->
+<div class="page" id="page-detail">
+  <button class="detail-back" onclick="goBack()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Voltar
+  </button>
+  <div id="detail-content"></div>
+</div>
+
+<!-- NOVA -->
+<div class="page" id="page-nova">
+  <div style="margin-top:6px;margin-bottom:18px">
+    <div class="sec-title">Nova Cirurgia</div>
+    <div class="sec-sub">Preencha os dados do procedimento</div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Paciente</div>
+    <div class="field"><label>Nome completo *</label><input type="text" id="f-nome" placeholder="Nome do paciente"></div>
+    <div class="field-row">
+      <div class="field"><label>Idade</label><input type="number" id="f-idade" placeholder="Anos"></div>
+      <div class="field"><label>Prontuário</label><input type="text" id="f-pront" placeholder="Nº"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Telefone</label><input type="tel" id="f-tel" placeholder="(11) 99999-9999"></div>
+      <div class="field"><label>Convênio</label><select id="f-convenio"><option>SUS</option><option>Particular</option><option>Unimed</option><option>Amil</option><option>Bradesco</option><option>SulAmérica</option><option>Outro</option></select></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Cirurgia</div>
+    <div class="field"><label>Data *</label><input type="date" id="f-data"></div>
+    <div class="field"><label>Olho *</label>
+      <div class="pill-group">
+        <input type="radio" name="olho" value="OD" id="r-od" class="pill-opt" checked><label for="r-od" class="pill-label">OD</label>
+        <input type="radio" name="olho" value="OE" id="r-oe" class="pill-opt"><label for="r-oe" class="pill-label">OE</label>
+        <input type="radio" name="olho" value="AO" id="r-ao" class="pill-opt"><label for="r-ao" class="pill-label">AO</label>
+      </div>
+    </div>
+    <div class="field"><label>Técnica *</label>
+      <div class="pill-group">
+        <input type="radio" name="tecnica" value="Stop and Chop" id="t-sc" class="pill-opt" checked><label for="t-sc" class="pill-label">Stop and Chop</label>
+        <input type="radio" name="tecnica" value="Phaco-Chop" id="t-pc" class="pill-opt"><label for="t-pc" class="pill-label">Phaco-Chop</label>
+        <input type="radio" name="tecnica" value="Flip-Chop" id="t-fc" class="pill-opt"><label for="t-fc" class="pill-label">Flip-Chop</label>
+        <input type="radio" name="tecnica" value="MSICS" id="t-ms" class="pill-opt"><label for="t-ms" class="pill-label">MSICS</label>
+        <input type="radio" name="tecnica" value="ECCE" id="t-ec" class="pill-opt"><label for="t-ec" class="pill-label">ECCE</label>
+      </div>
+    </div>
+    <div class="field"><label>Aparelho</label>
+      <div class="pill-group">
+        <input type="radio" name="aparelho" value="Intuitiv" id="a-int" class="pill-opt" checked><label for="a-int" class="pill-label">Intuitiv</label>
+        <input type="radio" name="aparelho" value="Signature" id="a-sig" class="pill-opt"><label for="a-sig" class="pill-label">Signature</label>
+        <input type="radio" name="aparelho" value="Faros" id="a-far" class="pill-opt"><label for="a-far" class="pill-label">Faros</label>
+        <input type="radio" name="aparelho" value="Centurion" id="a-cen" class="pill-opt"><label for="a-cen" class="pill-label">Centurion</label>
+        <input type="radio" name="aparelho" value="Outro" id="a-out" class="pill-opt"><label for="a-out" class="pill-label">Outro</label>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Orientação / Supervisor</label><input type="text" id="f-orient" placeholder="Ex: Isaque"></div>
+      <div class="field"><label>Anestesia</label><select id="f-anest"><option>Bloqueio</option><option>Sedação</option><option>Tópica</option><option>Geral</option></select></div>
+    </div>
+    <div class="field"><label>Grau / Classificação</label><input type="text" id="f-cat" placeholder="Ex: N3SCP1, TOTAL BRANCA…"></div>
+    <div class="field"><label>Obs. pré-operatórias</label><input type="text" id="f-obspreop" placeholder="Ex: Midríase boa, colaborativa"></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">LIO</div>
+    <div class="field-row">
+      <div class="field"><label>Modelo / Marca</label><input type="text" id="f-lio-modelo" placeholder="Ex: Hoya iSert"></div>
+      <div class="field"><label>Poder (D)</label><input type="number" id="f-lio-poder" placeholder="20.5" step="0.5"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Tipo</label><select id="f-lio-tipo"><option>Monofocal</option><option>Tórica</option><option>Multifocal</option><option>EDOF</option><option>Premium</option></select></div>
+      <div class="field"><label>Material</label><select id="f-lio-mat"><option>Hidrofílico</option><option>Hidrofóbico</option><option>PMMA</option></select></div>
+    </div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Intercorrências Intraoperatórias</div>
+    <div class="field">
+      <label>Toque no passo cirúrgico para registrar complicações</label>
+      <div id="interc-steps"></div>
+      <div id="interc-selected-preview" style="margin-top:10px;display:none">
+        <div style="font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Selecionadas:</div>
+        <div id="interc-selected-tags" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+      </div>
+    </div>
+    <div class="field"><label>Observações intraop.</label><textarea id="f-obs-intra" placeholder="Notas adicionais…"></textarea></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Mental</div>
+    <div class="field">
+      <label>Confiança</label>
+      <div class="pill-group">
+        <input type="radio" name="m-conf" value="1" id="mc1" class="pill-opt"><label for="mc1" class="pill-label">1</label>
+        <input type="radio" name="m-conf" value="2" id="mc2" class="pill-opt"><label for="mc2" class="pill-label">2</label>
+        <input type="radio" name="m-conf" value="3" id="mc3" class="pill-opt" checked><label for="mc3" class="pill-label">3</label>
+        <input type="radio" name="m-conf" value="4" id="mc4" class="pill-opt"><label for="mc4" class="pill-label">4</label>
+        <input type="radio" name="m-conf" value="5" id="mc5" class="pill-opt"><label for="mc5" class="pill-label">5</label>
+        <span style="font-size:0.65rem;color:var(--muted);align-self:center;margin-left:4px">1=baixa · 5=alta</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Controle</label>
+      <div class="pill-group">
+        <input type="radio" name="m-ctrl" value="1" id="mct1" class="pill-opt"><label for="mct1" class="pill-label">1</label>
+        <input type="radio" name="m-ctrl" value="2" id="mct2" class="pill-opt"><label for="mct2" class="pill-label">2</label>
+        <input type="radio" name="m-ctrl" value="3" id="mct3" class="pill-opt" checked><label for="mct3" class="pill-label">3</label>
+        <input type="radio" name="m-ctrl" value="4" id="mct4" class="pill-opt"><label for="mct4" class="pill-label">4</label>
+        <input type="radio" name="m-ctrl" value="5" id="mct5" class="pill-opt"><label for="mct5" class="pill-label">5</label>
+        <span style="font-size:0.65rem;color:var(--muted);align-self:center;margin-left:4px">1=baixo · 5=alto</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Estresse</label>
+      <div class="pill-group">
+        <input type="radio" name="m-stress" value="1" id="ms1" class="pill-opt"><label for="ms1" class="pill-label">1</label>
+        <input type="radio" name="m-stress" value="2" id="ms2" class="pill-opt"><label for="ms2" class="pill-label">2</label>
+        <input type="radio" name="m-stress" value="3" id="ms3" class="pill-opt" checked><label for="ms3" class="pill-label">3</label>
+        <input type="radio" name="m-stress" value="4" id="ms4" class="pill-opt"><label for="ms4" class="pill-label">4</label>
+        <input type="radio" name="m-stress" value="5" id="ms5" class="pill-opt"><label for="ms5" class="pill-label">5</label>
+        <span style="font-size:0.65rem;color:var(--muted);align-self:center;margin-left:4px">1=baixo · 5=alto</span>
+      </div>
+    </div>
+    <div class="field"><label>Observações mentais</label><textarea id="f-mental-obs" placeholder="Como foi a cirurgia do ponto de vista técnico e emocional…"></textarea></div>
+  </div>
+  <button class="btn btn-primary" onclick="salvarCirurgia()">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Salvar Cirurgia
+  </button>
+  <div style="height:14px"></div>
+</div>
+
+<!-- ANÁLISE -->
+<div class="page" id="page-analise">
+  <div style="margin-top:6px;margin-bottom:18px;display:flex;align-items:flex-end;justify-content:space-between">
+    <div>
+      <div class="sec-title">Análise</div>
+      <div class="sec-sub">Visão geral das suas cirurgias</div>
+    </div>
+    <button onclick="exportarAnalise()" style="display:flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:700;color:#2c3e7a;background:none;border:1.5px solid #2c3e7a;border-radius:20px;padding:6px 12px;cursor:pointer;letter-spacing:0.3px">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar
+    </button>
+  </div>
+  <div id="analytics-content"></div>
+</div>
+
+<!-- FILA (indicações contralaterais) -->
+<div class="page" id="page-fila">
+  <div style="margin-top:6px;margin-bottom:18px">
+    <div class="sec-title">Fila Cirúrgica</div>
+    <div class="sec-sub" id="fila-sub">Olhos contralaterais indicados</div>
+  </div>
+  <div id="fila-list"></div>
+</div>
+
+<!-- MAPA CIRÚRGICO -->
+<div class="page" id="page-mapa">
+  <div style="margin-top:6px;margin-bottom:18px">
+    <div class="sec-title">Mapa Cirúrgico</div>
+    <div class="sec-sub">Cole o texto do mapa e importe suas cirurgias</div>
+  </div>
+  <div id="mapa-upload-area">
+    <div class="field">
+      <label>Texto do mapa cirúrgico</label>
+      <textarea id="mapa-textarea" style="min-height:160px;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Abra o PDF do mapa → Ctrl+A → Ctrl+C → cole aqui"></textarea>
+    </div>
+    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:14px;line-height:1.5">
+      Como fazer: abra o PDF → selecione tudo (Ctrl+A ou ⌘A) → copie (Ctrl+C ou ⌘C) → cole no campo acima.
+    </div>
+    <button class="btn btn-primary" onclick="processarMapaTexto()" style="margin-bottom:6px">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Ler mapa
+    </button>
+    <div id="mapa-error" style="display:none;font-size:0.72rem;color:#c0392b;margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rs);border:1px solid #fcc"></div>
+  </div>
+  <div id="mapa-checklist-area" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px">Data do mapa</div>
+        <div id="mapa-data-label" style="font-weight:700;font-size:0.95rem;color:var(--black);margin-top:2px">—</div>
+      </div>
+      <button onclick="resetarMapa()" style="font-size:0.65rem;font-weight:700;color:var(--muted);background:none;border:none;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px">← Novo mapa</button>
+    </div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">Marque as cirurgias que você realizou:</div>
+    <div id="mapa-checklist"></div>
+    <div id="mapa-import-bar" style="display:none;margin-top:16px">
+      <button class="btn btn-primary" id="mapa-import-btn" onclick="importarDoMapa()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Importar selecionadas
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Início
+  </button>
+  <button class="nav-btn" id="nav-pacientes" onclick="goPage('pacientes')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Pacientes
+  </button>
+  <button class="nav-btn" id="nav-nova" onclick="goPage('nova')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Nova
+  </button>
+  <button class="nav-btn" id="nav-fila" onclick="goPage('fila')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Fila
+    <span class="nav-badge" id="fila-badge" style="display:none"></span>
+  </button>
+  <button class="nav-btn" id="nav-analise" onclick="goPage('analise')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Análise
+  </button>
+  <button class="nav-btn" id="nav-mapa" onclick="goPage('mapa')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    Mapa
+  </button>
+</nav>
+
+<!-- MODAL ONBOARDING (primeiro acesso) -->
+<div class="modal-overlay" id="onboarding-modal" style="align-items:center;background:rgba(0,0,0,0.85)">
+  <div class="modal" style="border-radius:16px;max-width:360px;margin:0 auto;padding:32px 24px 28px">
+    <div style="text-align:center;margin-bottom:24px">
+      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:48px;height:48px;margin:0 auto 12px">
+        <path d="M3 17 C8 9 26 9 31 17 C26 25 8 25 3 17Z" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+        <circle cx="17" cy="17" r="6" stroke="#0a0a0a" stroke-width="1.5" fill="none"/>
+        <circle cx="17" cy="17" r="2.5" fill="#0a0a0a"/>
+      </svg>
+      <div style="font-family:Georgia,serif;font-size:1.3rem;color:var(--black);margin-bottom:4px">Bem-vindo ao<br>CataractControl</div>
+      <div style="font-size:0.72rem;color:var(--muted)">Logbook cirúrgico para residentes</div>
+    </div>
+    <div class="field">
+      <label>Seu nome completo</label>
+      <input type="text" id="onboarding-nome" placeholder="Ex: Felipe Casseb" style="font-size:1rem;padding:12px 14px">
+    </div>
+    <div class="field">
+      <label>Título</label>
+      <div class="pill-group">
+        <input type="radio" name="onb-titulo" value="Dr." id="onb-dr" class="pill-opt" checked><label for="onb-dr" class="pill-label">Dr.</label>
+        <input type="radio" name="onb-titulo" value="Dra." id="onb-dra" class="pill-opt"><label for="onb-dra" class="pill-label">Dra.</label>
+        <input type="radio" name="onb-titulo" value="" id="onb-sem" class="pill-opt"><label for="onb-sem" class="pill-label">Sem título</label>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="salvarOnboarding()" style="margin-top:8px">
+      Começar
+    </button>
+  </div>
+</div>
+
+<!-- MODAL EDITAR CIRURGIA -->
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="edit-modal-title">Editar cirurgia</div>
+
+    <div class="field"><label>Data</label><input type="date" id="ed-data"></div>
+
+    <div class="field"><label>Olho</label>
+      <div class="pill-group">
+        <input type="radio" name="ed-olho" value="OD" id="ed-od" class="pill-opt"><label for="ed-od" class="pill-label">OD</label>
+        <input type="radio" name="ed-olho" value="OE" id="ed-oe" class="pill-opt"><label for="ed-oe" class="pill-label">OE</label>
+        <input type="radio" name="ed-olho" value="AO" id="ed-ao" class="pill-opt"><label for="ed-ao" class="pill-label">AO</label>
+      </div>
+    </div>
+
+    <div class="field"><label>Técnica</label>
+      <div class="pill-group">
+        <input type="radio" name="ed-tecnica" value="Stop and Chop" id="et-sc" class="pill-opt"><label for="et-sc" class="pill-label">Stop and Chop</label>
+        <input type="radio" name="ed-tecnica" value="Phaco-Chop" id="et-pc" class="pill-opt"><label for="et-pc" class="pill-label">Phaco-Chop</label>
+        <input type="radio" name="ed-tecnica" value="Flip-Chop" id="et-fc" class="pill-opt"><label for="et-fc" class="pill-label">Flip-Chop</label>
+        <input type="radio" name="ed-tecnica" value="MSICS" id="et-ms" class="pill-opt"><label for="et-ms" class="pill-label">MSICS</label>
+        <input type="radio" name="ed-tecnica" value="ECCE" id="et-ec" class="pill-opt"><label for="et-ec" class="pill-label">ECCE</label>
+      </div>
+    </div>
+
+    <div class="field"><label>Aparelho</label>
+      <div class="pill-group">
+        <input type="radio" name="ed-aparelho" value="Intuitiv" id="ea-int" class="pill-opt"><label for="ea-int" class="pill-label">Intuitiv</label>
+        <input type="radio" name="ed-aparelho" value="Signature" id="ea-sig" class="pill-opt"><label for="ea-sig" class="pill-label">Signature</label>
+        <input type="radio" name="ed-aparelho" value="Faros" id="ea-far" class="pill-opt"><label for="ea-far" class="pill-label">Faros</label>
+        <input type="radio" name="ed-aparelho" value="Centurion" id="ea-cen" class="pill-opt"><label for="ea-cen" class="pill-label">Centurion</label>
+        <input type="radio" name="ed-aparelho" value="Outro" id="ea-out" class="pill-opt"><label for="ea-out" class="pill-label">Outro</label>
+      </div>
+    </div>
+
+    <div class="field"><label>Anestesia</label>
+      <div class="pill-group">
+        <input type="radio" name="ed-anest" value="Bloqueio" id="ean-bl" class="pill-opt"><label for="ean-bl" class="pill-label">Bloqueio</label>
+        <input type="radio" name="ed-anest" value="Sedação" id="ean-sed" class="pill-opt"><label for="ean-sed" class="pill-label">Sedação</label>
+        <input type="radio" name="ed-anest" value="Tópica" id="ean-top" class="pill-opt"><label for="ean-top" class="pill-label">Tópica</label>
+        <input type="radio" name="ed-anest" value="Geral" id="ean-ger" class="pill-opt"><label for="ean-ger" class="pill-label">Geral</label>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>Supervisor</label><input type="text" id="ed-orient" placeholder="Ex: Isaque"></div>
+      <div class="field"><label>LIO Poder (D)</label><input type="number" id="ed-lio-poder" placeholder="20.5" step="0.5"></div>
+    </div>
+
+    <div class="field-row">
+      <div class="field"><label>LIO Modelo</label><input type="text" id="ed-lio-modelo" placeholder="Ex: UnA, OftCryl"></div>
+      <div class="field"><label>Grau / Cat.</label><input type="text" id="ed-cat" placeholder="Ex: N2 SCP1"></div>
+    </div>
+
+    <div class="field"><label>Obs. pré-op</label><input type="text" id="ed-obspreop" placeholder="Midríase, colaborativo…"></div>
+    <div class="field"><label>Obs. intraop.</label><textarea id="ed-obs-intra" style="min-height:60px" placeholder="Como foi a cirurgia…"></textarea></div>
+
+    <div class="field">
+      <label>Intercorrências intraoperatórias</label>
+      <div id="ed-interc-steps"></div>
+      <div id="ed-interc-preview" style="margin-top:8px;display:none">
+        <div style="font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Selecionadas:</div>
+        <div id="ed-interc-tags" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Avaliação mental</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:4px">
+        <div>
+          <div style="font-size:0.62rem;color:var(--muted);font-weight:700;margin-bottom:4px">CONFIANÇA</div>
+          <div class="pill-group" style="flex-wrap:nowrap">
+            <input type="radio" name="ed-conf" value="1" id="ec1" class="pill-opt"><label for="ec1" class="pill-label" style="padding:5px 9px">1</label>
+            <input type="radio" name="ed-conf" value="2" id="ec2" class="pill-opt"><label for="ec2" class="pill-label" style="padding:5px 9px">2</label>
+            <input type="radio" name="ed-conf" value="3" id="ec3" class="pill-opt"><label for="ec3" class="pill-label" style="padding:5px 9px">3</label>
+            <input type="radio" name="ed-conf" value="4" id="ec4" class="pill-opt"><label for="ec4" class="pill-label" style="padding:5px 9px">4</label>
+            <input type="radio" name="ed-conf" value="5" id="ec5" class="pill-opt"><label for="ec5" class="pill-label" style="padding:5px 9px">5</label>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:var(--muted);font-weight:700;margin-bottom:4px">CONTROLE</div>
+          <div class="pill-group" style="flex-wrap:nowrap">
+            <input type="radio" name="ed-ctrl" value="1" id="ect1" class="pill-opt"><label for="ect1" class="pill-label" style="padding:5px 9px">1</label>
+            <input type="radio" name="ed-ctrl" value="2" id="ect2" class="pill-opt"><label for="ect2" class="pill-label" style="padding:5px 9px">2</label>
+            <input type="radio" name="ed-ctrl" value="3" id="ect3" class="pill-opt"><label for="ect3" class="pill-label" style="padding:5px 9px">3</label>
+            <input type="radio" name="ed-ctrl" value="4" id="ect4" class="pill-opt"><label for="ect4" class="pill-label" style="padding:5px 9px">4</label>
+            <input type="radio" name="ed-ctrl" value="5" id="ect5" class="pill-opt"><label for="ect5" class="pill-label" style="padding:5px 9px">5</label>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.62rem;color:var(--muted);font-weight:700;margin-bottom:4px">ESTRESSE</div>
+          <div class="pill-group" style="flex-wrap:nowrap">
+            <input type="radio" name="ed-stress" value="1" id="es1" class="pill-opt"><label for="es1" class="pill-label" style="padding:5px 9px">1</label>
+            <input type="radio" name="ed-stress" value="2" id="es2" class="pill-opt"><label for="es2" class="pill-label" style="padding:5px 9px">2</label>
+            <input type="radio" name="ed-stress" value="3" id="es3" class="pill-opt"><label for="es3" class="pill-label" style="padding:5px 9px">3</label>
+            <input type="radio" name="ed-stress" value="4" id="es4" class="pill-opt"><label for="es4" class="pill-label" style="padding:5px 9px">4</label>
+            <input type="radio" name="ed-stress" value="5" id="es5" class="pill-opt"><label for="es5" class="pill-label" style="padding:5px 9px">5</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-outline" onclick="closeEditModal()" style="flex:0.6">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarEdicao()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PÓS-OP -->
+<div class="modal-overlay" id="posop-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="posop-modal-title">Registrar Pós-op</div>
+
+    <!-- ★ NOVO: campo de data com atalhos -->
+    <div class="field">
+      <label>Data da consulta</label>
+      <div class="date-shortcuts" id="po-date-shortcuts"></div>
+      <input type="date" id="po-data">
+    </div>
+
+    <div class="field"><label>AV sem correção</label>
+      <select id="po-av"><option value="">—</option><option>20/20</option><option>20/25</option><option>20/30</option><option>20/40</option><option>20/50</option><option>20/60</option><option>20/80</option><option>20/100</option><option>20/200</option><option>CD 1m</option><option>CD 50cm</option><option>MM</option><option>PL+</option><option>SPL</option></select>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>PIO (mmHg)</label><input type="number" id="po-pio" placeholder="14"></div>
+      <div class="field"><label>Refração</label><input type="text" id="po-ref" placeholder="-0.50 -0.25 x 90"></div>
+    </div>
+    <div class="field"><label>Câmara anterior</label>
+      <div class="pill-group">
+        <input type="radio" name="po-ca" value="Normal" id="ca-n" class="pill-opt" checked><label for="ca-n" class="pill-label">Normal</label>
+        <input type="radio" name="po-ca" value="Tyndall +" id="ca-t1" class="pill-opt"><label for="ca-t1" class="pill-label">Tyndall +</label>
+        <input type="radio" name="po-ca" value="Tyndall ++" id="ca-t2" class="pill-opt"><label for="ca-t2" class="pill-label">Tyndall ++</label>
+        <input type="radio" name="po-ca" value="Hipópio" id="ca-hip" class="pill-opt"><label for="ca-hip" class="pill-label">Hipópio</label>
+      </div>
+    </div>
+    <div class="field"><label>Córnea</label>
+      <div class="pill-group">
+        <input type="radio" name="po-cor" value="Liso" id="co-ok" class="pill-opt" checked><label for="co-ok" class="pill-label">Liso / Transp.</label>
+        <input type="radio" name="po-cor" value="Edema +" id="co-e1" class="pill-opt"><label for="co-e1" class="pill-label">Edema +</label>
+        <input type="radio" name="po-cor" value="Edema ++" id="co-e2" class="pill-opt"><label for="co-e2" class="pill-label">Edema ++</label>
+        <input type="radio" name="po-cor" value="Edema +++" id="co-e3" class="pill-opt"><label for="co-e3" class="pill-label">Edema +++</label>
+      </div>
+    </div>
+    <div class="field"><label>Observações</label><textarea id="po-obs" placeholder="Notas clínicas…"></textarea></div>
+    <div class="field"><label>Conduta</label><textarea id="po-conduta" placeholder="Medicações, orientações…"></textarea></div>
+
+    <!-- ★ PRÓXIMO RETORNO -->
+    <div class="field" id="po-proximo-wrap" style="background:#f7f7f5;border-radius:var(--rs);padding:12px;border:1px solid var(--border)">
+      <label style="margin-bottom:8px;display:block">Agendar próximo retorno</label>
+      <div id="po-proximo-shortcuts" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"></div>
+      <input type="date" id="po-proximo-data" placeholder="ou escolha uma data">
+      <div id="po-proximo-label" style="font-size:0.65rem;color:var(--muted);margin-top:5px;min-height:14px"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-outline" onclick="closeModal()" style="flex:0.6">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPosOp()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL INDICAÇÃO CONTRALATERAL -->
+<div class="modal-overlay" id="indica-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="indica-modal-title">Indicar olho contralateral</div>
+
+    <div class="field">
+      <label>Olho a operar</label>
+      <div class="pill-group">
+        <input type="radio" name="ind-olho" value="OD" id="ind-od" class="pill-opt"><label for="ind-od" class="pill-label">OD</label>
+        <input type="radio" name="ind-olho" value="OE" id="ind-oe" class="pill-opt"><label for="ind-oe" class="pill-label">OE</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Grau / Classificação</label>
+      <input type="text" id="ind-grau" placeholder="Ex: N3SCP2, TOTAL BRANCA…">
+    </div>
+
+    <div class="field">
+      <label>Dificuldade estimada</label>
+      <div class="pill-group">
+        <input type="radio" name="ind-diff" value="T2" id="d-t2" class="pill-opt" checked><label for="d-t2" class="pill-label">T2</label>
+        <input type="radio" name="ind-diff" value="T2xP" id="d-t2xp" class="pill-opt"><label for="d-t2xp" class="pill-label">T2xP</label>
+        <input type="radio" name="ind-diff" value="T3" id="d-t3" class="pill-opt"><label for="d-t3" class="pill-label">T3</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Observações</label>
+      <textarea id="ind-obs" placeholder="Achados do exame, observações clínicas…"></textarea>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-outline" onclick="closeIndicaModal()" style="flex:0.6">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarIndicacao()">Indicar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMPORTED=[{"id":"1000","nome":"APARECIDO ROSA CAVALETI","idade":"60","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Phaco-Chop","aparelho":"Faros","cirurgiao":"Dr. Felipe Casseb","orientacao":"Motta","anestesia":"Bloqueio","catGrau":"N4","obsPreOp":"FEC -> FACO","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["RCP pequena sem vítreo"],"obsIntra":"Chopper bateu no saco","posOps":{}},{"id":"1001","nome":"MARIA MADALENA BORGES","idade":"60","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Motta","anestesia":"Bloqueio","catGrau":"TOTAL BRANCA","obsPreOp":"FEC -> FACO","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Incisão plana","posOps":{}},{"id":"1002","nome":"ISABEL DE OLIVEIRA JACINTO","idade":"65","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Phaco-Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Motta","anestesia":"Bloqueio","catGrau":"N3","obsPreOp":"FEC -> FACO","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Dificuldade para hidratar incisão","posOps":{}},{"id":"1003","nome":"EZIDIA HENRIQUE","idade":"71","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Phaco-Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Motta","anestesia":"Bloqueio","catGrau":"TOTAL BRANCA","obsPreOp":"FEC -> FACO","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Acessória muito larga, CA instável","posOps":{}},{"id":"1004","nome":"APARECIDA DE PAULA AMORIM","idade":"69","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Flip-Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Pedro/João","anestesia":"Bloqueio","catGrau":"CA3N2SCP3","obsPreOp":"MIDRIASE BOA, DERMATOCALASE","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Tentei fazer flip-chop de cara, mas com dificuldades","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1005","nome":"ROGÉRIO LUIZ DOS SANTOS","idade":"45","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Flip-Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Pedro/João","anestesia":"Bloqueio","catGrau":"N2","obsPreOp":"AMBLIOPIA","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Rhexis correu, Dr. Pedro fez incisão relaxante"],"obsIntra":"Deixei o flap da rhexis subincisional, difícil recuperar","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1006","nome":"MARIA NEIDE SOARES DE MEDEIROS","idade":"72","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Pedro/João","anestesia":"Bloqueio","catGrau":"N2CA3","obsPreOp":"MIDRIASE 7MM, COLABORATIVA","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1007","nome":"MARIA CONCEIÇÃO SIZENANDO","idade":"64","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"CA1N1SCP1","obsPreOp":"MIDRÍASE 8MM, COLABORATIVA","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1008","nome":"GERALDA GONÇALVES DE QUEIROZ","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"CA4N2","obsPreOp":"MIDRÍASE BOA, COLABORATIVA","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1009","nome":"EDNEUSA BENEDITA DA SILVA","idade":"64","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"CA3SCP+","obsPreOp":"Midríase boa, colaborativa","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1010","nome":"ROBERTO PEREIRA DA SILVA JÚNIOR","idade":"45","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"CA2SCP3CP2","obsPreOp":"COLABORATIVO","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1011","nome":"LUIZA DURIGAO ALMEIDA","idade":"77","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N2SCP1","obsPreOp":"MIDRIASE BOA, DERMATOCALASE","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1012","nome":"JOANA SUELI TRISTAO","idade":"72","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N3SCP1","obsPreOp":"MIDRIASE BOA, DERMATOCALASE","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1013","nome":"EZIDIA HENRIQUE","idade":"71","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N2SCP3","obsPreOp":"DURA, MIDRÍASE 5MM","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Difícil fazer quebra por midríase, pouco espaço para facar","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1014","nome":"SILVANA RIBEIRO PAES","idade":"61","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N1SCP3","obsPreOp":"MIDRIASE BOA, DERMATOCALASE","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1015","nome":"ANTÔNIO ALVES SECUNDO","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N2","obsPreOp":"PTG TEMPORAL","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Incisão acessória mais inferior, difícil acesso por ptg","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1016","nome":"CARLOS JOSÉ FERNANDES","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N2SCP1","obsPreOp":"Midriase boa, Colaborativo","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Não fiz a incisão principal, resto fluiu bem","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1017","nome":"LEONILDA ROCHA SALVIANO","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Bloqueio","catGrau":"N3SCP1","obsPreOp":"TREC, GPAF","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Isaque fez a primeira quebra","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Edema++","obs":"Edema++","conduta":""}}},{"id":"1018","nome":"APARECIDA MARIA CORREA","idade":"73","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Intuitiv","cirurgiao":"Dr. Felipe Casseb","orientacao":"Isaque","anestesia":"Sedação","catGrau":"N2","obsPreOp":"Mexia muito","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Rhexis curta","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1019","nome":"JANUACELI DO CARMO","idade":"68","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"CA3N1","obsPreOp":"Graves, Colaborativa","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Signature, pedal curto","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1020","nome":"MARIA DAS GRACAS MOREIRA","idade":"66","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N2CA2SCP2","obsPreOp":"8mm, Colaborativa","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Amputou Háptico"],"obsIntra":"Lisa até implantar lio, Incisão com túnel longo","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Edema++","obs":"Edema++","conduta":""}}},{"id":"1021","nome":"APARECIDO DE PAULA","idade":"67","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N1CA1","obsPreOp":"GPAA, BAV","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Muito mole, difícil choppar","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1022","nome":"SIMA GUL MAHMOODI","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"João","anestesia":"Bloqueio","catGrau":"N2CA1SCP1","obsPreOp":"Afegã, Dermatocalase","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Amputou Háptico"],"obsIntra":"Lisa, último pedaço do cortex difícil","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Edema+++","obs":"Edema+++","conduta":""}}},{"id":"1023","nome":"MARIA HELENA ALVES","idade":"70","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Flip-Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"João","anestesia":"Bloqueio","catGrau":"N2SCP2","obsPreOp":"8mm","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Muito mole, não fiz quebra, flipei e fui facando","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Liso","obs":"Liso","conduta":""}}},{"id":"1024","nome":"JOÃO MARCOS DE MEDEIROS","idade":"57","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OE","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N2","obsPreOp":"Ambliopia","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Córtex hidratou, reabordou para aspirar"],"obsIntra":"Quebra tranquila, dificuldade na IA, deixei um pedaço de córtex","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Edema+, Resto cortical","obs":"Edema+, Resto cortical","conduta":""}}},{"id":"1025","nome":"MARIA DE LOURDES RAMALHO DA SILVA","idade":"66","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N1CA1SCP1CP3","obsPreOp":"","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"","posOps":{}},{"id":"1026","nome":"ULYSSES VICTORINO DE FRANCA FILHO","idade":"68","nascimento":"","prontuario":"","telefone":"","convenio":"SUS","dataCirurgia":"","olho":"OD","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Tópica","catGrau":"N1CA1SCP1CP3","obsPreOp":"Liso","lioModelo":"","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Dificuldade pra montar a LIO UNA, haptico amputado"],"obsIntra":"Posição da mão pressionando o olho","posOps":{"D1":{"data":"","av":"","pio":"","ca":"","cornea":"Edema +","obs":"Edema +","conduta":""}}},
+{"id":"1027","nome":"ANTONIO MARIANO DA SILVA","idade":"71","nascimento":"","prontuario":"9876234","telefone":"","convenio":"SUS","dataCirurgia":"2026-03-29","olho":"OD","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N2CA1SCP1","obsPreOp":"Suspeita de glaucoma","lioModelo":"UnA","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Iris floppy, pupila fechou no meio da cirurgia, natu assumiu","posOps":{}},
+{"id":"1028","nome":"LUCILMA ALVES DATILO","idade":"66","nascimento":"","prontuario":"9978931","telefone":"","convenio":"SUS","dataCirurgia":"2026-04-03","olho":"OE","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N2","obsPreOp":"Midríase boa","lioModelo":"UnA","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Cirurgia lisa!!","posOps":{}},
+{"id":"1029","nome":"MARIA DAS GRAÇAS PASSOS DE SOUZA BRISOLA","idade":"47","nascimento":"","prontuario":"9985647","telefone":"","convenio":"SUS","dataCirurgia":"2026-04-03","olho":"OE","tecnica":"Phaco-Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"","anestesia":"Bloqueio","catGrau":"SCP2","obsPreOp":"Midriase boa, jovem","lioModelo":"UnA","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"Paciente ansiosa, faco aspiração. Rexis abriu um pouco, nati recuperou. De resto, cirurgia lisa!","posOps":{}},
+{"id":"1030","nome":"FATIMA MARIA GONCALVES FERNANDES","idade":"75","nascimento":"","prontuario":"9989061","telefone":"","convenio":"SUS","dataCirurgia":"2026-03-29","olho":"OE","tecnica":"Stop and Chop","aparelho":"Signature","cirurgiao":"Dr. Felipe Casseb","orientacao":"Nati","anestesia":"Bloqueio","catGrau":"N2","obsPreOp":"Glaucoma, Midriase Boa","lioModelo":"UnA","lioPoder":"","lioTipo":"Monofocal","lioMat":"Hidrofílico","intercorrencias":["Sem intercorrências"],"obsIntra":"1 quebra difícil. Dificuldade para montar a LIO.","posOps":{}}];
+
+let db=[], filaDB=[], currentPage='home', prevPage=null, selectedId=null, posOpContext=null, activeFilter='all', indicaContext=null;
+
+// ── NOME DO USUÁRIO ──────────────────────────────────────────────
+let nomeUsuario='Dr. Felipe Casseb'; // fallback padrão
+
+function getNomeCompleto(){return nomeUsuario;}
+function getPrimeiroNome(){
+  const parts=nomeUsuario.replace(/^(Dr\.|Dra\.)\s*/i,'').split(' ');
+  return parts[0]||nomeUsuario;
+}
+
+function salvarOnboarding(){
+  const nome=document.getElementById('onboarding-nome').value.trim();
+  if(!nome){document.getElementById('onboarding-nome').focus();return;}
+  const titulo=(document.querySelector('input[name="onb-titulo"]:checked')||{value:'Dr.'}).value;
+  nomeUsuario=(titulo?titulo+' ':'')+nome;
+  localStorage.setItem('cataractcontrol_nome',nomeUsuario);
+  document.getElementById('onboarding-modal').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+  atualizarNomeHeader();
+  renderHome();
+}
+
+function atualizarNomeHeader(){
+  const el=document.getElementById('header-nome-sub');
+  if(el)el.textContent=nomeUsuario;
+  const saudacao=document.getElementById('home-saudacao');
+  if(saudacao)saudacao.textContent=`Olá, ${getPrimeiroNome()}`;
+}
+
+// ── EXPORT / IMPORT ─────────────────────────────────────────────
+function exportarDados(){
+  try{
+    const payload={cirurgias:db,fila:filaDB};
+    const json=JSON.stringify(payload,null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download='cataract-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);document.body.removeChild(a);},1000);
+  }catch(e){
+    const json=JSON.stringify({cirurgias:db,fila:filaDB},null,2);
+    const w=window.open('','_blank');
+    if(w){
+      w.document.write('<pre style="word-wrap:break-word;white-space:pre-wrap;font-size:12px;">'+json+'</pre>');
+      w.document.title='Backup CataractControl — copie estes dados';
+    } else {
+      alert('Não foi possível exportar. Tente pelo navegador do computador.');
+    }
+  }
+}
+function importarDados(){
+  const input=document.createElement('input');input.type='file';input.accept='.json,application/json';
+  input.onchange=function(e){
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        const dados=JSON.parse(ev.target.result);
+        if(Array.isArray(dados)&&dados.length>0){db=dados;filaDB=[];}
+        else if(dados.cirurgias){db=dados.cirurgias;filaDB=dados.fila||[];}
+        else{alert('Arquivo inválido ou vazio.');return;}
+        save();renderHome();updateFilaBadge();
+        alert('✓ Dados importados com sucesso!');
+      }catch(err){alert('Erro ao ler o arquivo JSON.');}
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ── INTERCORRÊNCIAS — PASSOS CIRÚRGICOS ──────────────────────────
+const SURGICAL_STEPS=[
+  {id:'s1',label:'1. Incisão Corneana / Paracentese',complicacoes:[
+    {nome:'Queimadura de incisão',detalhe:'Dano térmico estromal; ocorre a ≥60°C por fricção excessiva da agulha'},
+    {nome:'Incisão não estanque',detalhe:'Leva a vazamento e instabilidade de câmara anterior (~1%)'},
+    {nome:'Descolamento / rasgadura de Descemet',detalhe:'Rara; entrada inadequada de instrumentos'},
+    {nome:'Incisão muito larga',detalhe:'Vazamento de fluido, instabilidade de câmara anterior'},
+    {nome:'Incisão muito apertada',detalhe:'Aumento de fricção e risco de queimadura'},
+  ]},
+  {id:'s2',label:'2. Capsulorrexe',complicacoes:[
+    {nome:'Rasgadura radial anterior',detalhe:'~1,38%; pode estender-se à periferia'},
+    {nome:'Argentinian Flag Sign',detalhe:'Rasgadura que se autopropaga ao equador; cataratas intumescentes'},
+    {nome:'Rhexis correu / extensão periférica',detalhe:'Pode ocorrer durante manipulação do núcleo se não controlada'},
+    {nome:'Capsulotomia incompleta',detalhe:'Associada a FLACS (~3,25%)'},
+  ]},
+  {id:'s3',label:'3. Hidrodissecção',complicacoes:[
+    {nome:'Bloqueio capsular posterior',detalhe:'Pressão excessiva pode causar ruptura capsular posterior'},
+    {nome:'Diálise zonular — hidrodissecção',detalhe:'Pressão excessiva em zônulas fracas'},
+  ]},
+  {id:'s4',label:'4. Facoemulsificação do Núcleo',complicacoes:[
+    {nome:'Ruptura capsular posterior (RCP)',detalhe:'1-2% experientes; 3,5% residentes; até 9% alto risco'},
+    {nome:'Perda vítrea',detalhe:'Ocorre com RCP; requer vitrectomia anterior'},
+    {nome:'Fragmentos de cristalino caídos no vítreo',detalhe:'0,1-0,28%; encaminhamento urgente à retina'},
+    {nome:'Dano endotelial corneano',detalhe:'Prolongado poder ultrassônico ou trauma mecânico'},
+    {nome:'Instabilidade de câmara anterior — faco',detalhe:'Incisão inadequada ou perda de viscoelástico'},
+    {nome:'Miose intraoperatória',detalhe:'Dificulta visualização e aumenta risco de complicações'},
+  ]},
+  {id:'s5',label:'5. Aspiração Cortical',complicacoes:[
+    {nome:'Ruptura capsular posterior — aspiração',detalhe:'Pode ocorrer durante aspiração agressiva'},
+    {nome:'Diálise zonular — aspiração',detalhe:'Tração excessiva em zônulas fracas'},
+    {nome:'Resto cortical retido',detalhe:'Córtex residual no saco capsular'},
+  ]},
+  {id:'s6',label:'6. Implante de LIO',complicacoes:[
+    {nome:'Deslocamento de LIO',detalhe:'Implante fora do saco capsular se RCP prévia'},
+    {nome:'Trauma de íris — LIO',detalhe:'~1%; manipulação inadequada ou prolapso de íris'},
+    {nome:'Captura de LIO',detalhe:'LIO capturada anterior ou posteriormente à capsulorrexe'},
+    {nome:'Háptico amputado',detalhe:'Durante o implante ou manipulação da LIO'},
+  ]},
+  {id:'s7',label:'7. Fechamento da Incisão',complicacoes:[
+    {nome:'Incisão não autosselante',detalhe:'Requer sutura ou adesivo; pode induzir astigmatismo'},
+  ]},
+  {id:'sg',label:'Gerais (qualquer momento)',complicacoes:[
+    {nome:'IFIS — Síndrome de íris flácida',detalhe:'Associada a antagonistas alfa-1a (tansulosina)'},
+    {nome:'Hemorragia supracoroidal',detalhe:'~0,06%; potencialmente devastadora'},
+    {nome:'Hemorragia expulsiva',detalhe:'Extremamente rara; perda súbita de conteúdo intraocular'},
+    {nome:'Hifema',detalhe:'Trauma de íris, manipulação excessiva'},
+    {nome:'Vitrectomia anterior',detalhe:'Realizada em contexto de perda vítrea'},
+  ]},
+];
+
+let intercSelections={};
+let intercSemFlag=false;
+let intercOpenStep=null;
+
+function initIntercSteps(){
+  intercSelections={};intercSemFlag=true;intercOpenStep=null;
+  const container=document.getElementById('interc-steps');
+  if(!container)return;
+  let html='';
+  SURGICAL_STEPS.forEach(step=>{
+    html+=`<div>
+      <button type="button" class="step-btn" id="stepbtn-${step.id}" onclick="toggleStep('${step.id}')">
+        <div class="step-btn-left">
+          <div class="step-btn-num" id="stepnum-${step.id}">${step.id==='sg'?'★':step.id.replace('s','')}</div>
+          <span class="step-btn-label">${step.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="step-btn-count" id="stepcount-${step.id}">0</span>
+          <span class="step-arrow" id="steparrow-${step.id}">▼</span>
+        </div>
+      </button>
+      <div class="step-compl-list" id="steplist-${step.id}">
+        ${step.complicacoes.map((c,i)=>`
+          <div class="step-compl-item" id="stepitem-${step.id}-${i}" onclick="toggleCompl('${step.id}',${i})">
+            <div class="step-compl-check" id="stepcheck-${step.id}-${i}">
+              <svg width="11" height="11" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="step-compl-text">
+              <div class="step-compl-name">${c.nome}</div>
+              <div class="step-compl-detail">${c.detalhe}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  html+=`<button type="button" class="step-sem-btn" id="step-sem-btn" onclick="toggleSemInterc()">✓ Sem intercorrências</button>`;
+  container.innerHTML=html;
+  const semBtn=document.getElementById('step-sem-btn');
+  if(semBtn)semBtn.classList.add('selected');
+  updateIntercPreview();
+}
+
+function toggleStep(stepId){
+  const list=document.getElementById('steplist-'+stepId);
+  const arrow=document.getElementById('steparrow-'+stepId);
+  if(!list||!arrow)return;
+  const isOpen=list.classList.contains('open');
+  SURGICAL_STEPS.forEach(s=>{
+    const l=document.getElementById('steplist-'+s.id);
+    const a=document.getElementById('steparrow-'+s.id);
+    if(l)l.classList.remove('open');
+    if(a)a.classList.remove('open');
+  });
+  if(!isOpen){list.classList.add('open');arrow.classList.add('open');}
+}
+
+function toggleCompl(stepId,idx){
+  const key=stepId+'-'+idx;
+  const chk=document.getElementById('stepcheck-'+stepId+'-'+idx);
+  const item=document.getElementById('stepitem-'+stepId+'-'+idx);
+  if(!chk)return;
+  if(intercSelections[key]){
+    delete intercSelections[key];
+    chk.classList.remove('checked');
+    if(item)item.classList.remove('selected');
+    if(Object.keys(intercSelections).length===0){
+      intercSemFlag=true;
+      const sem=document.getElementById('step-sem-btn');
+      if(sem)sem.classList.add('selected');
+    }
+  } else {
+    intercSemFlag=false;
+    const sem=document.getElementById('step-sem-btn');
+    if(sem)sem.classList.remove('selected');
+    intercSelections[key]={stepId,idx,nome:SURGICAL_STEPS.find(s=>s.id===stepId).complicacoes[idx].nome};
+    chk.classList.add('checked');
+    if(item)item.classList.add('selected');
+  }
+  updateStepCount(stepId);
+  updateIntercPreview();
+}
+
+function toggleSemInterc(){
+  intercSemFlag=!intercSemFlag;
+  const sem=document.getElementById('step-sem-btn');
+  if(sem)sem.classList.toggle('selected',intercSemFlag);
+  if(intercSemFlag){
+    intercSelections={};
+    SURGICAL_STEPS.forEach(s=>{
+      s.complicacoes.forEach((_,i)=>{
+        const chk=document.getElementById('stepcheck-'+s.id+'-'+i);
+        const item=document.getElementById('stepitem-'+s.id+'-'+i);
+        if(chk)chk.classList.remove('checked');
+        if(item)item.classList.remove('selected');
+      });
+      updateStepCount(s.id);
+    });
+  }
+  updateIntercPreview();
+}
+
+function updateStepCount(stepId){
+  const count=Object.keys(intercSelections).filter(k=>k.startsWith(stepId+'-')).length;
+  const countEl=document.getElementById('stepcount-'+stepId);
+  const btn=document.getElementById('stepbtn-'+stepId);
+  if(countEl){countEl.textContent=count;countEl.classList.toggle('visible',count>0);}
+  if(btn)btn.classList.toggle('has-sel',count>0);
+}
+
+function updateIntercPreview(){
+  const preview=document.getElementById('interc-selected-preview');
+  const tags=document.getElementById('interc-selected-tags');
+  if(!preview||!tags)return;
+  const vals=Object.values(intercSelections);
+  if(intercSemFlag){
+    preview.style.display='block';
+    tags.innerHTML='<span class="interc-tag">Sem intercorrências</span>';
+  } else if(vals.length>0){
+    preview.style.display='block';
+    tags.innerHTML=vals.map(v=>`<span class="interc-tag">${v.nome}</span>`).join('');
+  } else {
+    preview.style.display='none';
+    tags.innerHTML='';
+  }
+}
+
+function getIntercValues(){
+  if(intercSemFlag)return['Sem intercorrências'];
+  const vals=Object.values(intercSelections).map(v=>v.nome);
+  return vals.length?vals:['Sem intercorrências'];
+}
+
+// ── PERSIST ─────────────────────────────────────────────────────
+function save(){
+  localStorage.setItem('cataractadb_v3',JSON.stringify(db));
+  localStorage.setItem('cataractafila_v1',JSON.stringify(filaDB));
+}
+function loadDB(){
+  // Carrega nome do usuário
+  const nomeSalvo=localStorage.getItem('cataractcontrol_nome');
+  if(nomeSalvo){
+    nomeUsuario=nomeSalvo;
+  }
+  // Carrega cirurgias
+  const s=localStorage.getItem('cataractadb_v3');
+  if(s){db=JSON.parse(s);IMPORTED.forEach(imp=>{if(!db.find(x=>x.id===imp.id))db.push(imp);});}
+  else db=JSON.parse(JSON.stringify(IMPORTED));
+  const f=localStorage.getItem('cataractafila_v1');
+  filaDB=f?JSON.parse(f):[];
+  save();
+  // Mostra onboarding apenas se não tiver nome salvo E não tiver dados próprios
+  const temDadosProprios=db.some(x=>!IMPORTED.find(i=>i.id===x.id));
+  if(!nomeSalvo&&!temDadosProprios){
+    setTimeout(()=>{
+      document.getElementById('onboarding-modal').classList.add('open');
+      document.body.classList.add('no-scroll');
+    },300);
+  }
+}
+
+// ── UTILS ────────────────────────────────────────────────────────
+function hoje(){return new Date().toISOString().split('T')[0]}
+
+function addDays(s,n){
+  if(!s)return '';
+  const d=new Date(s+'T12:00:00');
+  d.setDate(d.getDate()+n);
+  return d.toISOString().split('T')[0];
+}
+
+// Pula fins de semana: avança até próxima segunda se cair em sab/dom
+function skipWeekend(dateStr){
+  if(!dateStr)return dateStr;
+  const d=new Date(dateStr+'T12:00:00');
+  const dow=d.getDay(); // 0=dom, 6=sab
+  if(dow===6)d.setDate(d.getDate()+2);
+  else if(dow===0)d.setDate(d.getDate()+1);
+  return d.toISOString().split('T')[0];
+}
+
+// D1: dia seguinte pulando fim de semana
+function addD1(s){
+  if(!s)return '';
+  const d=new Date(s+'T12:00:00');
+  const dow=d.getDay();
+  const skip=dow===5?3:dow===6?2:1; // sex→+3, sab→+2, outros→+1
+  d.setDate(d.getDate()+skip);
+  return d.toISOString().split('T')[0];
+}
+
+// Adiciona N dias e pula fim de semana no destino
+function addDaysSkipWeekend(s,n){
+  if(!s)return '';
+  return skipWeekend(addDays(s,n));
+}
+
+function diffDays(a,b){if(!a||!b)return 9999;return Math.round((new Date(a+'T12:00:00')-new Date(b+'T12:00:00'))/86400000)}
+function fmtDate(s){if(!s)return '—';const[y,m,d]=s.split('-');return `${d}/${m}/${y}`}
+function hasCompl(p){return p.intercorrencias&&p.intercorrencias.some(x=>x&&x!=='Sem intercorrências')}
+function contralateral(olho){if(olho==='OD')return 'OE';if(olho==='OE')return 'OD';return 'OD';}
+
+// ── NAVIGATION ───────────────────────────────────────────────────
+function goPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const nb=document.getElementById('nav-'+p);if(nb)nb.classList.add('active');
+  prevPage=currentPage;currentPage=p;
+  if(p==='home')renderHome();
+  if(p==='pacientes')renderPatients();
+  if(p==='analise')renderAnalytics();
+  if(p==='fila')renderFila();
+  if(p==='nova')initIntercSteps();
+  if(p==='atrasos')renderAtrasos();
+  if(p==='mapa')initMapaPage();
+}
+function goBack(){goPage(prevPage||'pacientes')}
+function showDetail(id){
+  selectedId=id;prevPage=currentPage;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-detail').classList.add('active');
+  currentPage='detail';renderDetail(id);
+}
+
+// ── HOME ─────────────────────────────────────────────────────────
+function renderHome(){
+  const h=hoje(),total=db.length;
+  let alerts=[],overdue=[],todayCount=0;
+  db.forEach(p=>{
+    if(!p.dataCirurgia)return;
+    const expD1=addD1(p.dataCirurgia);
+    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const d1done=p.posOps&&p.posOps.D1;
+    const tipoExps={D1:expD1,D7:expD7,D30:expD30};
+    ['D1','D7','D30'].forEach(tipo=>{
+      if(tipo==='D7'&&!d1done)return;
+      if(tipo==='D30'&&!d1done)return;
+      const exp=tipoExps[tipo];
+      if(!exp)return;
+      if(!(p.posOps&&p.posOps[tipo])){
+        const diff=diffDays(exp,h);
+        if(diff<0){
+          overdue.push({p,tipo,exp,diff});
+        } else if(tipo==='D1'||diff<=3){
+          // D1: sempre mostra se pendente (cirurgia já foi)
+          // D7/D30: só nos 3 dias anteriores
+          if(tipo==='D1'||diff<=3){
+            alerts.push({p,tipo,exp,diff});
+            if(diff===0)todayCount++;
+          }
+        }
+      }
+    });
+  });
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-alerts').textContent=alerts.length;
+  document.getElementById('stat-compl').textContent=overdue.length;
+  document.getElementById('stat-today').textContent=todayCount;
+  const atrasosCard=document.getElementById('stat-atrasos-card');
+  if(atrasosCard){atrasosCard.classList.toggle('accent-warn',overdue.length>0);}
+  const al=document.getElementById('alerts-list');
+  if(alerts.length===0){
+    al.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nenhum retorno pendente nos próximos dias</div></div>';
+    return;
+  }
+  alerts.sort((a,b)=>a.diff-b.diff);
+  al.innerHTML=alerts.map(({p,tipo,exp,diff})=>{
+    const cls=diff===0?'today':'soon';
+    const label=diff===0?'Hoje':`Em ${diff}d`;
+    const icon=diff===0?'●':'○';
+    return `<div class="alert-card alert-${cls}" onclick="showDetail('${p.id}')"><div style="font-size:1.1rem;font-weight:900;color:${diff===0?'#333':'#aaa'};width:20px;text-align:center">${icon}</div><div class="alert-info"><div class="alert-name">${p.nome}</div><div class="alert-detail">${tipo} · ${p.olho} · ${fmtDate(exp)}</div></div><div class="alert-day alert-day-${cls}">${label}</div></div>`;
+  }).join('');
+}
+
+// ── ATRASOS ──────────────────────────────────────────────────────
+function renderAtrasos(){
+  const h=hoje();
+  let overdue=[];
+  db.forEach(p=>{
+    if(!p.dataCirurgia)return;
+    const expD1=addD1(p.dataCirurgia);
+    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const d1done=p.posOps&&p.posOps.D1;
+    const tipoExps={D1:expD1,D7:expD7,D30:expD30};
+    ['D1','D7','D30'].forEach(tipo=>{
+      if(tipo==='D7'&&!d1done)return;
+      if(tipo==='D30'&&!d1done)return;
+      const exp=tipoExps[tipo];
+      if(!exp)return;
+      if(!(p.posOps&&p.posOps[tipo])){
+        const diff=diffDays(exp,h);
+        if(diff<0)overdue.push({p,tipo,exp,diff});
+      }
+    });
+  });
+  overdue.sort((a,b)=>a.diff-b.diff);
+  document.getElementById('atrasos-sub').textContent=`${overdue.length} retorno${overdue.length!==1?'s':''} não realizado${overdue.length!==1?'s':''}`;
+  const list=document.getElementById('atrasos-list');
+  if(overdue.length===0){
+    list.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nenhum retorno em atraso</div></div>';
+    return;
+  }
+  // ★ MODIFICADO: cada card tem botão "Registrar" inline
+  list.innerHTML=overdue.map(({p,tipo,exp,diff})=>`
+    <div class="alert-card alert-urgent">
+      <div style="font-size:1.1rem;font-weight:900;color:#000;width:20px;text-align:center;cursor:pointer" onclick="showDetail('${p.id}')">!</div>
+      <div class="alert-info" onclick="showDetail('${p.id}')" style="cursor:pointer">
+        <div class="alert-name">${p.nome}</div>
+        <div class="alert-detail">${tipo} · ${p.olho} · previsto ${fmtDate(exp)} · <span style="font-weight:700;color:#000">${Math.abs(diff)}d atraso</span></div>
+      </div>
+      <button class="atraso-reg-btn" onclick="openPosOp('${p.id}','${tipo}')">+ Reg.</button>
+    </div>`
+  ).join('');
+}
+
+// ── PACIENTES ────────────────────────────────────────────────────
+function setFilter(f,el){activeFilter=f;document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderPatients();}
+function renderPatients(){
+  const _si=document.getElementById('searchInput');const q=(_si?_si.value:'').toLowerCase();
+  const list=document.getElementById('patient-list');
+  let filtered=db.filter(p=>{
+    const mQ=!q||p.nome.toLowerCase().includes(q)||(p.prontuario||'').includes(q);
+    const mF=activeFilter==='all'||(activeFilter==='compl'&&hasCompl(p))||p.aparelho===activeFilter;
+    return mQ&&mF;
+  });
+  document.getElementById('patient-count-sub').textContent=`${filtered.length} de ${db.length} cirurgias registradas`;
+  if(filtered.length===0){list.innerHTML='<div class="empty"><div class="empty-icon">○</div><div class="empty-txt">Nenhum paciente encontrado</div></div>';return;}
+  list.innerHTML=filtered.map(p=>{
+    const initials=p.nome.split(' ').filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+    const cb=hasCompl(p)?`<span style="font-size:0.68rem;font-weight:900;color:#000">!</span>`:'';
+    const hasInd=filaDB.some(f=>f.patId===p.id&&!f.done);
+    const indIcon=hasInd?`<span style="font-size:0.68rem;font-weight:900;color:#555;margin-left:4px">◎</span>`:'';
+    return `<div class="patient-list-item" onclick="showDetail('${p.id}')">
+      <div class="patient-avatar">${initials}</div>
+      <div class="patient-info"><div class="patient-name">${p.nome}</div><div class="patient-meta">${p.idade?p.idade+'a · ':''}${p.olho} · ${p.tecnica} · ${p.aparelho}${p.orientacao?' · '+p.orientacao:''}</div></div>
+      <div style="padding-left:8px;display:flex;gap:2px">${cb}${indIcon}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── DETAIL ───────────────────────────────────────────────────────
+function renderDetail(id){
+  const p=db.find(x=>x.id===id);if(!p)return;
+  const h=hoje();
+  const interc=(p.intercorrencias||[]).filter(x=>x).join(', ')||'Sem intercorrências';
+  const tInfo={D1:{label:'D1 — 1º dia PO'},D7:{label:'D7 — 7º dia PO'},D30:{label:'D30 — 30º dia PO'}};
+  const d1done=p.posOps&&p.posOps.D1;
+  const tiposVisiveis=d1done?['D1','D7','D30']:['D1'];
+  const tlHtml=tiposVisiveis.map(tipo=>{
+    const exp=p.dataCirurgia?(tipo==='D1'?addD1(p.dataCirurgia):tipo==='D7'?addDaysSkipWeekend(p.dataCirurgia,7):addDaysSkipWeekend(p.dataCirurgia,30)):'';
+    const raw=p.posOps&&p.posOps[tipo];
+    const done=raw||null;
+    const diff=exp?diffDays(exp,h):9999;
+    const dotCls=done?'tl-dot-done':!exp?'tl-dot-pending':diff<0?'tl-dot-overdue':diff===0?'tl-dot-active':'tl-dot-pending';
+    const sb=done?`<span class="badge badge-ok">Realizado${done.data?' · '+fmtDate(done.data):''}</span>`:
+      !exp?`<span class="badge badge-navy">Sem data</span>`:
+      diff<0?`<span class="badge badge-warn">Atrasado ${Math.abs(diff)}d</span>`:
+      diff===0?`<span class="badge badge-teal">Hoje</span>`:
+      `<span class="badge badge-navy">Em ${diff}d</span>`;
+    const obsH=done
+      ?`<div class="tl-obs"><b>Córnea:</b> ${done.cornea||done.obs||'—'} · <b>CA:</b> ${done.ca||'—'}<br><b>AV:</b> ${done.av||'—'} · <b>PIO:</b> ${done.pio?done.pio+' mmHg':'—'}${done.obs&&done.obs!==done.cornea?`<br>${done.obs}`:''}${done.conduta?`<br><span style="font-size:0.7rem;color:var(--muted)">Conduta: ${done.conduta}</span>`:''}${done.proximoRetorno?`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font-size:0.7rem;font-weight:700;color:var(--black)">Próximo retorno: ${fmtDate(done.proximoRetorno)}</span><span style="font-size:0.65rem;color:var(--muted)">(${diffDays(done.proximoRetorno,hoje())>0?'em '+diffDays(done.proximoRetorno,hoje())+'d':diffDays(done.proximoRetorno,hoje())===0?'hoje':'atrasado'})</span></div>`:''}</div>
+        <button class="tl-add-btn" style="background:#444;margin-top:6px" onclick="openPosOp('${id}','${tipo}')">✏ Editar</button>`
+      :`<div class="tl-obs-empty">${diff<0?'Retorno não realizado — registre abaixo':'Não registrado'}</div><button class="tl-add-btn" onclick="openPosOp('${id}','${tipo}')">+ Registrar ${tipo}</button>`;
+    return `<div class="tl-item"><div class="tl-dot ${dotCls}">${done?'✓':tipo==='D1'?'1':tipo==='D7'?'7':'30'}</div><div class="tl-content"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tl-title">${tInfo[tipo].label}</span>${sb}</div><div class="tl-date">${exp?fmtDate(exp):'—'}</div>${obsH}</div></div>`;
+  }).join('');
+  const bloqueadoHtml=!d1done&&p.dataCirurgia?`<div style="font-size:0.72rem;color:var(--muted);font-style:italic;padding:10px 0 4px">D7 e D30 serão liberados após o registro do D1.</div>`:'';
+  const cc=hasCompl(p)?'var(--black)':'var(--muted)';
+  const existingInd=filaDB.find(f=>f.patId===id&&!f.done);
+  const indBanner=existingInd?`
+    <div class="indicated-banner">
+      <div class="indicated-banner-icon">◎</div>
+      <div>
+        <div class="indicated-banner-text">Olho contralateral indicado — ${existingInd.olho}</div>
+        <div class="indicated-banner-sub">${existingInd.grau||'—'} · ${existingInd.difficulty} · ${existingInd.obs||'Sem obs.'}</div>
+      </div>
+    </div>`:'';
+  const olhoContra=contralateral(p.olho);
+  const showBtn=p.olho!=='AO'&&!existingInd;
+  const contraBtn=showBtn?`<button class="btn btn-indicate" onclick="openIndicaModal('${id}')">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Indicar olho contralateral (${olhoContra})
+  </button>`:'';
+  document.getElementById('detail-content').innerHTML=`
+    <div class="detail-hero">
+      <div class="detail-patient-name">${p.nome}</div>
+      <div class="detail-patient-sub">${p.idade?p.idade+' anos · ':''}${p.convenio||'SUS'}${p.prontuario?' · Pront. '+p.prontuario:''}</div>
+      <div class="detail-chips">
+        ${p.dataCirurgia?`<span class="detail-chip">📅 ${fmtDate(p.dataCirurgia)}</span>`:'<span class="detail-chip">Sem data</span>'}
+        <span class="detail-chip">${p.olho}</span>
+        <span class="detail-chip">${p.tecnica}</span>
+        <span class="detail-chip">${p.aparelho}</span>
+        ${p.anestesia?`<span class="detail-chip">${p.anestesia}</span>`:''}
+        ${p.orientacao?`<span class="detail-chip">${p.orientacao}</span>`:''}
+      </div>
+    </div>
+    ${indBanner}
+    <div class="info-grid">
+      <div class="info-item"><div class="info-label">Grau / Cat.</div><div class="info-value">${p.catGrau||'—'}</div></div>
+      <div class="info-item"><div class="info-label">Anestesia</div><div class="info-value">${p.anestesia||'—'}</div></div>
+      <div class="info-item"><div class="info-label">LIO</div><div class="info-value">${p.lioModelo||'—'}</div></div>
+      <div class="info-item"><div class="info-label">Poder LIO</div><div class="info-value">${p.lioPoder?p.lioPoder+'D':'—'}</div></div>
+    </div>
+    ${p.obsPreOp?`<div class="card" style="margin-bottom:12px"><div class="form-section-title" style="margin-bottom:8px">Obs. Pré-op</div><div style="font-size:0.82rem">${p.obsPreOp}</div></div>`:''}
+    ${(p.keratoD1||p.axialLength||p.avPreOp)?`<div class="card" style="margin-bottom:12px">
+      <div class="form-section-title" style="margin-bottom:10px">Biometria / Pré-op</div>
+      <div class="info-grid" style="margin-bottom:0">
+        ${p.keratoD1?`<div class="info-item"><div class="info-label">Ceratometria</div><div class="info-value" style="font-size:0.8rem">${p.keratoD1}×${p.keratoD2||'—'}</div></div>`:''}
+        ${p.axialLength?`<div class="info-item"><div class="info-label">AL</div><div class="info-value">${p.axialLength} mm</div></div>`:''}
+        ${p.ac?`<div class="info-item"><div class="info-label">Câmara ant.</div><div class="info-value">${p.ac} mm</div></div>`:''}
+        ${p.avPreOp?`<div class="info-item"><div class="info-label">AV pré-op</div><div class="info-value">${p.avPreOp}</div></div>`:''}
+      </div>
+    </div>`:''}
+    ${p.dificuldadeMapa?`<div style="font-size:0.68rem;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:6px">
+      <span style="font-weight:700;text-transform:uppercase;letter-spacing:0.4px">Dificuldade estimada:</span>
+      <span class="badge ${p.dificuldadeMapa==='T2'?'badge-ok':p.dificuldadeMapa==='T2XP'?'badge-teal':'badge-warn'}">${p.dificuldadeMapa}</span>
+    </div>`:''}    <div class="card" style="margin-bottom:14px">
+      <div class="form-section-title" style="margin-bottom:8px">Intercorrências</div>
+      <div style="font-size:0.82rem;color:${cc};font-weight:${hasCompl(p)?'700':'400'}">${interc}</div>
+      ${p.obsIntra?`<div style="margin-top:8px;font-size:0.78rem;color:var(--muted);font-style:italic">${p.obsIntra}</div>`:''}
+    </div>
+    ${p.mental?`<div class="card" style="margin-bottom:14px">
+      <div class="form-section-title" style="margin-bottom:12px">Mental</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:${p.mental.obs?'12px':'0'}">
+        <div style="text-align:center">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Confiança</div>
+          <div style="font-size:1.6rem;font-family:Georgia,serif;color:var(--black);line-height:1">${p.mental.confianca||'—'}</div>
+          <div style="font-size:0.58rem;color:var(--muted)">/5</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Controle</div>
+          <div style="font-size:1.6rem;font-family:Georgia,serif;color:var(--black);line-height:1">${p.mental.controle||'—'}</div>
+          <div style="font-size:0.58rem;color:var(--muted)">/5</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.58rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">Estresse</div>
+          <div style="font-size:1.6rem;font-family:Georgia,serif;color:var(--black);line-height:1">${p.mental.estresse||'—'}</div>
+          <div style="font-size:0.58rem;color:var(--muted)">/5</div>
+        </div>
+      </div>
+      ${p.mental.obs?`<div style="font-size:0.78rem;color:var(--mid);font-style:italic;border-top:1px solid var(--border);padding-top:10px">${p.mental.obs}</div>`:''}
+    </div>`:''}
+    <div class="sec-title" style="font-size:0.95rem;margin-bottom:10px">Linha do tempo pós-op</div>
+    <div class="card">${tlHtml}${bloqueadoHtml}</div>
+    <div style="height:14px"></div>
+    <button class="btn btn-outline" onclick="openEditCirurgia('${id}')" style="margin-bottom:10px">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Editar cirurgia
+    </button>
+    ${contraBtn}
+    <button class="btn btn-danger" onclick="deletePaciente('${id}')">Excluir registro</button>
+    <div style="height:10px"></div>`;
+}
+
+// ── EDITAR CIRURGIA ──────────────────────────────────────────────
+let editContext=null;
+let edIntercSelections={};
+let edIntercSemFlag=true;
+
+function initEdInterc(intercorrenciasExistentes){
+  edIntercSelections={};
+  edIntercSemFlag=true;
+  const container=document.getElementById('ed-interc-steps');
+  if(!container)return;
+  let html='';
+  SURGICAL_STEPS.forEach(step=>{
+    html+=`<div>
+      <button type="button" class="step-btn" id="ed-stepbtn-${step.id}" onclick="edToggleStep('${step.id}')">
+        <div class="step-btn-left">
+          <div class="step-btn-num" id="ed-stepnum-${step.id}">${step.id==='sg'?'★':step.id.replace('s','')}</div>
+          <span class="step-btn-label">${step.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="step-btn-count" id="ed-stepcount-${step.id}">0</span>
+          <span class="step-arrow" id="ed-steparrow-${step.id}">▼</span>
+        </div>
+      </button>
+      <div class="step-compl-list" id="ed-steplist-${step.id}">
+        ${step.complicacoes.map((c,i)=>`
+          <div class="step-compl-item" id="ed-stepitem-${step.id}-${i}" onclick="edToggleCompl('${step.id}',${i})">
+            <div class="step-compl-check" id="ed-stepcheck-${step.id}-${i}">
+              <svg width="11" height="11" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="step-compl-text">
+              <div class="step-compl-name">${c.nome}</div>
+              <div class="step-compl-detail">${c.detalhe}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  html+=`<button type="button" class="step-sem-btn" id="ed-step-sem-btn" onclick="edToggleSemInterc()">✓ Sem intercorrências</button>`;
+  container.innerHTML=html;
+
+  // Pré-seleciona intercorrências existentes
+  const existentes=intercorrenciasExistentes||['Sem intercorrências'];
+  const temSem=existentes.includes('Sem intercorrências')||existentes.length===0;
+  if(temSem){
+    edIntercSemFlag=true;
+    document.getElementById('ed-step-sem-btn').classList.add('selected');
+  } else {
+    edIntercSemFlag=false;
+    document.getElementById('ed-step-sem-btn').classList.remove('selected');
+    // Tenta marcar as intercorrências existentes pelo nome
+    SURGICAL_STEPS.forEach(step=>{
+      step.complicacoes.forEach((c,i)=>{
+        if(existentes.some(e=>e&&e.toLowerCase()===c.nome.toLowerCase())){
+          const key=step.id+'-'+i;
+          edIntercSelections[key]={stepId:step.id,idx:i,nome:c.nome};
+          const chk=document.getElementById('ed-stepcheck-'+step.id+'-'+i);
+          const item=document.getElementById('ed-stepitem-'+step.id+'-'+i);
+          if(chk)chk.classList.add('checked');
+          if(item)item.classList.add('selected');
+          edUpdateStepCount(step.id);
+        }
+      });
+    });
+    // Se não achou nenhuma no accordion, mostra como texto livre
+    if(Object.keys(edIntercSelections).length===0){
+      edIntercSemFlag=false;
+    }
+  }
+  edUpdateIntercPreview();
+}
+
+function edToggleStep(stepId){
+  const list=document.getElementById('ed-steplist-'+stepId);
+  const arrow=document.getElementById('ed-steparrow-'+stepId);
+  if(!list||!arrow)return;
+  const isOpen=list.classList.contains('open');
+  SURGICAL_STEPS.forEach(s=>{
+    const l=document.getElementById('ed-steplist-'+s.id);
+    const a=document.getElementById('ed-steparrow-'+s.id);
+    if(l)l.classList.remove('open');
+    if(a)a.classList.remove('open');
+  });
+  if(!isOpen){list.classList.add('open');arrow.classList.add('open');}
+}
+
+function edToggleCompl(stepId,idx){
+  const key=stepId+'-'+idx;
+  const chk=document.getElementById('ed-stepcheck-'+stepId+'-'+idx);
+  const item=document.getElementById('ed-stepitem-'+stepId+'-'+idx);
+  if(!chk)return;
+  if(edIntercSelections[key]){
+    delete edIntercSelections[key];
+    chk.classList.remove('checked');
+    if(item)item.classList.remove('selected');
+    if(Object.keys(edIntercSelections).length===0){
+      edIntercSemFlag=true;
+      const sem=document.getElementById('ed-step-sem-btn');
+      if(sem)sem.classList.add('selected');
+    }
+  } else {
+    edIntercSemFlag=false;
+    const sem=document.getElementById('ed-step-sem-btn');
+    if(sem)sem.classList.remove('selected');
+    edIntercSelections[key]={stepId,idx,nome:SURGICAL_STEPS.find(s=>s.id===stepId).complicacoes[idx].nome};
+    chk.classList.add('checked');
+    if(item)item.classList.add('selected');
+  }
+  edUpdateStepCount(stepId);
+  edUpdateIntercPreview();
+}
+
+function edToggleSemInterc(){
+  edIntercSemFlag=!edIntercSemFlag;
+  const sem=document.getElementById('ed-step-sem-btn');
+  if(sem)sem.classList.toggle('selected',edIntercSemFlag);
+  if(edIntercSemFlag){
+    edIntercSelections={};
+    SURGICAL_STEPS.forEach(s=>{
+      s.complicacoes.forEach((_,i)=>{
+        const chk=document.getElementById('ed-stepcheck-'+s.id+'-'+i);
+        const item=document.getElementById('ed-stepitem-'+s.id+'-'+i);
+        if(chk)chk.classList.remove('checked');
+        if(item)item.classList.remove('selected');
+      });
+      edUpdateStepCount(s.id);
+    });
+  }
+  edUpdateIntercPreview();
+}
+
+function edUpdateStepCount(stepId){
+  const count=Object.keys(edIntercSelections).filter(k=>k.startsWith(stepId+'-')).length;
+  const countEl=document.getElementById('ed-stepcount-'+stepId);
+  const btn=document.getElementById('ed-stepbtn-'+stepId);
+  if(countEl){countEl.textContent=count;countEl.classList.toggle('visible',count>0);}
+  if(btn)btn.classList.toggle('has-sel',count>0);
+}
+
+function edUpdateIntercPreview(){
+  const preview=document.getElementById('ed-interc-preview');
+  const tags=document.getElementById('ed-interc-tags');
+  if(!preview||!tags)return;
+  const vals=Object.values(edIntercSelections);
+  if(edIntercSemFlag){
+    preview.style.display='block';
+    tags.innerHTML='<span class="interc-tag">Sem intercorrências</span>';
+  } else if(vals.length>0){
+    preview.style.display='block';
+    tags.innerHTML=vals.map(v=>`<span class="interc-tag">${v.nome}</span>`).join('');
+  } else {
+    preview.style.display='none';
+  }
+}
+
+function edGetIntercValues(){
+  if(edIntercSemFlag)return['Sem intercorrências'];
+  const vals=Object.values(edIntercSelections).map(v=>v.nome);
+  return vals.length?vals:['Sem intercorrências'];
+}
+
+function openEditCirurgia(id){
+  const p=db.find(x=>x.id===id);
+  if(!p)return;
+  editContext=id;
+
+  document.getElementById('edit-modal-title').textContent=
+    p.nome.split(' ')[0]+' — Editar cirurgia';
+
+  document.getElementById('ed-data').value=p.dataCirurgia||'';
+  document.getElementById('ed-orient').value=p.orientacao||'';
+  document.getElementById('ed-lio-poder').value=p.lioPoder||'';
+  document.getElementById('ed-lio-modelo').value=p.lioModelo||'';
+  document.getElementById('ed-cat').value=p.catGrau||'';
+  document.getElementById('ed-obspreop').value=p.obsPreOp||'';
+  document.getElementById('ed-obs-intra').value=p.obsIntra||'';
+
+  ['OD','OE','AO'].forEach(v=>{const el=document.querySelector(`input[name="ed-olho"][value="${v}"]`);if(el)el.checked=p.olho===v;});
+  ['Stop and Chop','Phaco-Chop','Flip-Chop','MSICS','ECCE'].forEach(v=>{const el=document.querySelector(`input[name="ed-tecnica"][value="${v}"]`);if(el)el.checked=p.tecnica===v;});
+  if(!document.querySelector('input[name="ed-tecnica"]:checked'))document.getElementById('et-sc').checked=true;
+  ['Intuitiv','Signature','Faros','Centurion','Outro'].forEach(v=>{const el=document.querySelector(`input[name="ed-aparelho"][value="${v}"]`);if(el)el.checked=p.aparelho===v;});
+  if(!document.querySelector('input[name="ed-aparelho"]:checked'))document.getElementById('ea-sig').checked=true;
+  ['Bloqueio','Sedação','Tópica','Geral'].forEach(v=>{const el=document.querySelector(`input[name="ed-anest"][value="${v}"]`);if(el)el.checked=p.anestesia===v;});
+  if(!document.querySelector('input[name="ed-anest"]:checked'))document.getElementById('ean-bl').checked=true;
+
+  const mental=p.mental||{confianca:3,controle:3,estresse:3};
+  [1,2,3,4,5].forEach(v=>{
+    const ec=document.getElementById('ec'+v);if(ec)ec.checked=mental.confianca===v;
+    const ect=document.getElementById('ect'+v);if(ect)ect.checked=mental.controle===v;
+    const es=document.getElementById('es'+v);if(es)es.checked=mental.estresse===v;
+  });
+  if(!document.querySelector('input[name="ed-conf"]:checked'))document.getElementById('ec3').checked=true;
+  if(!document.querySelector('input[name="ed-ctrl"]:checked'))document.getElementById('ect3').checked=true;
+  if(!document.querySelector('input[name="ed-stress"]:checked'))document.getElementById('es3').checked=true;
+
+  // Inicializa intercorrências com valores existentes
+  initEdInterc(p.intercorrencias||['Sem intercorrências']);
+
+  document.getElementById('edit-modal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+
+function closeEditModal(){
+  document.getElementById('edit-modal').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+  editContext=null;
+}
+
+function salvarEdicao(){
+  if(!editContext)return;
+  const p=db.find(x=>x.id===editContext);
+  if(!p)return;
+
+  p.dataCirurgia=document.getElementById('ed-data').value;
+  p.orientacao=document.getElementById('ed-orient').value.trim();
+  p.lioPoder=document.getElementById('ed-lio-poder').value;
+  p.lioModelo=document.getElementById('ed-lio-modelo').value.trim();
+  p.catGrau=document.getElementById('ed-cat').value.trim();
+  p.obsPreOp=document.getElementById('ed-obspreop').value.trim();
+  p.obsIntra=document.getElementById('ed-obs-intra').value.trim();
+  p.intercorrencias=edGetIntercValues();
+
+  const olhoEl=document.querySelector('input[name="ed-olho"]:checked');if(olhoEl)p.olho=olhoEl.value;
+  const tecEl=document.querySelector('input[name="ed-tecnica"]:checked');if(tecEl)p.tecnica=tecEl.value;
+  const apEl=document.querySelector('input[name="ed-aparelho"]:checked');if(apEl)p.aparelho=apEl.value;
+  const anEl=document.querySelector('input[name="ed-anest"]:checked');if(anEl)p.anestesia=anEl.value;
+
+  const confEl=document.querySelector('input[name="ed-conf"]:checked');
+  const ctrlEl=document.querySelector('input[name="ed-ctrl"]:checked');
+  const stEl=document.querySelector('input[name="ed-stress"]:checked');
+  p.mental=p.mental||{};
+  if(confEl)p.mental.confianca=parseInt(confEl.value);
+  if(ctrlEl)p.mental.controle=parseInt(ctrlEl.value);
+  if(stEl)p.mental.estresse=parseInt(stEl.value);
+
+  save();
+  closeEditModal();
+  renderDetail(editContext);
+}
+
+// ── FILA ─────────────────────────────────────────────────────────
+function updateFilaBadge(){
+  const pending=filaDB.filter(f=>!f.done).length;
+  const badge=document.getElementById('fila-badge');
+  if(pending>0){badge.textContent=pending;badge.style.display='block';}
+  else{badge.style.display='none';}
+}
+
+function renderFila(){
+  const pending=filaDB.filter(f=>!f.done);
+  document.getElementById('fila-sub').textContent=`${pending.length} ${pending.length===1?'paciente indicado':'pacientes indicados'} aguardando cirurgia`;
+  const list=document.getElementById('fila-list');
+  if(pending.length===0){
+    list.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nenhum paciente na fila</div></div>';
+    return;
+  }
+  list.innerHTML=pending.map(ind=>{
+    const p=db.find(x=>x.id===ind.patId);
+    const nome=p?p.nome:'Paciente';
+    const initials=nome.split(' ').filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase();
+    return `<div class="fila-item" id="fila-${ind.id}">
+      <div class="fila-check-wrap">
+        <div class="fila-check" id="fcheck-${ind.id}" onclick="checkFila('${ind.id}')">
+          <svg width="13" height="13" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="fila-body">
+        <div class="fila-name">${nome}</div>
+        <div class="fila-sub">${p?p.idade+'a · ':''}${ind.olho} · Contralateral de ${p?p.olho:'—'}</div>
+        <div class="fila-tags">
+          <span class="badge badge-navy">${ind.grau||'Grau n/d'}</span>
+          <span class="badge ${ind.difficulty==='T2'?'badge-ok':ind.difficulty==='T2xP'?'badge-teal':'badge-warn'}">${ind.difficulty}</span>
+        </div>
+        ${ind.obs?`<div class="fila-obs">${ind.obs}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkFila(indId){
+  const el=document.getElementById('fila-'+indId);
+  const chk=document.getElementById('fcheck-'+indId);
+  chk.classList.add('checked');
+  el.classList.add('done-anim');
+  setTimeout(()=>{
+    const idx=filaDB.findIndex(f=>f.id===indId);
+    if(idx>-1){filaDB[idx].done=true;save();}
+    updateFilaBadge();
+    renderFila();
+  },320);
+}
+
+// ── MODAL INDICAÇÃO ──────────────────────────────────────────────
+function openIndicaModal(patId){
+  const p=db.find(x=>x.id===patId);
+  if(!p)return;
+  indicaContext={patId};
+  const contra=contralateral(p.olho);
+  document.getElementById('indica-modal-title').textContent=`Indicar ${contra} — ${p.nome.split(' ')[0]}`;
+  const odEl=document.getElementById('ind-od');
+  const oeEl=document.getElementById('ind-oe');
+  if(contra==='OD'){odEl.checked=true;}else{oeEl.checked=true;}
+  document.getElementById('ind-grau').value='';
+  document.getElementById('ind-obs').value='';
+  document.getElementById('d-t2').checked=true;
+  document.getElementById('indica-modal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function closeIndicaModal(){
+  document.getElementById('indica-modal').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+  indicaContext=null;
+}
+function salvarIndicacao(){
+  if(!indicaContext)return;
+  const _indOlho=document.querySelector('input[name="ind-olho"]:checked');const olho=_indOlho?_indOlho.value:'OD';
+  const grau=document.getElementById('ind-grau').value.trim();
+  const _indDiff=document.querySelector('input[name="ind-diff"]:checked');const difficulty=_indDiff?_indDiff.value:'T2';
+  const obs=document.getElementById('ind-obs').value.trim();
+  const ind={id:Date.now().toString(),patId:indicaContext.patId,olho,grau,difficulty,obs,done:false,criadoEm:hoje()};
+  filaDB.push(ind);
+  save();
+  updateFilaBadge();
+  closeIndicaModal();
+  renderDetail(indicaContext.patId);
+}
+
+// ── PÓS-OP ───────────────────────────────────────────────────────
+function openPosOp(patId,tipo){
+  posOpContext={patId,tipo};
+  const p=db.find(x=>x.id===patId);
+
+  // Verifica se já há dados registrados (edição)
+  const existing=p&&p.posOps&&p.posOps[tipo];
+
+  document.getElementById('posop-modal-title').textContent=
+    existing?`Editar pós-op · ${tipo}`:`Registrar pós-op · ${tipo}`;
+
+  // Preenche campos — usa dados existentes se houver, senão limpa
+  const fAv=document.getElementById('po-av');
+  const fPio=document.getElementById('po-pio');
+  const fRef=document.getElementById('po-ref');
+  const fObs=document.getElementById('po-obs');
+  const fCond=document.getElementById('po-conduta');
+
+  if(fAv)  fAv.value  = existing?existing.av||'':'';
+  if(fPio) fPio.value = existing?existing.pio||'':'';
+  if(fRef) fRef.value = existing?existing.ref||'':'';
+  if(fObs) fObs.value = existing?existing.obs||'':'';
+  if(fCond)fCond.value= existing?existing.conduta||'':'';
+
+  // CA e córnea
+  const caVal=existing?existing.ca||'Normal':'Normal';
+  const corVal=existing?existing.cornea||'Liso':'Liso';
+  const caEl=document.querySelector(`input[name="po-ca"][value="${caVal}"]`)||
+             document.querySelector('input[name="po-ca"][value="Normal"]');
+  if(caEl) caEl.checked=true;
+  const corEl=document.querySelector(`input[name="po-cor"][value="${corVal}"]`)||
+              document.querySelector('input[name="po-cor"][value="Liso"]');
+  if(corEl) corEl.checked=true;
+
+  // Data da consulta — usa data existente se editando
+  const scContainer=document.getElementById('po-date-shortcuts');
+  const dateInput=document.getElementById('po-data');
+  const dataCirurgia=p?p.dataCirurgia:'';
+  const datas={
+    D1:dataCirurgia?addD1(dataCirurgia):'',
+    D7:dataCirurgia?addDaysSkipWeekend(dataCirurgia,7):'',
+    D30:dataCirurgia?addDaysSkipWeekend(dataCirurgia,30):''
+  };
+  const dataPadrao=existing&&existing.data?existing.data:(datas[tipo]||hoje());
+  dateInput.value=dataPadrao;
+  const atalhos=[
+    {label:`D1 — ${datas.D1?fmtDate(datas.D1):'s/data'}`,value:datas.D1,key:'D1'},
+    {label:`D7 — ${datas.D7?fmtDate(datas.D7):'s/data'}`,value:datas.D7,key:'D7'},
+    {label:`D30 — ${datas.D30?fmtDate(datas.D30):'s/data'}`,value:datas.D30,key:'D30'},
+    {label:'Hoje',value:hoje(),key:'hoje'},
+  ];
+  scContainer.innerHTML=atalhos.map(a=>{
+    const isActive=a.value===dataPadrao;
+    const disabled=!a.value?'style="opacity:0.4;cursor:default"':'';
+    return `<button type="button" class="date-sc${isActive?' active-sc':''}" ${disabled}
+      onclick="${a.value?`setPoDate('${a.value}',this)`:''}">${a.label}</button>`;
+  }).join('');
+  dateInput.oninput=function(){
+    scContainer.querySelectorAll('.date-sc').forEach(b=>b.classList.remove('active-sc'));
+    atalhos.forEach((a,i)=>{if(a.value&&a.value===dateInput.value)scContainer.children[i].classList.add('active-sc');});
+    atualizarProximoLabel();
+  };
+
+  // ── Próximo retorno ───────────────────────────────────────────
+  const proxInput=document.getElementById('po-proximo-data');
+  const proxShorts=document.getElementById('po-proximo-shortcuts');
+  const proxLabel=document.getElementById('po-proximo-label');
+  // Pré-preenche se editando
+  proxInput.value=existing&&existing.proximoRetorno?existing.proximoRetorno:'';
+  atualizarProximoLabel();
+
+  // Determina os atalhos de próximo retorno baseado no tipo atual
+  const proxOpcoes=[];
+  if(tipo==='D1'){
+    proxOpcoes.push({label:'D7',days:7});
+    proxOpcoes.push({label:'D14',days:14});
+    proxOpcoes.push({label:'D30',days:30});
+  } else if(tipo==='D7'){
+    proxOpcoes.push({label:'D14',days:14});
+    proxOpcoes.push({label:'D30',days:30});
+    proxOpcoes.push({label:'D60',days:60});
+  } else if(tipo==='D30'){
+    proxOpcoes.push({label:'3 meses',days:90});
+    proxOpcoes.push({label:'6 meses',days:180});
+    proxOpcoes.push({label:'1 ano',days:365});
+  }
+
+  proxShorts.innerHTML=proxOpcoes.map(op=>{
+    const d=skipWeekend(addDays(dataPadrao,op.days));
+    return `<button type="button" class="date-sc" data-date="${d}"
+      onclick="setProximoDate('${d}',this)">${op.label} — ${fmtDate(d)}</button>`;
+  }).join('');
+
+  proxInput.oninput=function(){
+    proxShorts.querySelectorAll('.date-sc').forEach(b=>b.classList.remove('active-sc'));
+    atualizarProximoLabel();
+  };
+
+  document.getElementById('posop-modal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+
+function setProximoDate(dateStr,btn){
+  document.getElementById('po-proximo-data').value=dateStr;
+  document.getElementById('po-proximo-shortcuts').querySelectorAll('.date-sc').forEach(b=>b.classList.remove('active-sc'));
+  btn.classList.add('active-sc');
+  atualizarProximoLabel();
+}
+
+function atualizarProximoLabel(){
+  const d=document.getElementById('po-proximo-data').value;
+  const lbl=document.getElementById('po-proximo-label');
+  if(!d){lbl.textContent='';return;}
+  const diff=diffDays(d,hoje());
+  if(diff===0)lbl.textContent='Hoje';
+  else if(diff>0)lbl.textContent=`Em ${diff} dia${diff>1?'s':''}`;
+  else lbl.textContent=`${Math.abs(diff)} dia${Math.abs(diff)>1?'s':''} atrás`;
+}
+
+function setPoDate(dateStr,btn){
+  document.getElementById('po-data').value=dateStr;
+  document.getElementById('po-date-shortcuts').querySelectorAll('.date-sc').forEach(b=>b.classList.remove('active-sc'));
+  btn.classList.add('active-sc');
+}
+
+function closeModal(){document.getElementById('posop-modal').classList.remove('open');document.body.classList.remove('no-scroll');}
+
+function salvarPosOp(){
+  if(!posOpContext)return;
+  const{patId,tipo}=posOpContext;
+  const p=db.find(x=>x.id===patId);if(!p)return;
+  const _poCa=document.querySelector('input[name="po-ca"]:checked');
+  const _poCor=document.querySelector('input[name="po-cor"]:checked');
+  const dataRegistro=document.getElementById('po-data').value||hoje();
+  const proximoRetorno=document.getElementById('po-proximo-data').value||'';
+  p.posOps[tipo]={
+    data:dataRegistro,
+    av:document.getElementById('po-av').value,
+    pio:document.getElementById('po-pio').value,
+    ref:document.getElementById('po-ref').value,
+    ca:_poCa?_poCa.value:'',
+    cornea:_poCor?_poCor.value:'',
+    obs:document.getElementById('po-obs').value.trim(),
+    conduta:document.getElementById('po-conduta').value.trim(),
+    proximoRetorno
+  };
+  save();closeModal();
+  if(currentPage==='atrasos'||prevPage==='atrasos'){
+    renderAtrasos();renderHome();
+  } else {
+    renderDetail(patId);
+  }
+}
+
+// ── NOVA CIRURGIA ────────────────────────────────────────────────
+function salvarCirurgia(){
+  const nome=document.getElementById('f-nome').value.trim();
+  if(!nome){alert('Preencha o nome do paciente.');return;}
+  const interc=getIntercValues();
+  const p={id:Date.now().toString(),nome,
+    dataCirurgia:document.getElementById('f-data').value,
+    idade:document.getElementById('f-idade').value,
+    prontuario:document.getElementById('f-pront').value.trim(),
+    telefone:document.getElementById('f-tel').value.trim(),
+    convenio:document.getElementById('f-convenio').value,
+    olho:(document.querySelector('input[name="olho"]:checked')||{}).value||'',
+    tecnica:(document.querySelector('input[name="tecnica"]:checked')||{}).value||'',
+    aparelho:(document.querySelector('input[name="aparelho"]:checked')||{}).value||'',
+    orientacao:document.getElementById('f-orient').value.trim(),
+    anestesia:document.getElementById('f-anest').value,
+    catGrau:document.getElementById('f-cat').value.trim(),
+    obsPreOp:document.getElementById('f-obspreop').value.trim(),
+    lioModelo:document.getElementById('f-lio-modelo').value.trim(),
+    lioPoder:document.getElementById('f-lio-poder').value,
+    lioTipo:document.getElementById('f-lio-tipo').value,
+    lioMat:document.getElementById('f-lio-mat').value,
+    intercorrencias:interc.length?interc:['Sem intercorrências'],
+    obsIntra:document.getElementById('f-obs-intra').value.trim(),
+    mental:{
+      confianca:parseInt((document.querySelector('input[name="m-conf"]:checked')||{value:'3'}).value),
+      controle:parseInt((document.querySelector('input[name="m-ctrl"]:checked')||{value:'3'}).value),
+      estresse:parseInt((document.querySelector('input[name="m-stress"]:checked')||{value:'3'}).value),
+      obs:document.getElementById('f-mental-obs').value.trim()
+    },
+    cirurgiao:getNomeCompleto(),posOps:{}};
+  db.push(p);save();
+  ['f-nome','f-idade','f-pront','f-tel','f-lio-modelo','f-lio-poder','f-obs-intra','f-orient','f-cat','f-obspreop','f-mental-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  initIntercSteps();
+  document.getElementById('mc3').checked=true;
+  document.getElementById('mct3').checked=true;
+  document.getElementById('ms3').checked=true;
+  document.getElementById('f-data').value=hoje();
+  showDetail(p.id);
+}
+
+// ── EXCLUIR ──────────────────────────────────────────────────────
+function deletePaciente(id){
+  if(!confirm('Excluir este registro?'))return;
+  db=db.filter(x=>x.id!==id);
+  filaDB=filaDB.filter(x=>x.patId!==id);
+  save();updateFilaBadge();goPage('pacientes');
+}
+
+// ── ANALYTICS ────────────────────────────────────────────────────
+function mapearComplicacao(texto){
+  if(!texto||texto==='Sem intercorrências')return null;
+  const t=texto.toLowerCase();
+  if(t.includes('rcp')||t.includes('ruptura capsular')||t.includes('cápsula posterior')||t.includes('capsula posterior'))return'Ruptura capsular posterior (RCP)';
+  if(t.includes('vítreo')||t.includes('vitreo')||t.includes('vitrectomia'))return'Perda vítrea / Vitrectomia ant.';
+  if(t.includes('núcleo')||t.includes('nucleo')&&t.includes('caíd'))return'Fragmentos caídos no vítreo';
+  if(t.includes('rhexis')||t.includes('rexis')||t.includes('capsulorrexe')||t.includes('rasgadura'))return'Rasgadura de capsulorrexe';
+  if(t.includes('háptico')||t.includes('haptico'))return'Háptico amputado';
+  if(t.includes('córtex')||t.includes('cortex')||t.includes('cortical'))return'Resto cortical retido';
+  if(t.includes('zonular')||t.includes('zônula'))return'Diálise zonular';
+  if(t.includes('descemet'))return'Descolamento de Descemet';
+  if(t.includes('endotel'))return'Dano endotelial';
+  if(t.includes('ifis')||t.includes('iris flácida')||t.includes('íris flácida')||t.includes('floppy'))return'IFIS — Íris flácida';
+  if(t.includes('miose')||t.includes('pupila fechou')||t.includes('midríase')||t.includes('midriase'))return'Miose intraoperatória';
+  if(t.includes('hifema'))return'Hifema';
+  if(t.includes('hemorragia'))return'Hemorragia';
+  if(t.includes('lio')||t.includes('lente'))return'Intercorrência no implante de LIO';
+  if(t.includes('incisão')||t.includes('incisao'))return'Intercorrência na incisão';
+  if(t.includes('bloqueio capsular'))return'Bloqueio capsular posterior';
+  return texto;
+}
+
+function mentalChartSVG(data){
+  // Filtra cirurgias com mental E data, ordena cronologicamente
+  const pts=data
+    .filter(p=>p.mental&&p.mental.confianca&&p.dataCirurgia)
+    .sort((a,b)=>a.dataCirurgia.localeCompare(b.dataCirurgia));
+  if(pts.length<2) return pts.length===1?
+    '<div style="font-size:0.72rem;color:var(--muted);text-align:center;padding:12px 0">Registre mais cirurgias para ver a evolução</div>':'';
+
+  const W=320,H=140,PL=24,PR=12,PT=12,PB=32;
+  const cW=W-PL-PR, cH=H-PT-PB;
+  const n=pts.length;
+  const xStep=n>1?cW/(n-1):0;
+  const yScale=v=>PT+cH-(((v-1)/4)*cH); // 1-5 → PT+cH..PT
+
+  const colors={conf:'#1a1a2e',ctrl:'#2c5f2e',stress:'#8b0000'};
+  const labels={conf:'Confiança',ctrl:'Controle',stress:'Estresse'};
+  const keys=[['conf','confianca'],['ctrl','controle'],['stress','estresse']];
+
+  // Gera polyline para cada dimensão
+  const lines=keys.map(([k,field])=>{
+    const pts2=pts.map((p,i)=>`${PL+i*xStep},${yScale(p.mental[field])}`).join(' ');
+    return `<polyline points="${pts2}" fill="none" stroke="${colors[k]}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.85"/>`;
+  }).join('');
+
+  // Pontos
+  const dots=keys.map(([k,field])=>
+    pts.map((p,i)=>`<circle cx="${PL+i*xStep}" cy="${yScale(p.mental[field])}" r="3" fill="${colors[k]}" stroke="#fff" stroke-width="1.5"/>`)
+    .join('')
+  ).join('');
+
+  // Labels eixo Y (1,2,3,4,5)
+  const yLabels=[1,2,3,4,5].map(v=>`<text x="${PL-6}" y="${yScale(v)+4}" text-anchor="end" font-size="8" fill="#aaa">${v}</text>`).join('');
+
+  // Labels eixo X — datas simplificadas (dd/mm), só primeiros e últimos se muitos
+  const maxXLabels=Math.min(n,6);
+  const step=n>6?Math.floor(n/5):1;
+  const xIdxs=new Set([0,n-1]);
+  for(let i=step;i<n-1;i+=step)xIdxs.add(i);
+  const xLabels=[...xIdxs].sort((a,b)=>a-b).map(i=>{
+    const d=pts[i].dataCirurgia;
+    const lbl=d?d.slice(8)+'/'+d.slice(5,7):'';
+    return `<text x="${PL+i*xStep}" y="${H-4}" text-anchor="middle" font-size="8" fill="#aaa">${lbl}</text>`;
+  }).join('');
+
+  // Linhas de grade horizontais
+  const grid=[1,2,3,4,5].map(v=>`<line x1="${PL}" x2="${W-PR}" y1="${yScale(v)}" y2="${yScale(v)}" stroke="#eee" stroke-width="1"/>`).join('');
+
+  // Legenda
+  const legend=keys.map(([k,field],i)=>
+    `<g transform="translate(${PL+i*96},${H-2})">
+      <circle cx="5" cy="-2" r="4" fill="${colors[k]}"/>
+      <text x="12" y="2" font-size="8.5" fill="#555" font-weight="600">${labels[k]}</text>
+    </g>`
+  ).join('');
+
+  // Marcadores de intercorrência (estrelinhas vermelhas)
+  const intercMarks=pts.map((p,i)=>
+    hasCompl(p)?`<text x="${PL+i*xStep}" y="${PT-2}" text-anchor="middle" font-size="9" fill="#c0392b" title="Intercorrência">★</text>`:''
+  ).join('');
+
+  return `<div style="overflow-x:auto">
+    <svg viewBox="0 0 ${W} ${H+16}" width="100%" style="max-width:${W}px;display:block;margin:0 auto">
+      ${grid}
+      ${yLabels}
+      ${xLabels}
+      ${lines}
+      ${dots}
+      ${intercMarks}
+      <g transform="translate(0,8)">${legend}</g>
+    </svg>
+    ${pts.some(p=>hasCompl(p))?'<div style="font-size:0.6rem;color:#c0392b;text-align:center;margin-top:2px">★ Cirurgia com intercorrência</div>':''}
+  </div>`;
+}
+
+function renderAnalytics(){
+  const n=db.length;
+  if(n===0){document.getElementById('analytics-content').innerHTML='<div class="empty"><div class="empty-icon">○</div><div class="empty-txt">Nenhuma cirurgia registrada</div></div>';return;}
+  const byApar={},byTec={},byAnest={},bySuperv={};
+  const ages=[];let complCount=0;const complTypes={};
+  let d1Bom=0,d1Interc=0,d1NaoComp=0,odCount=0,oeCount=0;
+  let mConf=[],mCtrl=[],mStress=[];
+  db.forEach(p=>{
+    byApar[p.aparelho]=(byApar[p.aparelho]||0)+1;
+    byTec[p.tecnica]=(byTec[p.tecnica]||0)+1;
+    if(p.olho==='OD')odCount++;else if(p.olho==='OE')oeCount++;
+    if(p.anestesia)byAnest[p.anestesia]=(byAnest[p.anestesia]||0)+1;
+    if(p.idade)ages.push(parseInt(p.idade));
+    if(p.orientacao)bySuperv[p.orientacao]=(bySuperv[p.orientacao]||0)+1;
+    if(hasCompl(p)){
+      complCount++;
+      (p.intercorrencias||[]).forEach(c=>{
+        const mapped=mapearComplicacao(c);
+        if(mapped)complTypes[mapped]=(complTypes[mapped]||0)+1;
+      });
+    }
+    if(p.dataCirurgia){
+      if(p.posOps&&p.posOps.D1){
+        const obs=(p.posOps.D1.cornea||p.posOps.D1.obs||'').toLowerCase();
+        const ca=(p.posOps.D1.ca||'').toLowerCase();
+        const temInterc=obs.includes('edema')||obs.includes('tyndall')||obs.includes('hipópio')||obs.includes('hipopio')||ca.includes('tyndall')||ca.includes('hipópio');
+        if(temInterc)d1Interc++;else d1Bom++;
+      } else {
+        const expD1=addD1(p.dataCirurgia);
+        const diff=diffDays(expD1,hoje());
+        if(diff<0)d1NaoComp++;
+      }
+    }
+    if(p.mental){
+      if(p.mental.confianca)mConf.push(p.mental.confianca);
+      if(p.mental.controle)mCtrl.push(p.mental.controle);
+      if(p.mental.estresse)mStress.push(p.mental.estresse);
+    }
+  });
+  const avg=arr=>arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):'—';
+  const avgAge=ages.length?Math.round(ages.reduce(function(a,b){return a+b;},0)/ages.length):0;
+  var minAge=0,maxAge=0;
+  if(ages.length){
+    minAge=ages[0];maxAge=ages[0];
+    ages.forEach(function(a){if(a<minAge)minAge=a;if(a>maxAge)maxAge=a;});
+  }
+  const cr=Math.round(complCount/n*100);
+  function bars(obj,shade){
+    if(!shade)shade='#0a0a0a';
+    var entries=Object.entries(obj).sort(function(a,b){return b[1]-a[1];});
+    if(!entries.length)return '<div style="font-size:0.82rem;color:var(--muted)">Sem dados</div>';
+    var max=0;entries.forEach(function(e){if(e[1]>max)max=e[1];});
+    return entries.map(function(e){
+      var k=e[0],v=e[1];
+      return '<div class="bar-row"><div class="bar-label">'+k+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(v/max*100)+'%;background:'+shade+'"></div></div><div class="bar-val">'+v+'</div></div>';
+    }).join('');
+  }
+  const pendFila=filaDB.filter(f=>!f.done).length;
+  const byDiff={'T2':0,'T2xP':0,'T3':0};
+  filaDB.filter(f=>!f.done).forEach(f=>{if(byDiff[f.difficulty]!==undefined)byDiff[f.difficulty]++;});
+  function pizzaChart(obj){
+    const entries=Object.entries(obj).sort(function(a,b){return b[1]-a[1];});
+    if(!entries.length)return '';
+    const total=entries.reduce(function(s,e){return s+e[1];},0);
+    const grays=['#0a0a0a','#444','#777','#999','#bbb','#ddd'];
+    var svgSlices='',legendHtml='',angle=0;
+    const cx=80,cy=80,r=70;
+    entries.forEach(function(e,i){
+      var k=e[0],v=e[1];
+      const pct=v/total;
+      const sweep=pct*2*Math.PI;
+      const x1=cx+r*Math.sin(angle),y1=cy-r*Math.cos(angle);
+      const x2=cx+r*Math.sin(angle+sweep),y2=cy-r*Math.cos(angle+sweep);
+      const large=sweep>Math.PI?1:0;
+      const color=grays[i%grays.length];
+      if(entries.length===1){
+        svgSlices+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+color+'"/>';
+      } else {
+        svgSlices+='<path d="M'+cx+','+cy+' L'+x1.toFixed(2)+','+y1.toFixed(2)+' A'+r+','+r+' 0 '+large+',1 '+x2.toFixed(2)+','+y2.toFixed(2)+' Z" fill="'+color+'"/>';
+      }
+      legendHtml+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px"><div style="width:11px;height:11px;border-radius:2px;background:'+color+';flex-shrink:0"></div><div style="font-size:0.7rem;color:var(--text)">'+k+' <span style="color:var(--muted);font-weight:700">('+v+')</span></div></div>';
+      angle+=sweep;
+    });
+    return '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap"><svg width="160" height="160" viewBox="0 0 160 160" style="flex-shrink:0">'+svgSlices+'</svg><div style="flex:1">'+legendHtml+'</div></div>';
+  }
+  document.getElementById('analytics-content').innerHTML=`
+    <div class="analytics-section">
+      <div class="analytics-title">Visão Geral</div>
+      <div class="kpi-row">
+        <div class="kpi-box"><div class="kpi-num">${n}</div><div class="kpi-lbl">Cirurgias</div></div>
+        <div class="kpi-box"><div class="kpi-num">${cr}%</div><div class="kpi-lbl">Complicações</div></div>
+        <div class="kpi-box"><div class="kpi-num">${avgAge}</div><div class="kpi-lbl">Idade média</div></div>
+      </div>
+      <div class="kpi-row" style="margin-top:8px">
+        <div class="kpi-box"><div class="kpi-num">${odCount}</div><div class="kpi-lbl">Olhos Dir.</div></div>
+        <div class="kpi-box"><div class="kpi-num">${oeCount}</div><div class="kpi-lbl">Olhos Esq.</div></div>
+        <div class="kpi-box"><div class="kpi-num">${minAge}–${maxAge}</div><div class="kpi-lbl">Faixa etária</div></div>
+      </div>
+    </div>
+    <div class="analytics-section">
+      <div class="analytics-title">Complicações — ${complCount} caso${complCount!==1?'s':''} (${cr}%)</div>
+      ${complCount===0?'<div style="font-size:0.82rem;color:var(--muted)">Nenhuma complicação registrada</div>':pizzaChart(complTypes)}
+    </div>
+    <div class="analytics-section">
+      <div class="analytics-title">D1 — Resultado Geral</div>
+      ${bars({'Bom':d1Bom,'Com intercorrência':d1Interc,'Não compareceu / não reg.':d1NaoComp},'#555')}
+    </div>
+    ${pendFila>0?`<div class="analytics-section">
+      <div class="analytics-title">Fila Cirúrgica</div>
+      <div class="kpi-row">
+        <div class="kpi-box"><div class="kpi-num">${pendFila}</div><div class="kpi-lbl">Na fila</div></div>
+        <div class="kpi-box"><div class="kpi-num">${byDiff['T2']}</div><div class="kpi-lbl">T2</div></div>
+        <div class="kpi-box"><div class="kpi-num">${byDiff['T2xP']+byDiff['T3']}</div><div class="kpi-lbl">T2xP/T3</div></div>
+      </div>
+    </div>`:''}
+    <div class="analytics-section"><div class="analytics-title">Por Aparelho</div>${bars(byApar)}</div>
+    <div class="analytics-section"><div class="analytics-title">Por Técnica</div>${bars(byTec,'#333')}</div>
+    <div class="analytics-section"><div class="analytics-title">Por Anestesia</div>${bars(byAnest,'#666')}</div>
+    <div class="analytics-section"><div class="analytics-title">Por Supervisor / Orientação</div>${bars(bySuperv,'#444')}</div>
+    ${mConf.length>0?`<div class="analytics-section">
+      <div class="analytics-title">Mental — ${mConf.length} cirurgia${mConf.length>1?'s':''} registrada${mConf.length>1?'s':''}</div>
+      <div class="kpi-row" style="margin-bottom:16px">
+        <div class="kpi-box"><div class="kpi-num">${avg(mConf)}</div><div class="kpi-lbl">Confiança</div></div>
+        <div class="kpi-box"><div class="kpi-num">${avg(mCtrl)}</div><div class="kpi-lbl">Controle</div></div>
+        <div class="kpi-box"><div class="kpi-num">${avg(mStress)}</div><div class="kpi-lbl">Estresse</div></div>
+      </div>
+      ${mentalChartSVG(db)}
+    </div>`:''}`;
+}
+
+// ── MAPA CIRÚRGICO (PARSER OFFLINE) ─────────────────────────────
+let mapaData=null;
+
+function initMapaPage(){
+  if(mapaData){ renderMapaChecklist(); }
+  else {
+    document.getElementById('mapa-upload-area').style.display='block';
+    document.getElementById('mapa-checklist-area').style.display='none';
+  }
+}
+
+function resetarMapa(){
+  mapaData=null;
+  const ta=document.getElementById('mapa-textarea');
+  if(ta){ ta.value=''; ta.style.display=''; }
+  const err=document.getElementById('mapa-error');
+  if(err) err.style.display='none';
+  // Restore upload area elements
+  document.querySelectorAll('#mapa-upload-area .field, #mapa-upload-area .btn, #mapa-upload-area .mapa-hint').forEach(el=>el.style.display='');
+  document.getElementById('mapa-upload-area').style.display='block';
+  document.getElementById('mapa-checklist-area').style.display='none';
+}
+
+// ── Parser offline ───────────────────────────────────────────────
+function toNum(s){ return s!=null?parseFloat(String(s).replace(',','.')):null; }
+
+function extractBiometry(src){
+  const res={};
+  const alM=src.match(/\bAL\s+(\d{2}[.,]\d{2,3})/); if(alM) res.axialLength=toNum(alM[1]);
+  const acM=src.match(/\bAC\s+(\d[.,]\d{2,3})/); if(acM) res.ac=toNum(acM[1]);
+  const kM=src.match(/(\d{2}[.,]\d{2,3})\s*(?:[Aa]\s*\d{1,3}\s*)?[Xx]\s*(\d{2}[.,]\d{2,3})/);
+  if(kM){ res.keratoD1=toNum(kM[1]); res.keratoD2=toNum(kM[2]); }
+  if(!res.axialLength&&kM){
+    const after=src.slice(src.indexOf(kM[0])+kM[0].length).replace(/[Aa]\s*\d{1,3}/g,' ');
+    const nums=after.match(/\b(\d{2}[.,]\d{2,3})\b/g);
+    if(nums){ res.axialLength=toNum(nums[0]); if(nums[1]){const v=toNum(nums[1]);if(v<6)res.ac=v;} }
+  }
+  return res;
+}
+
+function parseMapa(rawText){
+  const result={dataCirurgia:'',pacientes:[]};
+
+  // Data
+  const dm=rawText.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+  if(dm) result.dataCirurgia=`${dm[3]}-${dm[2]}-${dm[1]}`;
+
+  // ── Divide por "Nome LENTE RxD AV Ceratometria AL AC LIO" ──────
+  const blocos=rawText.split(/Nome\s+LENTE\s+RxD\s+AV\s+Ceratometria\s+AL\s+AC\s+LIO/i).slice(1);
+  if(!blocos.length) return result;
+
+  // Linhas do texto completo para busca de dificuldade por contexto
+  const allLines=rawText.split(/\r?\n/).map(l=>l.replace(/\s+/g,' ').trim()).filter(Boolean);
+
+  for(let bIdx=0;bIdx<blocos.length;bIdx++){
+    const bloco=blocos[bIdx];
+    const lines=bloco.split(/\r?\n/)
+      .map(l=>l.replace(/\s+/g,' ').trim())
+      .filter(Boolean);
+    if(!lines.length) continue;
+
+    const p={};
+
+    // ── Nome: primeira linha com 2+ palavras maiúsculas ───────────
+    const stopName=/^(CAT|CATARATA|LIO|TOPICA|TÓPICA|TOTAL|NMRX|PSF|COM|SCP|CP\d|N\d[-+]?$|CA\d|NO$|EM$|NA$|NOS$)/i;
+    // Partículas aceitas no meio do nome
+    const particulas=/^(DE|DA|DO|DOS|DAS|E)$/i;
+
+    let nomeLine='', nomeIdx=-1;
+    for(let i=0;i<Math.min(lines.length,4);i++){
+      const l=lines[i];
+      if(/^(T2|T3|AT\s+TELEFONE|TARDE|MANHÃ|DATA\s+CONFIRM|LIO:|AVISO|^OK\s|^Não\s*OK|CHEGAR|LIO:\s)/i.test(l)) continue;
+      const words=l.split(/\s+/);
+      const caps=[];
+      for(const w of words){
+        if(/^[A-ZÁÉÍÓÚÀÂÊÎÔÛÃÕÇDE]{2,}$/.test(w)&&!stopName.test(w)) caps.push(w);
+        else if(particulas.test(w)&&caps.length>0) caps.push(w); // aceita partícula no meio
+        else break;
+      }
+      if(caps.filter(w=>!particulas.test(w)).length>=2){nomeLine=l;nomeIdx=i;break;}
+    }
+    if(!nomeLine) continue;
+
+    // Extrai nome — para quando encontra termo técnico ou número
+    const nw=[];
+    for(const w of nomeLine.split(/\s+/)){
+      if(!w) continue;
+      if(stopName.test(w)||/^\d/.test(w)||/^[-+]\d/.test(w)) break;
+      if(/^[A-ZÁÉÍÓÚÀÂÊÎÔÛÃÕÇDE]{2,}$/.test(w)||particulas.test(w)) nw.push(w.toUpperCase());
+      else break;
+    }
+    // Remove partícula solta no final
+    while(nw.length&&particulas.test(nw[nw.length-1])) nw.pop();
+    if(nw.filter(w=>!particulas.test(w)).length<2) continue;
+    p.nome=nw.join(' ');
+
+    // ── Grau da catarata ─────────────────────────────────────────
+    const catM=nomeLine.match(/\b(TOTAL\s+BRANCA|(?:N\d+[-+]?\+?\s*|CA\d+\s*|SCP\d*[-+]*\s*|CP\d*\s*)+)/i);
+    if(catM&&catM[1].trim().length>2) p.catGrau=catM[1].trim().replace(/\s+/g,' ').toUpperCase();
+
+    // ── Biometria da linha do nome ────────────────────────────────
+    const kM=nomeLine.match(/(\d{2}[.,]\d{2})\s*(?:[Aa°×xX]\s*\d{0,3}\s*)?[Xx×]\s*(\d{2}[.,]\d{2})/);
+    if(kM){p.keratoD1=toNum(kM[1]);p.keratoD2=toNum(kM[2]);}
+    const alM=nomeLine.match(/\bAL\s+(\d{2}[.,]\d{2})/i); if(alM) p.axialLength=toNum(alM[1]);
+    const acM=nomeLine.match(/\bAC\s+(\d[.,]\d{2})/i); if(acM) p.ac=toNum(acM[1]);
+    if(!p.axialLength&&kM){
+      const after=nomeLine.slice(nomeLine.indexOf(kM[0])+kM[0].length).replace(/[Aa°×]\s*\d{1,3}/g,' ');
+      const nums=after.match(/\b(\d{2}[.,]\d{2})\b/g);
+      if(nums){p.axialLength=toNum(nums[0]);if(nums[1]){const v=toNum(nums[1]);if(v<6)p.ac=v;}}
+    }
+
+    // ── LIO poder ────────────────────────────────────────────────
+    // Último número +/-XX,XX na linha do nome
+    const lpAll=[...nomeLine.matchAll(/\bLIO\s+([+-]?\d{1,2}[.,]\d{2})/gi)];
+    if(lpAll.length) p.lioPoder=Math.abs(toNum(lpAll[lpAll.length-1][1]));
+    else {
+      const lpEnd=nomeLine.match(/([+-]\d{1,2}[.,]\d{2})\s*$/);
+      if(lpEnd) p.lioPoder=Math.abs(toNum(lpEnd[1]));
+    }
+    // Fallback: linha "LIO: +XX,XX"
+    if(!p.lioPoder){
+      const lioHdrLine=lines.find(l=>/^LIO:\s*[+-]?\d/i.test(l));
+      if(lioHdrLine){const hm=lioHdrLine.match(/([+-]?\d{1,2}[.,]\d{2})/);if(hm)p.lioPoder=Math.abs(toNum(hm[1]));}
+    }
+
+    // ── AV pré-op ─────────────────────────────────────────────────
+    const avSrc=nomeLine;
+    const avM=avSrc.match(/\b(CD\s*\d+\s*[CcMm]{1,2}|MM|PL\+?|SPL|NMRX|20\/\d+[A-Za-z]?)\b/i);
+    if(avM) p.avPreOp=avM[1].replace(/\s+/g,'').toUpperCase();
+
+    // ── Dificuldade ───────────────────────────────────────────────
+    // Tenta achar T2/T2XP/T3 nas linhas do bloco (após o nome)
+    // e também nas linhas anteriores ao "Nome LENTE" no texto completo
+    p.dificuldade='T2';
+    let difFound=false;
+    // 1. Dentro do bloco (após o nome)
+    for(let i=nomeIdx+1;i<Math.min(lines.length,nomeIdx+4);i++){
+      const lu=lines[i].toUpperCase().trim();
+      const mDif=lu.match(/^(?:(?:OD|OE)\s+)?(T2XP|T2\s*XP|T2|T3)$/);
+      if(mDif){p.dificuldade=mDif[1].replace(/\s/g,'');difFound=true;break;}
+    }
+    // 2. Antes deste bloco no texto completo — acha a posição do nome e olha para trás
+    if(!difFound&&nomeLine){
+      const nomeFirst=nomeLine.split(/\s+/).slice(0,2).join(' ');
+      let nli=-1;
+      for(let i=0;i<allLines.length;i++){
+        if(allLines[i].indexOf(nomeFirst)>=0){nli=i;break;}
+      }
+      if(nli>0){
+        for(let i=nli-1;i>=Math.max(0,nli-8);i--){
+          const lu=allLines[i].toUpperCase().trim();
+          // Aceita "OD T2XP", "OE T2", "T3" etc — exclui "EX DE LIO" e outros
+          if(/^(EX\s+DE\s+LIO|TARDE|MANHÃ|MANHA|DATA|LIO:|AVISO|OK\s)/i.test(allLines[i])) continue;
+          const mDif=lu.match(/^(?:(?:OD|OE)\s+)?(T2XP|T2\s*XP|T2|T3)$/);
+          if(mDif){p.dificuldade=mDif[1].replace(/\s/g,'');break;}
+        }
+      }
+    }
+
+    // ── Linha AT TELEFONE ─────────────────────────────────────────
+    // AT TELEFONE pode ter prefixo OE/OD (ex: 'OE AT TELEFONE Idade ...')
+    const atLine=lines.find(l=>/^(?:OE\s+|OD\s+)?AT\s+TELEFONE\s+Idade/i.test(l))||'';
+    if(atLine){
+      const semAT=atLine.replace(/^(?:OE\s+|OD\s+)?AT\s+TELEFONE\s+Idade\s*/i,'');
+      const pm=semAT.match(/^(\d{6,8})\b/); if(pm) p.prontuario=pm[1];
+      const tm=semAT.match(/(\(?\d{2}\)?\s*\d{4,5}[-\s]?\d{3,4})/); if(tm) p.telefone=tm[1].replace(/\s/g,'');
+      if(/\bOD\b/.test(atLine)) p.olho='OD';
+      else if(/\bOE\b/.test(atLine)) p.olho='OE';
+      // Também tenta a linha de dados do prontuário (linha após AT TELEFONE)
+      if(!p.olho){
+        const atDataIdx=lines.indexOf(atLine);
+        if(atDataIdx>=0&&atDataIdx+1<lines.length){
+          const next=lines[atDataIdx+1];
+          if(/\bOD\b/.test(next)) p.olho='OD';
+          else if(/\bOE\b/.test(next)) p.olho='OE';
+        }
+      }
+
+      // Idade: remove prontuário, telefones, keratometria, ângulos, pega 18-99
+      let semNum=semAT
+        .replace(/^\d{6,8}\s*/,'')                    // prontuário
+        .replace(/\(?\d{2}\)?\s*\d{4,5}[-\s\/]?\d{3,5}/g,' ') // telefones
+        .replace(/[A@]\s*\d{1,3}[°]?/g,' ')          // ângulos (A 96, @ 79)
+        .replace(/\d{2}[.,]\d{2,3}/g,' ')             // decimais (kerato, AL, AC)
+        .replace(/\d{3,}/g,' ');                       // números longos restantes
+      const nums=(semNum.match(/\b(\d{2})\b/g)||[]);
+      for(const n of nums){const v=parseInt(n);if(v>=18&&v<=99){p.idade=v;break;}}
+
+      // Biometria fallback da linha AT
+      if(!p.keratoD1){
+        const kM2=atLine.match(/(\d{2}[.,]\d{2})\s*(?:[Aa°×xX]\s*\d{0,3}\s*)?[Xx×]\s*(\d{2}[.,]\d{2})/);
+        if(kM2){p.keratoD1=toNum(kM2[1]);p.keratoD2=toNum(kM2[2]);}
+      }
+
+      // LIO modelo da linha AT header: palavras antes do número do prontuário ou após Idade
+      if(!p.lioModelo){
+        const atHeader=atLine.replace(/^AT\s+TELEFONE\s+Idade\s*/i,'');
+        const skipW=/^(AT|TELEFONE|Idade|CHEGAR|SEDACAO|LIO|OD|OE|Exames|Agendado|por|Não|OK|Observações|\d)/i;
+        const modW=atHeader.split(/\s+/).filter(w=>w.length>=3&&/^[A-Za-záéíóúÁÉÍÓÚ]/.test(w)&&!skipW.test(w));
+        if(modW.length) p.lioModelo=modW.slice(0,2).join(' ').toUpperCase();
+      }
+    }
+
+    // Fallback olho: linha de Exames Agendado ou linha de prontuário
+    if(!p.olho){
+      for(const l of lines){
+        if(/OD/.test(l)&&!/^(OK|Não)/i.test(l)){p.olho='OD';break;}
+        if(/OE/.test(l)&&!/^(OK|Não)/i.test(l)){p.olho='OE';break;}
+      }
+    }
+
+    // ── Supervisor + obs ──────────────────────────────────────────
+    const obsLine=lines.find(l=>/^(OK|Não\s*OK|NAO\s*OK)\s+/i.test(l))||'';
+    if(obsLine){
+      const afterOk=obsLine.replace(/^(Não\s*OK|NAO\s*OK|OK)\s+/i,'');
+      const semNome=afterOk.replace(/\s*Nome\s+LENTE.*$/i,'');
+      const avIdx=semNome.toUpperCase().lastIndexOf('AVISO');
+      const content=avIdx>=0?semNome.slice(0,avIdx).trim():semNome.replace(/\s*(Aviso\s*ok)\s*$/i,'').trim();
+      const clinico=/^(SEDAÇ|GLAUC|MIDRI|ALTA\s|DERMA|COLAB|TÓPIC|TOPIC|BRANC|ORBIT|CERAT|PAQUI|OCLU|SUSPE|POS-|TOTAL|TREC|NUBU|AAS|RDP|AVAN|HIPER|PARAL|TANS|MIOP|DURA|BOA|ALTA\s)/i;
+      const fc=content.indexOf(',');
+      const fslash=content.indexOf('/');
+      const fstop=fc>=0?fc:(fslash>=0?fslash:content.length);
+      let supCand=content.slice(0,fstop).trim();
+      const supWords=supCand.split(/\s+/).filter(w=>w.length>1&&!/\d/.test(w)&&!clinico.test(w)&&w!=='F.'||w==='F.');
+      if(supWords.length>=1&&supWords.length<=4&&supCand.length<=35) p.orientacao=supWords.join(' ');
+      if(p.orientacao){
+        const os=content.indexOf(p.orientacao)+p.orientacao.length;
+        p.obsPreOp=content.slice(os).replace(/^\s*[,\-\/]?\s*/,'').trim();
+      } else p.obsPreOp=content;
+    }
+    // Obs na linha seguinte à AT (quando obs está separada)
+    if(!p.obsPreOp){
+      const atIdx=lines.findIndex(l=>/^AT\s+TELEFONE/i.test(l));
+      if(atIdx>=0&&atIdx+1<lines.length){
+        const nxt=lines[atIdx+1];
+        if(!/^(OK|Não\s*OK|Nome\s+LENTE|T2|T3|LIO:|DATA)/i.test(nxt))
+          p.obsPreOp=nxt.replace(/\s*Nome\s+LENTE.*$/i,'').trim();
+      }
+    }
+
+    // ── Anestesia ─────────────────────────────────────────────────
+    const full=lines.join(' ');
+    if(/SEDAÇ[AÃ]O|SEDACAO/i.test(full)) p.anestesia='Sedação';
+    else if(/T[ÓO]PICA|AAS\/TOPICA/i.test(full)) p.anestesia='Tópica';
+    else p.anestesia='Bloqueio';
+
+    if(p.nome&&p.nome.replace(/\b(DE|DA|DO|DOS|DAS|E)\b/gi,'').trim().split(/\s+/).length>=2)
+      result.pacientes.push(p);
+  }
+
+  return result;
+}
+
+
+function processarMapaTexto(){
+  const ta=document.getElementById('mapa-textarea');
+  const err=document.getElementById('mapa-error');
+  const texto=(ta?ta.value:'').trim();
+  err.style.display='none';
+  if(!texto){ err.textContent='Cole o texto do mapa antes de continuar.'; err.style.display='block'; return; }
+  try{
+    const parsed=parseMapa(texto);
+    if(!parsed.pacientes||!parsed.pacientes.length){
+      err.textContent='Nenhum paciente encontrado. Verifique se o texto contém "DATA CONFIRMADA".';
+      err.style.display='block'; return;
+    }
+    mapaData=parsed;
+    // Hide input area elements
+    ta.style.display='none';
+    document.querySelectorAll('#mapa-upload-area .field, #mapa-upload-area .btn, #mapa-upload-area .mapa-hint').forEach(el=>el.style.display='none');
+    renderMapaChecklist();
+  }catch(e){ err.textContent='Erro ao processar: '+e.message; err.style.display='block'; }
+}
+
+function renderMapaChecklist(){
+  if(!mapaData)return;
+  document.getElementById('mapa-checklist-area').style.display='block';
+  document.getElementById('mapa-data-label').textContent=mapaData.dataCirurgia?fmtDate(mapaData.dataCirurgia):'Data não identificada';
+  const list=document.getElementById('mapa-checklist');
+  const pacs=mapaData.pacientes||[];
+  if(!pacs.length){ list.innerHTML='<div class="empty"><div class="empty-icon">○</div><div class="empty-txt">Nenhum paciente encontrado</div></div>'; return; }
+  list.innerHTML=pacs.map((p,i)=>{
+    const jaExiste=db.some(x=>x.nome&&x.nome.toUpperCase()===p.nome.toUpperCase()&&x.dataCirurgia===(p.dataCirurgia||mapaData.dataCirurgia));
+    const difClass=p.dificuldade==='T2XP'?'mapa-dif-T2XP':p.dificuldade==='T3'?'mapa-dif-T3':'mapa-dif-T2';
+    const info=[p.olho||'',p.catGrau||'',p.lioModelo?(p.lioModelo+(p.lioPoder?' +'+p.lioPoder+'D':'')):p.lioPoder?'+'+p.lioPoder+'D':'',p.anestesia==='Bloqueio'?'':p.anestesia,p.orientacao?'Sup: '+p.orientacao:''].filter(Boolean).join(' · ');
+    if(jaExiste) return `<div class="mapa-item already-exists"><div class="mapa-check"><svg width="11" height="11" fill="none" stroke="#aaa" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="mapa-body"><div class="mapa-nome">${p.nome}</div><div class="mapa-info">${info}</div><div class="mapa-tags"><span class="mapa-dif-badge ${difClass}">${p.dificuldade}</span><span class="mapa-exists-tag">já registrado</span></div></div></div>`;
+    return `<div class="mapa-item" id="mapa-item-${i}" onclick="toggleMapaItem(${i},this)"><div class="mapa-check" id="mapa-check-${i}"><svg width="11" height="11" fill="none" stroke="#fff" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="mapa-body"><div class="mapa-nome">${p.nome}</div><div class="mapa-info">${info}</div>${p.obsPreOp?`<div style="font-size:0.68rem;color:var(--mid);margin-top:4px;font-style:italic">${p.obsPreOp.slice(0,80)}${p.obsPreOp.length>80?'…':''}</div>`:''}<div class="mapa-tags"><span class="mapa-dif-badge ${difClass}">${p.dificuldade}</span>${p.avPreOp?`<span class="mapa-exists-tag">AV: ${p.avPreOp}</span>`:''}${p.axialLength?`<span class="mapa-exists-tag">AL ${p.axialLength}</span>`:''}</div></div></div>`;
+  }).join('');
+  updateMapaImportBar();
+}
+
+function toggleMapaItem(i,el){
+  if(el.classList.contains('already-exists'))return;
+  el.classList.toggle('selected');
+  document.getElementById('mapa-check-'+i).classList.toggle('checked');
+  updateMapaImportBar();
+}
+
+function updateMapaImportBar(){
+  const n=document.querySelectorAll('.mapa-item.selected').length;
+  const bar=document.getElementById('mapa-import-bar');
+  const btn=document.getElementById('mapa-import-btn');
+  if(n>0){ bar.style.display='block'; btn.innerHTML=`<svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Importar ${n} cirurgia${n>1?'s':''} selecionada${n>1?'s':''}`; }
+  else { bar.style.display='none'; }
+}
+
+function importarDoMapa(){
+  if(!mapaData)return;
+  const pacs=mapaData.pacientes||[];
+  const sel=document.querySelectorAll('.mapa-item.selected');
+  const ids=[]; let count=0;
+  sel.forEach(el=>{
+    const idx=parseInt(el.id.replace('mapa-item-',''));
+    const p=pacs[idx]; if(!p)return;
+    const dataCir=p.dataCirurgia||mapaData.dataCirurgia||'';
+
+    const posOps={};
+
+    const novo={
+      id:Date.now().toString()+'_'+idx,
+      nome:p.nome||'',
+      dataCirurgia:dataCir,
+      idade:p.idade?String(p.idade):'',
+      prontuario:p.prontuario||'',
+      telefone:p.telefone||'',
+      convenio:'SUS',
+      olho:p.olho||'OD',
+      tecnica:'Stop and Chop',
+      aparelho:'Signature',
+      orientacao:'',
+      anestesia:p.anestesia||'Bloqueio',
+      catGrau:p.catGrau||'',
+      obsPreOp:p.obsPreOp||'',
+      lioModelo:p.lioModelo||'',
+      lioPoder:p.lioPoder?String(p.lioPoder):'',
+      lioTipo:'Monofocal',
+      lioMat:'Hidrofílico',
+      intercorrencias:['Sem intercorrências'],
+      obsIntra:'',
+      keratoD1:p.keratoD1||null,
+      keratoD2:p.keratoD2||null,
+      axialLength:p.axialLength||null,
+      ac:p.ac||null,
+      avPreOp:p.avPreOp||'',
+      dificuldadeMapa:p.dificuldade||'T2',
+      mental:{confianca:3,controle:3,estresse:3,obs:''},
+      cirurgiao:getNomeCompleto(),
+      posOps,
+      fromMapa:true
+    };
+    db.push(novo); ids.push(novo.id); count++;
+  });
+  if(!count)return;
+  save(); updateFilaBadge();
+  alert(`✓ ${count} cirurgia${count>1?'s':''} importada${count>1?'s':''}!\n\nD1 agendado automaticamente (próximo dia útil).\nPreencha: técnica, aparelho, intercorrências e avaliação mental.`);
+  renderMapaChecklist();
+  if(count===1) showDetail(ids[0]);
+  else goPage('pacientes');
+}
+
+// ── INIT ─────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const d=new Date();
+  document.getElementById('headerDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
+  document.getElementById('f-data').value=hoje();
+  loadDB();renderHome();updateFilaBadge();initIntercSteps();atualizarNomeHeader();
+  document.getElementById('posop-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+  document.getElementById('indica-modal').addEventListener('click',function(e){if(e.target===this)closeIndicaModal();});
+  document.getElementById('reset-modal').addEventListener('click',function(e){if(e.target===this)fecharResetModal();});
+  document.getElementById('edit-modal').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
+  // Mapa page uses paste-text input (no dropzone needed)
+
+  // ── Service Worker (PWA — dados persistem mesmo instalado na tela inicial) ──
+  if('serviceWorker' in navigator){
+    const swCode=`
+const CACHE='cataractcontrol-v1';
+self.addEventListener('install',e=>e.waitUntil(
+  caches.open(CACHE).then(c=>c.addAll(['./',self.location.pathname]))
+));
+self.addEventListener('fetch',e=>e.respondWith(
+  caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+    const clone=res.clone();
+    caches.open(CACHE).then(c=>c.put(e.request,clone));
+    return res;
+  }).catch(()=>caches.match('./')))
+));`;
+    const blob=new Blob([swCode],{type:'application/javascript'});
+    const swUrl=URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(()=>{});
+  }
+
+  // ── Banner: instalar PWA no iOS ──────────────────────────────────
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isStandalone=window.navigator.standalone===true;
+  const jaFechou=localStorage.getItem('pwa_banner_closed');
+  if(isIOS&&!isStandalone&&!jaFechou){
+    const banner=document.createElement('div');
+    banner.id='pwa-banner';
+    banner.innerHTML=`<div style="position:fixed;bottom:80px;left:12px;right:12px;background:#0a0a0a;color:#fff;border-radius:12px;padding:14px 16px;z-index:1000;display:flex;align-items:center;gap:12px;box-shadow:0 4px 20px rgba(0,0,0,0.4)">
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:0.82rem;margin-bottom:2px">Instalar CataractControl</div>
+        <div style="font-size:0.68rem;color:#aaa;line-height:1.4">Para salvar os dados permanentemente, adicione à tela inicial: toque em <b style="color:#fff">⎙ Compartilhar</b> → <b style="color:#fff">Adicionar à Tela de Início</b></div>
+      </div>
+      <button onclick="document.getElementById('pwa-banner').remove();localStorage.setItem('pwa_banner_closed','1')" style="background:none;border:none;color:#666;font-size:1.2rem;cursor:pointer;padding:4px;flex-shrink:0">✕</button>
+    </div>`;
+    document.body.appendChild(banner);
+  }
+});
+</script>
+</body>
+
+<!-- MENU BOTÃO FLUTUANTE -->
+<div id="fab-menu-overlay" onclick="closeFabMenu()" style="display:none;position:fixed;inset:0;z-index:498;background:transparent"></div>
+<div id="fab-panel" style="display:none;position:fixed;bottom:80px;right:16px;z-index:499;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.18);padding:8px 0;min-width:200px;border:1px solid #eee">
+  <!-- Importar -->
+  <button onclick="importarDados();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⬆</span>
+    Importar backup
+  </button>
+  <!-- Exportar -->
+  <button onclick="exportarDados();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⬇</span>
+    Exportar backup
+  </button>
+  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
+  <!-- Análise PDF -->
+  <button onclick="exportarAnalise();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#2c3e7a;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#eef0f8;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📄</span>
+    Análise em PDF
+  </button>
+  <!-- Excel -->
+  <button onclick="exportarExcel();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#1a7a4a;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#eef8f2;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📊</span>
+    Exportar para Excel
+  </button>
+  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
+  <!-- Excluir tudo -->
+  <button onclick="mostrarResetConfirm();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#c0392b;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#fdf0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🗑</span>
+    Excluir tudo
+  </button>
+</div>
+<button id="fab-btn" onclick="toggleFabMenu()" style="position:fixed;bottom:80px;right:16px;z-index:500;width:52px;height:52px;border-radius:50%;background:#0a0a0a;color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;transition:transform 0.2s">
+  <svg id="fab-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<!-- MODAL RESET -->
+<div class="modal-overlay" id="reset-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:#c0392b">Resetar todos os dados</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-bottom:18px;line-height:1.5">Esta ação apaga <strong style="color:var(--black)">todas as cirurgias, pós-ops e fila cirúrgica</strong> permanentemente. Não pode ser desfeita.<br><br>Recomendado: faça um backup (⬇) antes de continuar.</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-outline" onclick="fecharResetModal()" style="flex:1">Cancelar</button>
+      <button class="btn" onclick="resetarTudo()" style="flex:1;background:#c0392b;color:#fff">Apagar tudo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function mentalChartSVGExport(data){
+  const pts=data
+    .filter(p=>p.mental&&p.mental.confianca&&p.dataCirurgia)
+    .sort((a,b)=>a.dataCirurgia.localeCompare(b.dataCirurgia));
+  if(pts.length<2) return '<p style="font-size:0.75rem;color:#999;text-align:center">Dados insuficientes para gerar gráfico</p>';
+
+  const W=560,H=180,PL=28,PR=16,PT=16,PB=40;
+  const cW=W-PL-PR,cH=H-PT-PB;
+  const n=pts.length;
+  const xStep=n>1?cW/(n-1):0;
+  const yScale=v=>PT+cH-(((v-1)/4)*cH);
+  const colors=['#1a1a2e','#2c5f2e','#8b0000'];
+  const fields=['confianca','controle','estresse'];
+  const labels=['Confiança','Controle','Estresse'];
+
+  const grid=[1,2,3,4,5].map(v=>`<line x1="${PL}" x2="${W-PR}" y1="${yScale(v)}" y2="${yScale(v)}" stroke="#eee" stroke-width="1"/>`).join('');
+  const yLbls=[1,2,3,4,5].map(v=>`<text x="${PL-5}" y="${yScale(v)+3}" text-anchor="end" font-size="9" fill="#bbb">${v}</text>`).join('');
+
+  const step=n>8?Math.ceil(n/7):1;
+  const xIdxs=new Set([0,n-1]);for(let i=step;i<n-1;i+=step)xIdxs.add(i);
+  const xLbls=[...xIdxs].sort((a,b)=>a-b).map(i=>{
+    const d=pts[i].dataCirurgia||'';
+    const lbl=d?d.slice(8)+'/'+d.slice(5,7):'';
+    return `<text x="${PL+i*xStep}" y="${H-6}" text-anchor="middle" font-size="9" fill="#bbb">${lbl}</text>`;
+  }).join('');
+
+  const lines=fields.map((f,k)=>{
+    const pstr=pts.map((p,i)=>`${PL+i*xStep},${yScale(p.mental[f])}`).join(' ');
+    return `<polyline points="${pstr}" fill="none" stroke="${colors[k]}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }).join('');
+
+  const dots=fields.map((f,k)=>
+    pts.map((p,i)=>`<circle cx="${PL+i*xStep}" cy="${yScale(p.mental[f])}" r="3.5" fill="${colors[k]}" stroke="#fff" stroke-width="1.5"/>`)
+    .join('')
+  ).join('');
+
+  const intercMarks=pts.map((p,i)=>{
+    const hasC=(p.intercorrencias||[]).some(c=>c&&c!=='Sem intercorrências');
+    return hasC?`<text x="${PL+i*xStep}" y="${PT-3}" text-anchor="middle" font-size="10" fill="#c0392b">★</text>`:'';
+  }).join('');
+
+  const legendY=H+12;
+  const legend=fields.map((f,k)=>`<g transform="translate(${k*140},0)"><circle cx="7" cy="7" r="5" fill="${colors[k]}"/><text x="16" y="11" font-size="10" fill="#444" font-weight="600">${labels[k]}</text></g>`).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H+24}" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:${W}px;display:block;margin:0 auto">
+    ${grid}${yLbls}${xLbls}${lines}${dots}${intercMarks}
+    <g transform="translate(${PL},${legendY})">${legend}</g>
+  </svg>
+  ${pts.some(p=>(p.intercorrencias||[]).some(c=>c&&c!=='Sem intercorrências'))?'<p style="font-size:9px;color:#c0392b;text-align:center;margin-top:4px">★ Cirurgia com intercorrência</p>':''}`;
+}
+
+function exportarAnalise(){
+  if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
+
+  // Coleta os mesmos dados do renderAnalytics
+  const n=db.length;
+  const byApar={},byTec={},byAnest={},bySuperv={};
+  const ages=[];let complCount=0;const complTypes={};
+  let d1Bom=0,d1Interc=0,d1NaoComp=0,odCount=0,oeCount=0;
+  let mConf=[],mCtrl=[],mStress=[];
+  const h=hoje();
+  db.forEach(p=>{
+    byApar[p.aparelho]=(byApar[p.aparelho]||0)+1;
+    byTec[p.tecnica]=(byTec[p.tecnica]||0)+1;
+    if(p.olho==='OD')odCount++;else if(p.olho==='OE')oeCount++;
+    if(p.anestesia)byAnest[p.anestesia]=(byAnest[p.anestesia]||0)+1;
+    if(p.idade)ages.push(parseInt(p.idade));
+    if(p.orientacao)bySuperv[p.orientacao]=(bySuperv[p.orientacao]||0)+1;
+    if(hasCompl(p)){
+      complCount++;
+      (p.intercorrencias||[]).forEach(c=>{const m=mapearComplicacao(c);if(m)complTypes[m]=(complTypes[m]||0)+1;});
+    }
+    if(p.dataCirurgia){
+      if(p.posOps&&p.posOps.D1){
+        const obs=(p.posOps.D1.cornea||p.posOps.D1.obs||'').toLowerCase();
+        const ca=(p.posOps.D1.ca||'').toLowerCase();
+        if(obs.includes('edema')||obs.includes('tyndall')||obs.includes('hipópio')||obs.includes('hipopio')||ca.includes('tyndall'))d1Interc++;else d1Bom++;
+      } else {if(diffDays(addD1(p.dataCirurgia),h)<0)d1NaoComp++;}
+    }
+    if(p.mental){
+      if(p.mental.confianca)mConf.push(p.mental.confianca);
+      if(p.mental.controle)mCtrl.push(p.mental.controle);
+      if(p.mental.estresse)mStress.push(p.mental.estresse);
+    }
+  });
+  const avg=arr=>arr.length?(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1):'—';
+  const avgAge=ages.length?Math.round(ages.reduce((a,b)=>a+b,0)/ages.length):0;
+  const minAge=ages.length?Math.min(...ages):0;
+  const maxAge=ages.length?Math.max(...ages):0;
+  const cr=n>0?Math.round(complCount/n*100):0;
+  const pct=(v,t)=>t>0?Math.round(v/t*100):0;
+
+  const tableRows=(obj,total)=>Object.entries(obj)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([k,v])=>`<tr><td>${k||'—'}</td><td style="text-align:right;font-weight:700">${v}</td><td style="text-align:right;color:#666">${pct(v,total)}%</td></tr>`)
+    .join('');
+
+  const dataHoje=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  const html=`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Análise Cirúrgica — ${getNomeCompleto()}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#111;background:#fff;padding:32px;max-width:700px;margin:0 auto}
+  h1{font-size:1.3rem;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px}
+  .sub{font-size:0.75rem;color:#666;margin-bottom:28px}
+  h2{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:14px;margin-top:28px}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+  .kpi{background:#f5f5f5;border-radius:8px;padding:14px 12px;text-align:center}
+  .kpi-n{font-size:1.6rem;font-weight:900;line-height:1}
+  .kpi-l{font-size:0.62rem;color:#666;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:0.82rem}
+  td,th{padding:7px 10px;border-bottom:1px solid #eee}
+  th{font-size:0.6rem;text-transform:uppercase;letter-spacing:0.5px;color:#666;font-weight:700}
+  tr:last-child td{border-bottom:none}
+  .compl-item{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;font-size:0.82rem}
+  .compl-item:last-child{border:none}
+  .footer{margin-top:40px;font-size:0.65rem;color:#aaa;text-align:center}
+  @media print{body{padding:16px}.print-btn{display:none!important}}
+</style>
+</head>
+<body>
+<button class="print-btn" onclick="window.print()" style="position:fixed;top:16px;right:16px;background:#0a0a0a;color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:0.8rem;font-weight:700;cursor:pointer;z-index:99">
+  🖨 Imprimir / Salvar PDF
+</button>
+<h1>${getNomeCompleto()} — Análise Cirúrgica</h1>
+<div class="sub">Gerado em ${dataHoje} · ${n} cirurgia${n!==1?'s':''} registrada${n!==1?'s':''}</div>
+
+<h2>Visão Geral</h2>
+<div class="kpis">
+  <div class="kpi"><div class="kpi-n">${n}</div><div class="kpi-l">Cirurgias</div></div>
+  <div class="kpi"><div class="kpi-n">${cr}%</div><div class="kpi-l">Complicações</div></div>
+  <div class="kpi"><div class="kpi-n">${avgAge}</div><div class="kpi-l">Idade média</div></div>
+</div>
+<div class="kpis" style="margin-top:8px">
+  <div class="kpi"><div class="kpi-n">${odCount}</div><div class="kpi-l">Olhos Dir.</div></div>
+  <div class="kpi"><div class="kpi-n">${oeCount}</div><div class="kpi-l">Olhos Esq.</div></div>
+  <div class="kpi"><div class="kpi-n">${minAge}–${maxAge}</div><div class="kpi-l">Faixa etária</div></div>
+</div>
+
+<h2>Complicações — ${complCount} caso${complCount!==1?'s':''} (${cr}%)</h2>
+${complCount===0?'<p style="font-size:0.82rem;color:#666">Nenhuma complicação registrada.</p>':
+`<table><thead><tr><th>Intercorrência</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+${tableRows(complTypes,complCount)}
+</tbody></table>`}
+
+<h2>D1 — Resultado Geral</h2>
+<table><thead><tr><th>Resultado</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+<tr><td>Bom</td><td style="text-align:right;font-weight:700">${d1Bom}</td><td style="text-align:right;color:#666">${pct(d1Bom,n)}%</td></tr>
+<tr><td>Com intercorrência</td><td style="text-align:right;font-weight:700">${d1Interc}</td><td style="text-align:right;color:#666">${pct(d1Interc,n)}%</td></tr>
+<tr><td>Não compareceu / não registrado</td><td style="text-align:right;font-weight:700">${d1NaoComp}</td><td style="text-align:right;color:#666">${pct(d1NaoComp,n)}%</td></tr>
+</tbody></table>
+
+<h2>Por Aparelho</h2>
+<table><thead><tr><th>Aparelho</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+${tableRows(byApar,n)}
+</tbody></table>
+
+<h2>Por Técnica</h2>
+<table><thead><tr><th>Técnica</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+${tableRows(byTec,n)}
+</tbody></table>
+
+<h2>Por Anestesia</h2>
+<table><thead><tr><th>Anestesia</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+${tableRows(byAnest,n)}
+</tbody></table>
+
+<h2>Por Supervisor / Orientação</h2>
+<table><thead><tr><th>Supervisor</th><th style="text-align:right">Casos</th><th style="text-align:right">%</th></tr></thead><tbody>
+${tableRows(bySuperv,n)}
+</tbody></table>
+
+${mConf.length>0?`<h2>Avaliação Mental</h2>
+<table><thead><tr><th>Dimensão</th><th style="text-align:right">Média</th><th style="text-align:right">Registros</th></tr></thead><tbody>
+<tr><td>Confiança</td><td style="text-align:right;font-weight:700">${avg(mConf)}/5</td><td style="text-align:right;color:#666">${mConf.length}</td></tr>
+<tr><td>Controle</td><td style="text-align:right;font-weight:700">${avg(mCtrl)}/5</td><td style="text-align:right;color:#666">${mCtrl.length}</td></tr>
+<tr><td>Estresse</td><td style="text-align:right;font-weight:700">${avg(mStress)}/5</td><td style="text-align:right;color:#666">${mStress.length}</td></tr>
+</tbody></table>
+<div style="margin-top:20px">${mentalChartSVGExport(db)}</div>`:''}
+
+<div class="footer">CataractControl · ${dataHoje}</div>
+</body></html>`;
+
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const win=window.open(url,'_blank');
+  // Auto-trigger print dialog after page loads
+  if(win){
+    win.onload=function(){
+      setTimeout(()=>{win.print();},400);
+    };
+  }
+  setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+function toggleFabMenu(){
+  const panel=document.getElementById('fab-panel');
+  const overlay=document.getElementById('fab-menu-overlay');
+  const btn=document.getElementById('fab-btn');
+  const open=panel.style.display==='block';
+  panel.style.display=open?'none':'block';
+  overlay.style.display=open?'none':'block';
+  btn.style.transform=open?'':'rotate(90deg)';
+}
+function closeFabMenu(){
+  document.getElementById('fab-panel').style.display='none';
+  document.getElementById('fab-menu-overlay').style.display='none';
+  document.getElementById('fab-btn').style.transform='';
+}
+
+function exportarExcel(){
+  if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
+  // Gera CSV com BOM para Excel abrir corretamente com acentos
+  const bom='\uFEFF';
+  const sep=';';
+  const headers=['Nome','Data Cirurgia','Olho','Técnica','Aparelho','Anestesia','Supervisor','Grau/Cat','LIO Poder (D)','LIO Modelo',
+    'AV pré-op','K1','K2','AL','AC','Dificuldade','Intercorrências','Obs Intraop',
+    'D1 Data','D1 AV','D1 PIO','D1 Córnea','D1 CA','D1 Obs',
+    'D7 Data','D7 AV','D7 PIO','D7 Córnea',
+    'D30 Data','D30 AV','D30 PIO','D30 Córnea',
+    'Confiança','Controle','Estresse'];
+
+  const esc=v=>{
+    if(v==null)return '';
+    const s=String(v).replace(/"/g,'""');
+    return s.includes(sep)||s.includes('\n')||s.includes('"')?`"${s}"`:s;
+  };
+
+  const rows=db.map(p=>{
+    const d1=p.posOps&&p.posOps.D1||{};
+    const d7=p.posOps&&p.posOps.D7||{};
+    const d30=p.posOps&&p.posOps.D30||{};
+    return [
+      p.nome,p.dataCirurgia,p.olho,p.tecnica,p.aparelho,p.anestesia,
+      p.orientacao,p.catGrau,p.lioPoder,p.lioModelo,
+      p.avPreOp,p.keratoD1,p.keratoD2,p.axialLength,p.ac,
+      p.dificuldadeMapa,
+      (p.intercorrencias||[]).join(' | '),p.obsIntra,
+      d1.data,d1.av,d1.pio,d1.cornea,d1.ca,d1.obs,
+      d7.data,d7.av,d7.pio,d7.cornea,
+      d30.data,d30.av,d30.pio,d30.cornea,
+      p.mental&&p.mental.confianca,p.mental&&p.mental.controle,p.mental&&p.mental.estresse
+    ].map(esc).join(sep);
+  });
+
+  const csv=bom+headers.map(esc).join(sep)+'\n'+rows.join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`cirurgias-${hoje()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function mostrarResetConfirm(){
+  document.getElementById('reset-modal').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function fecharResetModal(){
+  document.getElementById('reset-modal').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+function resetarTudo(){
+  localStorage.removeItem('cataractadb_v3');
+  localStorage.removeItem('cataractafila_v1');
+  localStorage.removeItem('cataractcontrol_nome');
+  localStorage.removeItem('pwa_banner_closed');
+  db=[];filaDB=[];nomeUsuario='';
+  fecharResetModal();
+  window.location.reload();
+}
+
+var SHEETS_URL='https://script.google.com/macros/s/AKfycbzcRtp2I7IQSRcIKA16pkTapKO-ev6iDGZ3KNKwXQEHID6tNVYOdpu95WmGddd_j74WAg/exec';
+
+function enviarParaSheets(){
+  if(db.length===0){alert('Nenhuma cirurgia para enviar.');return;}
+  var btn=document.querySelector('button[onclick="enviarParaSheets()"]');
+  var originalText=btn.textContent;
+  btn.textContent='⏳';
+  btn.disabled=true;
+  var payload=JSON.stringify({medico:getNomeCompleto(),cirurgias:db});
+  fetch(SHEETS_URL,{
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:payload
+  }).then(function(){
+    btn.textContent='✓';
+    btn.style.background='#0a6630';
+    setTimeout(function(){
+      btn.textContent=originalText;
+      btn.style.background='#1a7a4a';
+      btn.disabled=false;
+    },2500);
+    localStorage.setItem('sheets_last_sync',new Date().toISOString());
+  }).catch(function(){
+    btn.textContent='✗';
+    btn.style.background='#c0392b';
+    setTimeout(function(){
+      btn.textContent=originalText;
+      btn.style.background='#1a7a4a';
+      btn.disabled=false;
+    },2500);
+  });
+}
+</script>
+
+</html>
