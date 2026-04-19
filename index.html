@@ -28,6 +28,25 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
 
+/* ADD TO HOME SCREEN BANNER */
+.a2hs-banner{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#1a1a1a;color:#fff;z-index:1000;padding:14px 16px 28px;display:flex;flex-direction:column;gap:10px;box-shadow:0 -4px 24px rgba(0,0,0,0.3)}
+.a2hs-banner.hidden{display:none}
+.a2hs-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.a2hs-title{font-weight:700;font-size:0.9rem;line-height:1.3}
+.a2hs-body{font-size:0.78rem;color:#ccc;line-height:1.5}
+.a2hs-close{background:none;border:none;color:#888;font-size:20px;cursor:pointer;padding:0;line-height:1;flex-shrink:0}
+.a2hs-step{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:#ccc}
+.a2hs-step svg{flex-shrink:0;opacity:0.85}
+
+/* PUSH PROMPT MODAL */
+.push-prompt-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;align-items:flex-end;justify-content:center}
+.push-prompt-overlay.open{display:flex}
+.push-prompt-card{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 20px 36px}
+.push-prompt-handle{width:36px;height:3px;background:#e0e0e0;border-radius:4px;margin:0 auto 20px}
+.push-prompt-icon{width:52px;height:52px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.push-prompt-title{font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;color:#0a0a0a;text-align:center;margin-bottom:8px}
+.push-prompt-body{font-size:0.78rem;color:#888;text-align:center;line-height:1.55;margin-bottom:22px}
+
 /* HEADER */
 .header{background:var(--black);padding:16px 20px 14px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .header-logo{display:flex;align-items:center;gap:10px}
@@ -967,6 +986,7 @@ function initSupabase(){
       if(!didMigrate){migrateLocalToSupabase();}
       else if(db.length===0){syncDown();}
       renderHome();updateFilaBadge();
+      setTimeout(checkPushPrompt,1200);
     } else {
       currentUser=null;
       document.getElementById('auth-overlay').classList.remove('hidden');
@@ -2659,6 +2679,42 @@ function resetarTudo(){
 }
 
 // ── INIT ─────────────────────────────────────────────────────────
+// ── Add to Home Screen banner ────────────────────────────────────
+function checkA2HS(){
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone=window.navigator.standalone===true;
+  var dismissed=localStorage.getItem('a2hs_dismissed');
+  if(isIOS&&!isStandalone&&!dismissed){
+    var banner=document.getElementById('a2hs-banner');
+    if(banner)banner.classList.remove('hidden');
+  }
+}
+function fecharA2HS(){
+  var banner=document.getElementById('a2hs-banner');
+  if(banner)banner.classList.add('hidden');
+  localStorage.setItem('a2hs_dismissed','1');
+}
+
+// ── Push prompt ───────────────────────────────────────────────────
+function fecharPushPrompt(){
+  var el=document.getElementById('push-prompt-overlay');
+  if(el)el.classList.remove('open');
+}
+function checkPushPrompt(){
+  if(!currentUser)return;
+  if(!('serviceWorker' in navigator)||!('PushManager' in window))return;
+  var isStandalone=window.navigator.standalone===true;
+  if(!isStandalone)return; // só mostrar quando for PWA instalado
+  navigator.serviceWorker.ready.then(function(reg){
+    reg.pushManager.getSubscription().then(function(sub){
+      if(!sub){
+        var el=document.getElementById('push-prompt-overlay');
+        if(el)el.classList.add('open');
+      }
+    });
+  });
+}
+
 // ── Web Push ────────────────────────────────────────────────────
 var VAPID_PUBLIC_KEY='BNy87uc6_7GmjCiUTaJ51zJa-R8PZpBMA5E0F_oKh8C_EsRw_nT3eaVM1a3KPNOR2JXyth8ipoz8Q3r3Zj2GlWM';
 
@@ -2702,7 +2758,7 @@ document.addEventListener('DOMContentLoaded',function(){
   var d=new Date();
   document.getElementById('headerDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
   document.getElementById('f-data').value=hoje();
-  loadDB();renderHome();updateFilaBadge();initIntercSteps();initSupabase();
+  loadDB();renderHome();updateFilaBadge();initIntercSteps();initSupabase();checkA2HS();
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/nse/sw.js').then(function(reg){
       console.log('SW registered',reg.scope);
@@ -2830,6 +2886,40 @@ document.addEventListener('DOMContentLoaded',function(){
     Excluir tudo
   </button>
 </div>
+<!-- BANNER: ADICIONAR À TELA INICIAL -->
+<div class="a2hs-banner hidden" id="a2hs-banner">
+  <div class="a2hs-top">
+    <div class="a2hs-title">Instale o CataractControl</div>
+    <button class="a2hs-close" onclick="fecharA2HS()">×</button>
+  </div>
+  <div class="a2hs-step">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    Toque no botão compartilhar (
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+    ) no Safari
+  </div>
+  <div class="a2hs-step">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    Selecione "Adicionar à Tela de Início"
+  </div>
+  <div class="a2hs-step">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Acesse sempre como um app, sem abrir o Safari
+  </div>
+</div>
+
+<!-- MODAL: ATIVAR NOTIFICAÇÕES -->
+<div class="push-prompt-overlay" id="push-prompt-overlay">
+  <div class="push-prompt-card">
+    <div class="push-prompt-handle"></div>
+    <div class="push-prompt-icon">🔔</div>
+    <div class="push-prompt-title">Ativar lembretes de retorno</div>
+    <div class="push-prompt-body">Receba um aviso às <strong>20h do dia anterior</strong> e às <strong>6h45 do dia</strong> quando tiver retornos agendados.<br><br>Você só verá isso até ativar as notificações.</div>
+    <button class="btn" style="width:100%;margin-bottom:10px" onclick="registrarPush();fecharPushPrompt()">Ativar notificações</button>
+    <button class="btn btn-outline" style="width:100%;font-size:0.8rem;color:#888" onclick="fecharPushPrompt()">Lembrar depois</button>
+  </div>
+</div>
+
 <button id="fab-btn" onclick="toggleFabMenu()" style="position:fixed;bottom:80px;right:16px;z-index:500;width:52px;height:52px;border-radius:50%;background:#0a0a0a;color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;transition:transform 0.2s">
   <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
