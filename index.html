@@ -965,6 +965,7 @@ function initSupabase(){
       loadDB();
       var didMigrate=localStorage.getItem('sb_migration_done');
       if(!didMigrate){migrateLocalToSupabase();}
+      else if(db.length===0){syncDown();}
       renderHome();updateFilaBadge();
     } else {
       currentUser=null;
@@ -1148,6 +1149,83 @@ function migrateLocalToSupabase(){
   if(!db.length){localStorage.setItem('sb_migration_done','1');return;}
   db.forEach(function(p){syncOneSurgery(p);});
   localStorage.setItem('sb_migration_done','1');
+}
+
+// Baixa cirurgias do Supabase para o localStorage (dispositivo novo sem dados)
+function syncDown(){
+  if(!_sb||!currentUser)return;
+  _sb.from('surgeries').select('*').eq('user_id',currentUser.id).then(function(res){
+    if(res.error||!res.data||!res.data.length)return;
+    var surgeries=res.data;
+    var ids=surgeries.map(function(s){return s.id;});
+    // Busca complications e followups em paralelo
+    Promise.all([
+      _sb.from('complications').select('*').in('surgery_id',ids),
+      _sb.from('followups').select('*').in('surgery_id',ids)
+    ]).then(function(results){
+      var compls=results[0].data||[];
+      var fups=results[1].data||[];
+      var changed=false;
+      surgeries.forEach(function(s){
+        // Verifica se já existe localmente pelo local_id
+        var exists=db.some(function(x){return x.id===s.local_id;});
+        if(exists)return;
+        // Monta intercorrencias
+        var myCompls=compls.filter(function(c){return c.surgery_id===s.id;});
+        var interc=myCompls.map(function(c){return c.name;});
+        if(!interc.length)interc=['Sem intercorrências'];
+        // Monta posOps
+        var myFups=fups.filter(function(f){return f.surgery_id===s.id;});
+        var posOps={};
+        myFups.forEach(function(f){
+          if(f.type==='D1'||f.type==='D7'||f.type==='D30'){
+            posOps[f.type]={
+              data:f.completed_at||'',
+              av:f.visual_acuity||'',
+              pio:f.pio!=null?String(f.pio):'',
+              ref:f.refraction||'',
+              ca:f.anterior_chamber||'',
+              cornea:f.cornea||'',
+              obs:f.obs||'',
+              conduta:f.conduta||''
+            };
+          }
+        });
+        var p={
+          id:s.local_id||s.id,
+          nome:'['+( s.patient_hash?s.patient_hash.slice(0,8):'Paciente')+']',
+          prontuario:'',telefone:'',
+          idade:s.patient_age!=null?String(s.patient_age):'',
+          convenio:s.convenio||'',
+          dataCirurgia:s.surgery_date||'',
+          olho:s.eye||'',
+          tecnica:s.technique||'',
+          aparelho:s.equipment||'',
+          cirurgiao:s.surgeon_name||'',
+          orientacao:s.supervisor||'',
+          anestesia:s.anesthesia||'',
+          catGrau:s.cat_grade||'',
+          obsPreOp:s.obs_preop||'',
+          obsIntra:s.obs_intra||'',
+          lioModelo:s.lio_model||'',
+          lioPoder:s.lio_power!=null?String(s.lio_power):'',
+          lioTipo:s.lio_type||'',
+          lioMat:s.lio_material||'',
+          mental:s.mental_confidence!=null?{
+            confianca:s.mental_confidence,
+            controle:s.mental_control,
+            estresse:s.mental_stress,
+            obs:s.mental_obs||''
+          }:null,
+          intercorrencias:interc,
+          posOps:posOps
+        };
+        db.push(p);
+        changed=true;
+      });
+      if(changed){save();renderHome();updateFilaBadge();}
+    });
+  });
 }
 
 // ── PERSIST ─────────────────────────────────────────────────────
