@@ -956,6 +956,7 @@ function initSupabase(){
       localStorage.setItem('cataracta_medico',nome);
       atualizarNomeHeader();
       document.getElementById('auth-overlay').classList.add('hidden');
+      loadDB();
       var didMigrate=localStorage.getItem('sb_migration_done');
       if(!didMigrate){migrateLocalToSupabase();}
       renderHome();updateFilaBadge();
