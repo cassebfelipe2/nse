@@ -3,33 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>CataractControl</title>
+<title>Phacolog</title>
 <link rel="manifest" href="/nse/manifest.json">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#F6F2EC">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="CataractControl">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Phacolog">
 <link rel="apple-touch-icon" href="/nse/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --black:#0a0a0a;
-  --dark:#1a1a1a;
-  --mid:#444;
-  --muted:#888;
-  --light:#ccc;
-  --border:#e0e0e0;
-  --bg:#f7f7f5;
-  --card:#ffffff;
-  --text:#0a0a0a;
-  --accent:#0a0a0a;
-  --r:12px;--rs:8px;
+  /* Phacolog palette — warm academic */
+  --bg:#F6F2EC;
+  --bg-deep:#EFE9E1;
+  --surface:#FFFFFF;
+  --surface2:#FBF7F1;
+  --ink:#221611;
+  --ink2:#3A2A21;
+  --muted:#8A7A6E;
+  --subtle:#B7AA9C;
+  --hairline:#E6DDD0;
+  --line:#D8CDBC;
+  --amber:#C85A28;
+  --amber-deep:#A2431B;
+  --amber-soft:#F3E3D4;
+  --ok:#3E7C59;
+  --ok-soft:#E1EEDE;
+  --warn:#B8762B;
+  --warn-soft:#F4E6CE;
+  --danger:#A63A2A;
+  --danger-soft:#F1D9D4;
+  /* legacy aliases kept for backwards compat */
+  --black:#221611;
+  --dark:#3A2A21;
+  --mid:#8A7A6E;
+  --light:#B7AA9C;
+  --border:#E6DDD0;
+  --card:#FFFFFF;
+  --text:#221611;
+  --accent:#C85A28;
+  --r:14px;--rs:10px;
+  /* fonts */
+  --f-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --f-ui:'Inter',-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:80px}
+body{font-family:var(--f-ui);background:var(--bg);color:var(--ink);min-height:100vh;max-width:480px;margin:0 auto;padding-bottom:90px;-webkit-font-smoothing:antialiased}
 
 /* ADD TO HOME SCREEN BANNER */
-.a2hs-banner{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#1a1a1a;color:#fff;z-index:1000;padding:14px 16px 28px;display:flex;flex-direction:column;gap:10px;box-shadow:0 -4px 24px rgba(0,0,0,0.3)}
+.a2hs-banner{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--amber-deep);color:#fff;z-index:1000;padding:14px 16px 28px;display:flex;flex-direction:column;gap:10px;box-shadow:0 -4px 24px rgba(200,90,40,0.3)}
 .a2hs-banner.hidden{display:none}
 .a2hs-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
 .a2hs-title{font-weight:700;font-size:0.9rem;line-height:1.3}
@@ -41,34 +67,42 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 /* PUSH PROMPT MODAL */
 .push-prompt-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;align-items:flex-end;justify-content:center}
 .push-prompt-overlay.open{display:flex}
-.push-prompt-card{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 20px 36px}
-.push-prompt-handle{width:36px;height:3px;background:#e0e0e0;border-radius:4px;margin:0 auto 20px}
-.push-prompt-icon{width:52px;height:52px;background:#f0f0f0;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
-.push-prompt-title{font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;color:#0a0a0a;text-align:center;margin-bottom:8px}
-.push-prompt-body{font-size:0.78rem;color:#888;text-align:center;line-height:1.55;margin-bottom:22px}
+.push-prompt-card{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:24px 20px 36px}
+.push-prompt-handle{width:36px;height:3px;background:var(--hairline);border-radius:4px;margin:0 auto 20px}
+.push-prompt-icon{width:52px;height:52px;background:var(--amber-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+.push-prompt-title{font-family:var(--f-display);font-size:1.1rem;font-weight:500;color:var(--ink);text-align:center;margin-bottom:8px;letter-spacing:-0.01em}
+.push-prompt-body{font-family:var(--f-ui);font-size:0.78rem;color:var(--muted);text-align:center;line-height:1.55;margin-bottom:22px}
 
 /* HEADER */
-.header{background:var(--black);padding:16px 20px 14px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.header{background:var(--bg);border-bottom:1px solid var(--hairline);padding:14px 20px 18px;position:sticky;top:0;z-index:100}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .header-logo{display:flex;align-items:center;gap:10px}
-.header-logo svg{width:34px;height:34px;flex-shrink:0}
-.header-title{font-family:Georgia,'Times New Roman',serif;color:#fff;font-size:1.15rem;letter-spacing:0.2px;line-height:1}
-.header-title span{font-style:italic;color:#ccc}
-.header-sub{color:#666;font-size:0.65rem;font-weight:300;margin-top:3px;letter-spacing:0.5px;text-transform:uppercase}
-.header-date{color:#999;font-size:0.68rem;font-weight:300;text-align:right;letter-spacing:0.3px}
+.header-logo svg{width:32px;height:32px;flex-shrink:0}
+.header-wordmark{font-family:var(--f-display);font-size:1.18rem;font-weight:500;letter-spacing:-0.02em;color:var(--ink)}
+.header-wordmark em{font-style:italic;font-weight:400;color:var(--amber)}
+.header-icon-btn{background:none;border:none;cursor:pointer;color:var(--muted);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px}
+.header-icon-btn svg{width:20px;height:20px}
+.header-greeting{font-family:var(--f-display);font-size:1.45rem;font-weight:400;color:var(--ink);letter-spacing:-0.02em;margin-bottom:2px}
+.header-greeting em{font-style:italic;color:var(--amber)}
+.header-sub{font-family:var(--f-ui);font-size:0.72rem;color:var(--muted);margin-bottom:4px}
+.header-date{font-family:var(--f-mono);font-size:0.6rem;color:var(--subtle);letter-spacing:0.1em;text-transform:uppercase}
 
 /* NAV */
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--black);display:flex;z-index:200;border-top:1px solid #222}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 13px;cursor:pointer;border:none;background:none;color:#555;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.58rem;font-weight:700;gap:4px;transition:color 0.2s;letter-spacing:0.5px;text-transform:uppercase;position:relative}
-.nav-btn.active{color:#fff}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--hairline);display:flex;z-index:200;padding-bottom:14px;padding-top:8px}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;border:none;background:none;color:var(--muted);font-family:var(--f-mono);font-size:0.58rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;position:relative;padding:2px 0}
+.nav-btn.active{color:var(--ink)}
 .nav-btn svg{width:20px;height:20px}
-.nav-badge{position:absolute;top:7px;right:calc(50% - 18px);background:#fff;color:#000;border-radius:8px;font-size:0.52rem;font-weight:900;padding:1px 5px;min-width:16px;text-align:center;line-height:1.4;letter-spacing:0}
+.nav-btn-fab{flex:1;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:none;padding:0;margin-top:-20px}
+.nav-btn-fab-inner{width:48px;height:48px;border-radius:24px;background:var(--amber);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(200,90,40,0.3)}
+.nav-badge{position:absolute;top:0;right:calc(50% - 18px);background:var(--amber);color:#fff;border-radius:8px;font-family:var(--f-mono);font-size:0.5rem;font-weight:700;padding:1px 5px;min-width:15px;text-align:center;line-height:1.5}
+.nav-btn-dot{display:none}
 
 /* PAGES */
 .page{display:none;padding:16px}
 .page.active{display:block}
 
 /* TYPOGRAPHY */
-.sec-title{font-family:Georgia,'Times New Roman',serif;font-size:1.2rem;color:var(--black);margin-bottom:3px}
+.sec-title{font-family:var(--f-display);font-size:1.2rem;font-weight:500;color:var(--ink);margin-bottom:3px;letter-spacing:-0.01em}
 .sec-sub{font-size:0.72rem;color:var(--muted);margin-bottom:16px;letter-spacing:0.2px}
 
 /* CARDS */
@@ -102,20 +136,20 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 /* STATS */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
 .stat-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;text-align:center}
-.stat-num{font-family:Georgia,'Times New Roman',serif;font-size:2.2rem;color:var(--black);line-height:1}
-.stat-label{font-size:0.63rem;color:var(--muted);margin-top:5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase}
-.stat-card.accent{background:var(--black);border-color:var(--black)}
+.stat-num{font-family:var(--f-display);font-size:2.2rem;font-weight:400;color:var(--ink);line-height:1;letter-spacing:-0.02em}
+.stat-label{font-family:var(--f-mono);font-size:0.6rem;color:var(--muted);margin-top:5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
+.stat-card.accent{background:var(--amber);border-color:var(--amber)}
 .stat-card.accent .stat-num{color:#fff}
-.stat-card.accent .stat-label{color:#666}
+.stat-card.accent .stat-label{color:rgba(255,255,255,0.75)}
 .stat-card#stat-atrasos-card:active{background:#f0f0f0}
 
 /* FORM */
 .form-section{margin-bottom:22px}
-.form-section-title{font-size:0.65rem;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--black)}
+.form-section-title{font-family:var(--f-mono);font-size:0.62rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid var(--hairline)}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:0.68rem;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:0.5px;text-transform:uppercase}
-.field input,.field select,.field textarea{width:100%;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--border);font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.88rem;color:var(--text);background:#fff;transition:border-color 0.2s;outline:none;appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--black)}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border-radius:var(--rs);border:1.5px solid var(--hairline);font-family:var(--f-ui);font-size:0.88rem;color:var(--ink);background:var(--surface);transition:border-color 0.2s;outline:none;appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber)}
 .field textarea{resize:none;min-height:72px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pill-group{display:flex;gap:6px;flex-wrap:wrap}
@@ -124,18 +158,18 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 .pill-opt:checked+.pill-label{background:var(--black);color:#fff;border-color:var(--black)}
 
 /* BUTTONS */
-.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px;border-radius:var(--rs);border:none;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.18s;letter-spacing:0.5px;text-transform:uppercase}
-.btn-primary{background:var(--black);color:#fff}
-.btn-primary:active{background:#333}
-.btn-outline{background:transparent;color:var(--black);border:1.5px solid var(--border)}
-.btn-danger{background:#f5f5f5;color:#888;border:1.5px solid var(--border)}
-.btn-indicate{background:#f7f7f5;color:var(--black);border:1.5px solid var(--black);margin-bottom:10px}
+.btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:13px;border-radius:var(--rs);border:none;font-family:var(--f-ui);font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.18s;letter-spacing:0.02em}
+.btn-primary{background:var(--amber);color:#fff;box-shadow:0 4px 12px rgba(200,90,40,0.25)}
+.btn-primary:active{background:var(--amber-deep)}
+.btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--hairline)}
+.btn-danger{background:var(--danger-soft);color:var(--danger);border:1.5px solid rgba(166,58,42,0.15)}
+.btn-indicate{background:var(--amber-soft);color:var(--amber);border:1.5px solid rgba(200,90,40,0.2);margin-bottom:10px}
 
 /* DETAIL */
 .detail-back{display:flex;align-items:center;gap:6px;color:var(--black);font-size:0.78rem;font-weight:700;cursor:pointer;margin-bottom:16px;background:none;border:none;font-family:inherit;padding:0;letter-spacing:0.5px;text-transform:uppercase}
-.detail-hero{background:var(--black);border-radius:var(--r);padding:22px;margin-bottom:14px}
-.detail-patient-name{font-family:Georgia,'Times New Roman',serif;font-size:1.45rem;color:#fff;line-height:1.25}
-.detail-patient-sub{color:#666;font-size:0.72rem;margin-top:5px;letter-spacing:0.3px}
+.detail-hero{background:var(--amber-deep);border-radius:var(--r);padding:22px;margin-bottom:14px}
+.detail-patient-name{font-family:var(--f-display);font-size:1.45rem;font-weight:400;color:#fff;line-height:1.25;letter-spacing:-0.01em}
+.detail-patient-sub{color:rgba(255,255,255,0.65);font-size:0.72rem;margin-top:5px;letter-spacing:0.3px}
 .detail-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px}
 .detail-chip{background:rgba(255,255,255,0.08);color:#aaa;padding:4px 10px;border-radius:3px;font-size:0.65rem;letter-spacing:0.3px;border:1px solid rgba(255,255,255,0.1)}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
@@ -164,7 +198,7 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .patient-list-item{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;margin-bottom:8px;cursor:pointer;transition:border-color 0.15s;display:flex;align-items:center;gap:12px}
 .patient-list-item:active{border-color:var(--black)}
-.patient-avatar{width:38px;height:38px;border-radius:50%;background:var(--black);display:flex;align-items:center;justify-content:center;color:#fff;font-family:Georgia,'Times New Roman',serif;font-size:0.95rem;flex-shrink:0;font-style:italic}
+.patient-avatar{width:38px;height:38px;border-radius:50%;background:var(--amber);display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--f-display);font-size:0.95rem;flex-shrink:0;font-style:italic}
 .patient-info{flex:1;min-width:0}
 .patient-name{font-weight:700;font-size:0.9rem;color:var(--black);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .patient-meta{font-size:0.68rem;color:var(--muted);margin-top:2px;letter-spacing:0.2px}
@@ -174,25 +208,25 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 .modal-overlay.open{display:flex}
 .modal{background:var(--card);border-radius:16px 16px 0 0;width:100%;max-width:480px;padding:20px 20px 32px;max-height:90vh;overflow-y:auto}
 .modal-handle{width:36px;height:3px;background:var(--border);border-radius:4px;margin:0 auto 18px}
-.modal-title{font-family:Georgia,'Times New Roman',serif;font-size:1.15rem;color:var(--black);margin-bottom:18px}
+.modal-title{font-family:var(--f-display);font-size:1.15rem;font-weight:500;color:var(--ink);margin-bottom:18px;letter-spacing:-0.01em}
 
 /* FILTERS */
 .filter-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px}
-.filter-tab{padding:6px 14px;border-radius:3px;border:1.5px solid var(--border);font-size:0.68rem;font-weight:700;cursor:pointer;background:var(--card);color:var(--muted);white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:0.4px}
-.filter-tab.active{background:var(--black);color:#fff;border-color:var(--black)}
+.filter-tab{padding:6px 14px;border-radius:20px;border:1.5px solid var(--hairline);font-family:var(--f-mono);font-size:0.62rem;font-weight:600;cursor:pointer;background:var(--surface);color:var(--muted);white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:0.06em}
+.filter-tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* ANALYTICS */
 .analytics-section{margin-bottom:22px}
-.analytics-title{font-size:0.65rem;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--black)}
+.analytics-title{font-family:var(--f-mono);font-size:0.62rem;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;padding-bottom:8px;border-bottom:1.5px solid var(--hairline)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .bar-label{font-size:0.72rem;color:var(--text);width:140px;flex-shrink:0;font-weight:400}
 .bar-track{flex:1;height:8px;background:#ebebeb;border-radius:2px;overflow:hidden}
-.bar-fill{height:100%;border-radius:2px;background:var(--black);transition:width 0.7s cubic-bezier(.4,0,.2,1)}
+.bar-fill{height:100%;border-radius:2px;background:var(--amber);transition:width 0.7s cubic-bezier(.4,0,.2,1)}
 .bar-val{font-size:0.72rem;font-weight:700;color:var(--muted);width:24px;text-align:right}
 .kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px}
 .kpi-box{background:var(--card);border-radius:var(--rs);padding:14px 8px;text-align:center;border:1px solid var(--border)}
-.kpi-num{font-family:Georgia,'Times New Roman',serif;font-size:1.6rem;color:var(--black)}
-.kpi-lbl{font-size:0.6rem;color:var(--muted);margin-top:4px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase}
+.kpi-num{font-family:var(--f-display);font-size:1.6rem;font-weight:400;color:var(--ink);letter-spacing:-0.02em}
+.kpi-lbl{font-family:var(--f-mono);font-size:0.58rem;color:var(--muted);margin-top:4px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase}
 .compl-tag{display:inline-block;background:#f5f5f5;color:#555;border-radius:3px;padding:5px 10px;font-size:0.7rem;font-weight:700;margin:3px;border:1px solid var(--border)}
 
 /* FILA (indicação contralateral) */
@@ -261,9 +295,9 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 .cal-modal-overlay.open .cal-modal{transform:translateY(0)}
 .cal-modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0}
 .cal-modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 10px}
-.cal-modal-title{font-size:1rem;font-weight:700;color:var(--black);font-family:Georgia,serif}
-.cal-nav-btn{background:none;border:1.5px solid var(--border);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;justify-content:center}
-.cal-nav-btn:active{background:var(--black);color:#fff;border-color:var(--black)}
+.cal-modal-title{font-family:var(--f-display);font-size:1rem;font-weight:500;color:var(--ink);letter-spacing:-0.01em}
+.cal-nav-btn{background:none;border:1.5px solid var(--hairline);border-radius:6px;width:30px;height:30px;cursor:pointer;font-size:0.85rem;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.cal-nav-btn:active{background:var(--amber);color:#fff;border-color:var(--amber)}
 .cal-grid{padding:0 16px}
 .cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:4px}
 .cal-dow-cell{font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);text-align:center;padding:4px 0}
@@ -327,22 +361,22 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 .agenda-chip-more{background:var(--border);color:var(--muted)}
 
 /* AUTH OVERLAY */
-.auth-overlay{position:fixed;inset:0;background:#0a0a0a;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow-y:auto}
+.auth-overlay{position:fixed;inset:0;background:var(--bg-deep);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;overflow-y:auto}
 .auth-overlay.hidden{display:none}
 .auth-card{width:100%;max-width:340px}
 .auth-logo{text-align:center;margin-bottom:24px}
-.auth-title{font-family:Georgia,'Times New Roman',serif;font-size:1.8rem;color:#fff;margin-bottom:4px;text-align:center}
-.auth-title span{font-style:italic;color:#aaa}
-.auth-sub{font-size:0.75rem;color:#666;margin-bottom:28px;text-align:center;letter-spacing:0.3px}
-.auth-label{font-size:0.65rem;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:7px}
-.auth-input{width:100%;padding:13px 15px;border-radius:8px;border:1.5px solid #333;background:#1a1a1a;color:#fff;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:1rem;outline:none;margin-bottom:12px}
-.auth-input:focus{border-color:#666}
-.auth-btn{width:100%;padding:14px;background:#fff;color:#000;border:none;border-radius:8px;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:12px}
-.auth-btn:active{background:#e8e8e8}
-.auth-link{font-size:0.75rem;color:#555;text-align:center;cursor:pointer;margin-top:4px}
-.auth-link span{color:#aaa;text-decoration:underline}
-.auth-error{font-size:0.75rem;color:#ff6b6b;text-align:center;margin-bottom:10px;min-height:18px}
-.auth-terms{font-size:0.63rem;color:#444;margin-bottom:14px;line-height:1.6}
+.auth-title{font-family:var(--f-display);font-size:1.8rem;font-weight:400;color:var(--ink);margin-bottom:4px;text-align:center;letter-spacing:-0.02em}
+.auth-title em{font-style:italic;color:var(--amber)}
+.auth-sub{font-size:0.75rem;color:var(--muted);margin-bottom:28px;text-align:center;letter-spacing:0.3px}
+.auth-label{font-family:var(--f-mono);font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:7px}
+.auth-input{width:100%;padding:13px 15px;border-radius:8px;border:1.5px solid var(--hairline);background:var(--surface);color:var(--ink);font-family:var(--f-ui);font-size:1rem;outline:none;margin-bottom:12px}
+.auth-input:focus{border-color:var(--amber)}
+.auth-btn{width:100%;padding:14px;background:var(--amber);color:#fff;border:none;border-radius:8px;font-family:var(--f-ui);font-size:0.9rem;font-weight:600;cursor:pointer;letter-spacing:0.02em;margin-bottom:12px;box-shadow:0 4px 12px rgba(200,90,40,0.25)}
+.auth-btn:active{background:var(--amber-deep)}
+.auth-link{font-size:0.75rem;color:var(--muted);text-align:center;cursor:pointer;margin-top:4px}
+.auth-link span{color:var(--amber);text-decoration:underline}
+.auth-error{font-size:0.75rem;color:var(--danger);text-align:center;margin-bottom:10px;min-height:18px}
+.auth-terms{font-size:0.63rem;color:var(--subtle);margin-bottom:14px;line-height:1.6}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -350,29 +384,29 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
 
 <!-- HEADER -->
 <div class="header">
-  <div class="header-logo">
-    <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 17 C8 9 26 9 31 17 C26 25 8 25 3 17Z" stroke="white" stroke-width="1.5" fill="none"/>
-      <circle cx="17" cy="17" r="6" stroke="white" stroke-width="1.5" fill="none"/>
-      <circle cx="17" cy="17" r="2.5" fill="white"/>
-      <circle cx="19.5" cy="14.5" r="1" fill="white" opacity="0.5"/>
-      <line x1="17" y1="3" x2="17" y2="7" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-      <line x1="15" y1="5" x2="19" y2="5" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-      <path d="M10 10.5 Q8.5 8 9 6" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.5"/>
-      <path d="M24 10.5 Q25.5 8 25 6" stroke="white" stroke-width="0.8" stroke-linecap="round" fill="none" opacity="0.5"/>
-    </svg>
-    <div>
-      <div class="header-title">Cataract<span>Control</span></div>
-      <div class="header-sub" id="header-doctor-name">CataractControl</div>
+  <div class="header-top">
+    <div class="header-logo">
+      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="17" cy="17" rx="13" ry="9" stroke="#C85A28" stroke-width="1.5" fill="none"/>
+        <ellipse cx="17" cy="17" rx="7" ry="7" stroke="#C85A28" stroke-width="1.2" fill="none"/>
+        <circle cx="17" cy="17" r="2.5" fill="#C85A28"/>
+        <path d="M4.5 17 Q1 12 1 17" stroke="#C85A28" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M29.5 17 Q33 22 33 17" stroke="#C85A28" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span class="header-wordmark">Phaco<em>log</em></span>
     </div>
+    <button class="header-icon-btn" onclick="toggleSettingsMenu()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+    </button>
   </div>
   <div class="header-date" id="headerDate"></div>
+  <div class="header-greeting">Olá, <em id="home-ola-name">Residente</em></div>
+  <div class="header-sub" id="header-doctor-sub">Logbook cirúrgico</div>
 </div>
 
 <!-- HOME -->
 <div class="page active" id="page-home">
   <div style="margin-bottom:18px;margin-top:6px">
-    <div class="sec-title" id="home-ola">Olá</div>
     <div class="sec-sub">Alertas e retornos de pós-operatório</div>
   </div>
   <div class="stats-grid">
@@ -620,27 +654,28 @@ body{font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;backg
   <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     Início
+    <div class="nav-btn-dot"></div>
   </button>
   <button class="nav-btn" id="nav-pacientes" onclick="goPage('pacientes')">
-    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
     Pacientes
+    <div class="nav-btn-dot"></div>
   </button>
-  <button class="nav-btn" id="nav-nova" onclick="goPage('nova')">
-    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-    Nova
+  <button class="nav-btn-fab" id="nav-nova" onclick="goPage('nova')">
+    <div class="nav-btn-fab-inner">
+      <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="22" height="22"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </div>
   </button>
   <button class="nav-btn" id="nav-fila" onclick="goPage('fila')">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
     Fila
     <span class="nav-badge" id="fila-badge" style="display:none"></span>
+    <div class="nav-btn-dot"></div>
   </button>
   <button class="nav-btn" id="nav-analise" onclick="goPage('analise')">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
     Análise
-  </button>
-  <button class="nav-btn" id="nav-mapa" onclick="goPage('mapa')">
-    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-    Mapa
+    <div class="nav-btn-dot"></div>
   </button>
 </nav>
 
@@ -1057,10 +1092,10 @@ function getNomeMedico(){
 }
 function atualizarNomeHeader(){
   var nome=getNomeMedico();
-  var el=document.getElementById('header-doctor-name');
-  if(el)el.textContent=nome;
-  var ola=document.getElementById('home-ola');
-  if(ola)ola.textContent='Olá, '+nome.split(' ')[0];
+  var el=document.getElementById('home-ola-name');
+  if(el)el.textContent=nome.split(' ')[0];
+  var sub=document.getElementById('header-doctor-sub');
+  if(sub)sub.textContent='Dr. '+nome;
 }
 
 // ── HASH DO PACIENTE (LGPD) ──────────────────────────────────────
@@ -2458,19 +2493,17 @@ function closeAgendaModal(){
   if(m)m.classList.remove('open');document.body.classList.remove('no-scroll');
 }
 
+function toggleSettingsMenu(){toggleFabMenu();}
 function toggleFabMenu(){
   var panel=document.getElementById('fab-panel');
   var overlay=document.getElementById('fab-menu-overlay');
-  var btn=document.getElementById('fab-btn');
   var open=panel.style.display==='block';
   panel.style.display=open?'none':'block';
   overlay.style.display=open?'none':'block';
-  btn.style.transform=open?'':'rotate(90deg)';
 }
 function closeFabMenu(){
   document.getElementById('fab-panel').style.display='none';
   document.getElementById('fab-menu-overlay').style.display='none';
-  document.getElementById('fab-btn').style.transform='';
 }
 
 function exportarExcel(){
@@ -2817,15 +2850,16 @@ document.addEventListener('DOMContentLoaded',function(){
 <div class="auth-overlay" id="auth-overlay">
   <div class="auth-card">
     <div class="auth-logo">
-      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" width="52" height="52">
-        <path d="M3 17 C8 9 26 9 31 17 C26 25 8 25 3 17Z" stroke="white" stroke-width="1.5" fill="none"/>
-        <circle cx="17" cy="17" r="6" stroke="white" stroke-width="1.5" fill="none"/>
-        <circle cx="17" cy="17" r="2.5" fill="white"/>
-        <circle cx="19.5" cy="14.5" r="1" fill="white" opacity="0.5"/>
+      <svg viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" width="56" height="56">
+        <ellipse cx="17" cy="17" rx="13" ry="9" stroke="#C85A28" stroke-width="1.5" fill="none"/>
+        <ellipse cx="17" cy="17" rx="7" ry="7" stroke="#C85A28" stroke-width="1.2" fill="none"/>
+        <circle cx="17" cy="17" r="2.5" fill="#C85A28"/>
+        <path d="M4.5 17 Q1 12 1 17" stroke="#C85A28" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        <path d="M29.5 17 Q33 22 33 17" stroke="#C85A28" stroke-width="1.2" stroke-linecap="round" fill="none"/>
       </svg>
     </div>
-    <div class="auth-title">Cataract<span>Control</span></div>
-    <div class="auth-sub">Diário cirúrgico do residente</div>
+    <div class="auth-title">Phaco<em>log</em></div>
+    <div class="auth-sub">Logbook cirúrgico do residente</div>
 
     <div id="auth-login-view">
       <div class="auth-error" id="auth-error"></div>
@@ -2854,7 +2888,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- FAB MENU -->
 <div id="fab-menu-overlay" onclick="closeFabMenu()" style="display:none;position:fixed;inset:0;z-index:498;background:transparent"></div>
-<div id="fab-panel" style="display:none;position:fixed;bottom:80px;right:16px;z-index:499;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.18);padding:8px 0;min-width:210px;border:1px solid #eee">
+<div id="fab-panel" style="display:none;position:fixed;top:70px;right:12px;z-index:499;background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,0.18);padding:8px 0;min-width:210px;border:1px solid #eee">
   <button onclick="importarDados();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
     <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⬆</span>
     Importar backup
@@ -2881,6 +2915,11 @@ document.addEventListener('DOMContentLoaded',function(){
     <span style="width:32px;height:32px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⏻</span>
     Sair da conta
   </button>
+  <button onclick="goPage('mapa');closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🗂</span>
+    Mapa Cirúrgico
+  </button>
+  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
   <button onclick="mostrarResetConfirm();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#c0392b;text-align:left">
     <span style="width:32px;height:32px;border-radius:50%;background:#fdf0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🗑</span>
     Excluir tudo
@@ -2889,7 +2928,7 @@ document.addEventListener('DOMContentLoaded',function(){
 <!-- BANNER: ADICIONAR À TELA INICIAL -->
 <div class="a2hs-banner hidden" id="a2hs-banner">
   <div class="a2hs-top">
-    <div class="a2hs-title">Instale o CataractControl</div>
+    <div class="a2hs-title">Instale o Phacolog</div>
     <button class="a2hs-close" onclick="fecharA2HS()">×</button>
   </div>
   <div class="a2hs-step">
@@ -2920,8 +2959,6 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 
-<button id="fab-btn" onclick="toggleFabMenu()" style="position:fixed;bottom:80px;right:16px;z-index:500;width:52px;height:52px;border-radius:50%;background:#0a0a0a;color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;transition:transform 0.2s">
-  <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</button>
+<button id="fab-btn" onclick="toggleFabMenu()" style="display:none"></button>
 
 </html>

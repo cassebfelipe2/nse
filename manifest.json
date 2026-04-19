@@ -1,12 +1,12 @@
 {
-  "name": "CataractControl",
-  "short_name": "CataractControl",
-  "description": "Logbook cirúrgico para residentes de catarata",
+  "name": "Phacolog",
+  "short_name": "Phacolog",
+  "description": "Logbook cirúrgico para residentes de oftalmologia",
   "start_url": "/nse/",
   "scope": "/nse/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0a0a0a",
+  "background_color": "#F6F2EC",
+  "theme_color": "#F6F2EC",
   "icons": [
     {
       "src": "icon-192.png",
