@@ -1064,6 +1064,7 @@ function syncSurgeryUp(p,patHash){
     user_id:currentUser.id,
     local_id:p.id,
     patient_hash:patHash||null,
+    initials:p.nome?p.nome.trim().split(/\s+/).map(function(w){return w[0].toUpperCase();}).join(''):null,
     patient_age:p.idade?parseInt(p.idade):null,
     convenio:p.convenio||null,
     surgery_date:p.dataCirurgia||null,
@@ -1193,7 +1194,7 @@ function syncDown(){
         });
         var p={
           id:s.local_id||s.id,
-          nome:'['+( s.patient_hash?s.patient_hash.slice(0,8):'Paciente')+']',
+          nome:s.initials?('['+s.initials+']'):'[Pac.]',
           prontuario:'',telefone:'',
           idade:s.patient_age!=null?String(s.patient_age):'',
           convenio:s.convenio||'',
