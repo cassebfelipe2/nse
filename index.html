@@ -2128,16 +2128,19 @@ function renderHomeFila(){
   const active=filaDB.filter(f=>!f.done);
   if(active.length===0){sec.innerHTML='';return;}
   const rows=active.slice(0,3).map((f,i)=>{
-    const initials=(f.nome||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
-    const difCls=f.dificuldade==='T3'?'po-badge-danger':f.dificuldade==='T2xP'?'po-badge-soon':'po-badge-later';
+    const p=db.find(x=>x.id===f.patId);
+    const nome=p?p.nome:'Paciente';
+    const initials=nome.split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+    const dif=f.difficulty||f.dificuldade||'';
+    const difCls=dif==='T3'?'po-badge-danger':dif==='T2xP'?'po-badge-soon':'po-badge-later';
     const last=i===Math.min(active.length,3)-1;
     return `<div class="fila-preview-row" onclick="goPage('fila')" style="${last?'border-bottom:none':''}">
       <div class="fila-preview-avatar">${initials}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-family:var(--fontUI);font-size:0.85rem;font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome}</div>
+        <div style="font-family:var(--fontUI);font-size:0.85rem;font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nome}</div>
         <div style="font-family:var(--fontMono);font-size:0.6rem;color:var(--muted);margin-top:2px;letter-spacing:0.03em">${f.olho||''}${f.grau?' · '+f.grau:''}</div>
       </div>
-      ${f.dificuldade?`<span class="po-badge ${difCls}">${f.dificuldade}</span>`:''}
+      ${dif?`<span class="po-badge ${difCls}">${dif}</span>`:''}
     </div>`;
   }).join('');
   sec.innerHTML=`<div style="margin-top:20px">
@@ -3024,7 +3027,7 @@ function renderAnalytics(){
   // Filter db by period
   const cutoff=analyticsPeriod==='7d'?7:analyticsPeriod==='30d'?30:36500;
   const filtered=db.filter(p=>{
-    if(!p.dataCirurgia)return false;
+    if(!p.dataCirurgia)return cutoff===36500; // registros sem data entram apenas no filtro "tudo"
     return diffDays(h,p.dataCirurgia)<=cutoff;
   });
   const n=filtered.length,nTotal=db.length;
