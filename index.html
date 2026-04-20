@@ -593,7 +593,7 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
     <div class="cal-strip-card">
       <div class="cal-strip-legend">
         <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#C85A28"></span>PO1</span>
-        <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#221611"></span>PO7</span>
+        <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:var(--black)"></span>PO7</span>
         <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#3E7C59"></span>PO30</span>
       </div>
       <div class="cal-strip-scroll" id="home-cal-strip"></div>
@@ -1178,7 +1178,7 @@ function salvarOnboarding(){
   if(!nome){document.getElementById('onboarding-nome').focus();return;}
   const titulo=(document.querySelector('input[name="onb-titulo"]:checked')||{value:'Dr.'}).value;
   nomeUsuario=(titulo?titulo+' ':'')+nome;
-  localStorage.setItem('cataractcontrol_nome',nomeUsuario);
+  localStorage.setItem('cataracta_medico',nomeUsuario);
   document.getElementById('onboarding-modal').classList.remove('open');
   document.body.classList.remove('no-scroll');
   atualizarNomeHeader();
@@ -2071,7 +2071,8 @@ function renderHomeCalStrip(allReturns,h){
   const strip=document.getElementById('home-cal-strip');
   if(!strip)return;
   const DAYS=14;
-  const PO_COLOR={D1:'#C85A28',D7:'#221611',D30:'#3E7C59'};
+  const _dark=document.body.classList.contains('dark');
+  const PO_COLOR={D1:'#C85A28',D7:_dark?'#D4A870':'#221611',D30:'#3E7C59'};
   const WD=['D','S','T','Q','Q','S','S'];
   // bucket by offset
   const byOffset={};
@@ -2091,7 +2092,6 @@ function renderHomeCalStrip(allReturns,h){
       const dotCol=isToday?'rgba(246,242,236,'+(t==='D1'?'1':t==='D7'?'0.65':'0.4')+')':PO_COLOR[t];
       return `<span style="width:6px;height:6px;border-radius:3px;background:${dotCol};display:inline-block"></span>`;
     }).join(''):'<span style="width:6px;height:6px;display:inline-block"></span>';
-    const clickFn=items.length?`onclick="agendaDayClick('${h.slice(0,8).replace(/-/g,'')}${String(d.getDate()).padStart(2,'0')}')"`:'' ;
     // build date string
     const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
     html+=`<div class="cal-strip-day${hasCls}${todayCls}" data-date="${ds}" onclick="homeStripClick('${ds}')">
@@ -2817,6 +2817,7 @@ function salvarPosOp(){
   if(!posOpContext)return;
   const{patId,tipo}=posOpContext;
   const p=db.find(x=>x.id===patId);if(!p)return;
+  if(!p.posOps)p.posOps={};
   const _poCa=document.querySelector('input[name="po-ca"]:checked');
   const _poCor=document.querySelector('input[name="po-cor"]:checked');
   const dataRegistro=document.getElementById('po-data').value||hoje();
@@ -3147,7 +3148,8 @@ function renderAnalytics(){
     const cW=W-PL-PR,cH=H-PT-PB,nn=data.length;
     const xS=nn>1?cW/(nn-1):cW;
     const xF=i=>PL+i*xS,yF=v=>PT+cH-(v/5)*cH;
-    const series=[{c:'#221611',i:0,l:'Confiança'},{c:'#C85A28',i:1,l:'Controle'},{c:'#8B5E3C',i:2,l:'Estresse'}];
+    const _cDark=document.body.classList.contains('dark');
+    const series=[{c:_cDark?'#D4B896':'#221611',i:0,l:'Confiança'},{c:'#C85A28',i:1,l:'Controle'},{c:'#8B5E3C',i:2,l:'Estresse'}];
     const path=idx=>data.map((w,i)=>(i===0?'M':'L')+xF(i).toFixed(1)+' '+yF(w[idx]).toFixed(1)).join(' ');
     const yLbls=[1,2,3,4,5];
     let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">`;
@@ -4357,40 +4359,6 @@ function resetarTudo(){
   fecharResetModal();
   if(_sb){_sb.auth.signOut();}
   window.location.reload();
-}
-
-var SHEETS_URL='https://script.google.com/macros/s/AKfycbzcRtp2I7IQSRcIKA16pkTapKO-ev6iDGZ3KNKwXQEHID6tNVYOdpu95WmGddd_j74WAg/exec';
-
-function enviarParaSheets(){
-  if(db.length===0){alert('Nenhuma cirurgia para enviar.');return;}
-  var btn=document.querySelector('button[onclick="enviarParaSheets()"]');
-  var originalText=btn.textContent;
-  btn.textContent='⏳';
-  btn.disabled=true;
-  var payload=JSON.stringify({medico:getNomeCompleto(),cirurgias:db});
-  fetch(SHEETS_URL,{
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body:payload
-  }).then(function(){
-    btn.textContent='✓';
-    btn.style.background='#0a6630';
-    setTimeout(function(){
-      btn.textContent=originalText;
-      btn.style.background='#1a7a4a';
-      btn.disabled=false;
-    },2500);
-    localStorage.setItem('sheets_last_sync',new Date().toISOString());
-  }).catch(function(){
-    btn.textContent='✗';
-    btn.style.background='#c0392b';
-    setTimeout(function(){
-      btn.textContent=originalText;
-      btn.style.background='#1a7a4a';
-      btn.disabled=false;
-    },2500);
-  });
 }
 </script>
 
