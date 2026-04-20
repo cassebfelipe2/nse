@@ -1342,7 +1342,8 @@ function syncFollowupsUp(sbId,p){
     var po=p.posOps&&p.posOps[tipo];if(!po)return;
     var row={surgery_id:sbId,type:tipo,completed_at:po.data||null,visual_acuity:po.av||null,
       pio:po.pio?parseFloat(po.pio):null,refraction:po.ref||null,anterior_chamber:po.ca||null,
-      cornea:po.cornea||null,obs:po.obs||null,conduta:po.conduta||null};
+      cornea:po.cornea||null,obs:po.obs||null,conduta:po.conduta||null,
+      proximo_retorno:po.proximoRetorno||null};
     promises.push(_sb.from('followups').upsert(row,{onConflict:'surgery_id,type'}));
   });
   return Promise.all(promises);
@@ -1388,7 +1389,8 @@ function syncDown(){
           if(f.type==='D1'||f.type==='D7'||f.type==='D30'){
             posOps[f.type]={data:f.completed_at||'',av:f.visual_acuity||'',
               pio:f.pio!=null?String(f.pio):'',ref:f.refraction||'',ca:f.anterior_chamber||'',
-              cornea:f.cornea||'',obs:f.obs||'',conduta:f.conduta||''};
+              cornea:f.cornea||'',obs:f.obs||'',conduta:f.conduta||'',
+              proximoRetorno:f.proximo_retorno||''};
           }
         });
         db.push({id:s.local_id||s.id,nome:s.initials?('['+s.initials+']'):'[Pac.]',
