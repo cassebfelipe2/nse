@@ -505,6 +505,28 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .diary-empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .diary-empty-icon{font-size:2rem;margin-bottom:10px;opacity:0.4}
 .diary-header-row{display:flex;align-items:flex-end;justify-content:space-between;padding:18px 16px 0}
+
+/* RANK BADGE — Panorama tile */
+.rank-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-family:var(--fontMono);font-size:0.56rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;line-height:1.3}
+.rank-iniciante{background:var(--bgDeep);color:var(--muted);border:1px solid var(--border)}
+.rank-residente{background:var(--amberSoft);color:var(--accent);border:1px solid var(--accent)}
+.rank-avancado{background:var(--okSoft);color:var(--ok);border:1px solid var(--ok)}
+.rank-fellow{background:var(--black);color:var(--bg);border:1px solid var(--black)}
+.rank-staff{background:linear-gradient(135deg,#B8860B,#DAA520);color:#fff;border:none;box-shadow:0 2px 8px rgba(184,134,11,0.35)}
+.rank-progress-wrap{margin-top:8px;height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.rank-progress-fill{height:100%;border-radius:1px;background:var(--accent);transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* MILESTONE FLASH */
+#milestone-flash{position:fixed;inset:0;z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--black);padding:40px 32px;text-align:center;opacity:0;pointer-events:none;transition:opacity 0.35s}
+#milestone-flash.show{opacity:1;pointer-events:all}
+.mf-iol{margin-bottom:24px;animation:mf-spin 2s ease-in-out}
+@keyframes mf-spin{0%{transform:rotate(-20deg) scale(0.7);opacity:0}40%{transform:rotate(5deg) scale(1.08);opacity:1}70%{transform:rotate(-3deg) scale(1)}100%{transform:rotate(0deg) scale(1)}}
+.mf-label{font-family:var(--fontMono);font-size:0.65rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:10px}
+.mf-rank{font-family:var(--fontDisplay);font-size:2.8rem;font-weight:400;color:var(--bg);letter-spacing:-0.03em;line-height:1;margin-bottom:6px}
+.mf-count{font-family:var(--fontMono);font-size:0.9rem;color:var(--muted);letter-spacing:0.04em}
+.mf-dots{display:flex;gap:6px;margin-top:28px;justify-content:center}
+.mf-dot{width:6px;height:6px;border-radius:3px;background:var(--muted);transition:background 0.4s,width 0.4s}
+.mf-dot.active{background:var(--accent);width:18px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -546,7 +568,14 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   <div style="padding:20px 16px 0">
     <div class="section-label-row"><span class="section-label">Panorama</span></div>
     <div class="stats-grid">
-      <div class="stat-tile"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Cirurgias<span class="stat-sub">registradas</span></div></div>
+      <div class="stat-tile" id="stat-cirurgias-tile">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px">
+          <div class="stat-num" id="stat-total">0</div>
+          <div id="stat-rank-badge" style="margin-top:4px"></div>
+        </div>
+        <div class="stat-label">Cirurgias<span class="stat-sub" id="stat-rank-sub">registradas</span></div>
+        <div class="rank-progress-wrap" id="rank-progress-wrap" style="display:none"><div class="rank-progress-fill" id="rank-progress-fill" style="width:0%"></div></div>
+      </div>
       <div class="stat-tile" id="stat-retornos-tile"><div class="stat-num" id="stat-alerts">0</div><div class="stat-label">Retornos<span class="stat-sub">próx. 7 dias</span></div></div>
       <div class="stat-tile" id="stat-atrasos-card" onclick="goPage('atrasos')" style="cursor:pointer"><div class="stat-num" id="stat-compl">0</div><div class="stat-label">Em atraso</div></div>
       <div class="stat-tile" onclick="goPage('fila')" style="cursor:pointer"><div class="stat-num" id="stat-fila">0</div><div class="stat-label">Fila 2º olho</div></div>
@@ -1999,6 +2028,7 @@ function renderHome(){
   document.getElementById('stat-alerts').textContent=returns7d;
   document.getElementById('stat-compl').textContent=overdue.length;
   document.getElementById('stat-fila').textContent=filaDB.filter(f=>!f.done).length;
+  updateRankBadge(total);
   // Tone stat tiles
   const retTile=document.getElementById('stat-retornos-tile');
   if(retTile)retTile.className='stat-tile'+(returns7d>0?' warn-tone':'');
@@ -2844,6 +2874,7 @@ function salvarCirurgia(){
     },
     cirurgiao:getNomeCompleto(),posOps:{}};
   db.push(p);save();
+  checkMilestoneCelebration(db.length);
   ['f-nome','f-idade','f-pront','f-tel','f-lio-modelo','f-lio-poder','f-obs-intra','f-orient','f-cat','f-obspreop','f-mental-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   initIntercSteps();
   document.getElementById('mc3').checked=true;
@@ -3648,6 +3679,28 @@ document.addEventListener('DOMContentLoaded',function(){
 
 </body>
 
+<!-- MILESTONE FLASH -->
+<div id="milestone-flash">
+  <div class="mf-iol">
+    <svg width="64" height="64" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 18.5 18.2 C 14 15, 9 11, 6 7.5 C 5.2 6.6, 5.6 5.2, 6.8 5 C 11.5 4.3, 16.8 6, 20.8 9.5" stroke="#F6F2EC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M 29.5 29.8 C 34 33, 39 37, 42 40.5 C 42.8 41.4, 42.4 42.8, 41.2 43 C 36.5 43.7, 31.2 42, 27.2 38.5" stroke="#F6F2EC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <circle cx="24" cy="24" r="9.2" stroke="#F6F2EC" stroke-width="2.6" fill="none"/>
+      <circle cx="24" cy="24" r="2.4" fill="#C85A28"/>
+    </svg>
+  </div>
+  <div class="mf-label">Nova conquista</div>
+  <div class="mf-rank" id="mf-rank-name">Fellow</div>
+  <div class="mf-count" id="mf-rank-count">100 cirurgias registradas</div>
+  <div class="mf-dots">
+    <div class="mf-dot" id="mf-dot-1"></div>
+    <div class="mf-dot" id="mf-dot-2"></div>
+    <div class="mf-dot" id="mf-dot-3"></div>
+    <div class="mf-dot" id="mf-dot-4"></div>
+    <div class="mf-dot" id="mf-dot-5"></div>
+  </div>
+</div>
+
 <!-- MENU BOTÃO FLUTUANTE -->
 <div id="fab-menu-overlay" onclick="closeFabMenu()" style="display:none;position:fixed;inset:0;z-index:498;background:transparent"></div>
 <div id="fab-panel" style="display:none;position:fixed;bottom:80px;right:16px;z-index:499;background:var(--card);border-radius:16px;box-shadow:0 4px 28px rgba(34,22,17,0.18);padding:8px 0;min-width:210px;border:1px solid var(--border)">
@@ -4003,6 +4056,69 @@ function showToast(msg){
   t.textContent=msg;t.style.opacity='1';
   clearTimeout(t._hide);
   t._hide=setTimeout(function(){t.style.opacity='0';},2800);
+}
+
+// ── GAMIFICAÇÃO — RANK / MILESTONES ──────────────────────────────
+var MILESTONES=[
+  {at:10, rank:'Iniciante', cls:'rank-iniciante', dot:1},
+  {at:25, rank:'Residente', cls:'rank-residente', dot:2},
+  {at:50, rank:'Avançado',  cls:'rank-avancado',  dot:3},
+  {at:100,rank:'Fellow',    cls:'rank-fellow',    dot:4},
+  {at:200,rank:'Staff',     cls:'rank-staff',     dot:5},
+];
+function getCurrentMilestone(n){
+  var cur=null;
+  for(var i=0;i<MILESTONES.length;i++){if(n>=MILESTONES[i].at)cur=MILESTONES[i];}
+  return cur;
+}
+function getNextMilestone(n){
+  for(var i=0;i<MILESTONES.length;i++){if(n<MILESTONES[i].at)return MILESTONES[i];}
+  return null;
+}
+function updateRankBadge(n){
+  var badgeEl=document.getElementById('stat-rank-badge');
+  var subEl=document.getElementById('stat-rank-sub');
+  var wrapEl=document.getElementById('rank-progress-wrap');
+  var fillEl=document.getElementById('rank-progress-fill');
+  if(!badgeEl)return;
+  var cur=getCurrentMilestone(n);
+  var nxt=getNextMilestone(n);
+  if(cur){
+    badgeEl.innerHTML='<span class="rank-pill '+cur.cls+'">'+cur.rank+'</span>';
+    if(subEl)subEl.textContent='cirurgias';
+  } else {
+    badgeEl.innerHTML='';
+    if(subEl)subEl.textContent='registradas';
+  }
+  if(nxt&&wrapEl&&fillEl){
+    var prev=cur?cur.at:0;
+    var pct=Math.min(100,Math.round(((n-prev)/(nxt.at-prev))*100));
+    wrapEl.style.display='block';
+    setTimeout(function(){fillEl.style.width=pct+'%';},100);
+  } else {
+    if(wrapEl)wrapEl.style.display='none';
+  }
+}
+function checkMilestoneCelebration(n){
+  var m=MILESTONES.find(function(x){return x.at===n;});
+  if(!m)return;
+  var lastSeen=localStorage.getItem('phacolog_milestone_seen');
+  if(lastSeen===String(n))return;
+  localStorage.setItem('phacolog_milestone_seen',String(n));
+  var flash=document.getElementById('milestone-flash');
+  var rankName=document.getElementById('mf-rank-name');
+  var rankCount=document.getElementById('mf-rank-count');
+  if(!flash)return;
+  if(rankName)rankName.textContent=m.rank;
+  if(rankCount)rankCount.textContent=n+' cirurgias registradas';
+  // activate the right dot
+  for(var i=1;i<=5;i++){
+    var d=document.getElementById('mf-dot-'+i);
+    if(d)d.className='mf-dot'+(i<=m.dot?' active':'');
+  }
+  flash.classList.add('show');
+  setTimeout(function(){flash.classList.remove('show');},3200);
+  flash.addEventListener('click',function(){flash.classList.remove('show');},{once:true});
 }
 
 // ── DIÁRIO CIRÚRGICO ──────────────────────────────────────────────
