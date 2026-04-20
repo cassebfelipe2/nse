@@ -366,6 +366,72 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .auth-link span{color:var(--accent);text-decoration:underline}
 .auth-error{font-size:0.75rem;color:var(--danger);text-align:center;margin-bottom:10px;min-height:18px}
 .auth-terms{font-size:0.63rem;color:var(--muted);margin-bottom:14px;line-height:1.6}
+
+/* HOME — GREETING BAND */
+.home-band{background:var(--bg);padding:18px 20px 20px;border-bottom:1px solid var(--border);margin-bottom:0}
+.home-date-label{font-family:var(--fontMono);font-size:0.6rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px}
+.home-greeting{font-family:var(--fontDisplay);font-size:2rem;font-weight:400;color:var(--black);line-height:1.1;letter-spacing:-0.02em;margin-bottom:6px}
+.home-greeting em{font-style:italic;color:var(--accent);font-weight:400}
+.home-summary{font-family:var(--fontUI);font-size:0.88rem;color:var(--muted);line-height:1.45}
+.home-summary b{color:var(--black);font-weight:600}
+
+/* HOME — SECTION LABELS */
+.section-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-label{font-family:var(--fontMono);font-size:0.6rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em}
+.section-action{font-family:var(--fontUI);font-size:0.75rem;font-weight:500;color:var(--accent);cursor:pointer;display:inline-flex;align-items:center;gap:4px}
+
+/* HOME — STAT TILES */
+.stat-tile{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;box-shadow:0 1px 0 rgba(34,22,17,0.02)}
+.stat-tile.warn-tone .stat-num{color:var(--warn)}
+.stat-tile.danger-tone .stat-num{color:var(--danger)}
+.stat-sub{font-family:var(--fontUI);font-size:0.68rem;color:var(--subtle,var(--light));font-weight:400;text-transform:none;letter-spacing:0;display:block;margin-top:1px}
+
+/* HOME — 14-DAY CALENDAR STRIP */
+.cal-strip-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.cal-strip-legend{display:flex;gap:14px;padding:10px 14px;border-bottom:1px solid var(--border);font-family:var(--fontMono);font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+.cal-strip-leg-item{display:flex;align-items:center;gap:5px}
+.cal-strip-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.cal-strip-scroll{display:flex;overflow-x:auto;padding:12px 10px 14px;gap:6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cal-strip-scroll::-webkit-scrollbar{display:none}
+.cal-strip-day{flex:0 0 auto;width:44px;height:76px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:8px 0 7px;cursor:pointer;transition:background 0.15s;border:1px solid transparent}
+.cal-strip-day.has-items{background:var(--surface2,var(--bgDeep));border-color:var(--border)}
+.cal-strip-day.is-today{background:var(--black);border-color:var(--black)}
+.cal-strip-day-dow{font-family:var(--fontMono);font-size:0.5rem;font-weight:600;letter-spacing:0.05em;color:var(--muted);text-transform:uppercase}
+.cal-strip-day.is-today .cal-strip-day-dow{color:rgba(246,242,236,0.6)}
+.cal-strip-day-num{font-family:var(--fontDisplay);font-size:1.12rem;font-weight:400;color:var(--black);line-height:1;letter-spacing:-0.02em}
+.cal-strip-day.is-today .cal-strip-day-num{color:var(--bg)}
+.cal-strip-day-dots{display:flex;gap:3px;height:7px;align-items:center;min-height:7px}
+
+/* HOME — PO TILE ALERT CARDS */
+.po-alert-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color 0.15s}
+.po-alert-card:active{border-color:var(--accent)}
+.po-alert-card.today-card{border-left:3px solid var(--accent);padding-left:13px}
+.po-tile{width:40px;height:40px;border-radius:10px;background:var(--bgDeep);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;gap:1px}
+.po-tile-label{font-family:var(--fontMono);font-size:0.45rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
+.po-tile-num{font-family:var(--fontDisplay);font-size:1rem;font-weight:500;color:var(--black);line-height:1;letter-spacing:-0.02em}
+.po-alert-info{flex:1;min-width:0}
+.po-alert-name{font-family:var(--fontUI);font-weight:600;font-size:0.88rem;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.po-alert-meta{font-family:var(--fontMono);font-size:0.6rem;color:var(--muted);margin-top:3px;letter-spacing:0.03em}
+.po-badge{font-family:var(--fontMono);font-size:0.58rem;font-weight:500;padding:3px 8px;border-radius:4px;letter-spacing:0.04em;white-space:nowrap;flex-shrink:0}
+.po-badge-today{background:var(--black);color:var(--bg)}
+.po-badge-soon{background:var(--amberSoft);color:var(--warn);border:1px solid var(--amberSoft)}
+.po-badge-later{background:var(--bgDeep);color:var(--muted);border:1px solid var(--border)}
+
+/* HOME — FILA PREVIEW */
+.fila-preview-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden}
+.fila-preview-row{padding:13px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border-bottom:1px solid var(--border)}
+.fila-preview-row:last-child{border-bottom:none}
+.fila-preview-row:active{background:var(--bgDeep)}
+.fila-preview-avatar{width:32px;height:32px;border-radius:50%;background:var(--bgDeep);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--fontDisplay);font-size:0.75rem;color:var(--black);flex-shrink:0;font-style:italic}
+
+/* HOME — MENTAL MINI */
+.mental-mini-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.mental-mini-item{text-align:left}
+.mental-mini-lbl{font-family:var(--fontMono);font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:500}
+.mental-mini-val{font-family:var(--fontDisplay);font-size:1.75rem;font-weight:400;color:var(--black);line-height:1;letter-spacing:-0.02em;margin-top:4px}
+.mental-mini-track{height:3px;background:var(--bgDeep);border-radius:2px;margin-top:8px;overflow:hidden}
+.mental-mini-fill{height:100%;border-radius:2px;background:var(--black)}
+.mental-mini-foot{padding-top:12px;border-top:1px solid var(--border);font-family:var(--fontUI);font-size:0.75rem;color:var(--muted);line-height:1.5}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -391,32 +457,52 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 
 <!-- HOME -->
 <div class="page active" id="page-home">
-  <div style="margin-bottom:18px;margin-top:6px">
-    <div class="sec-title" id="home-saudacao">Olá, Dr. Casseb</div>
-    <div class="sec-sub">Alertas e retornos de pós-operatório</div>
+  <!-- Greeting band -->
+  <div class="home-band">
+    <div class="home-date-label" id="home-date-label"></div>
+    <div class="home-greeting" id="home-saudacao">Bom dia, <em id="home-nome-italic">Dr.</em></div>
+    <div class="home-summary" id="home-summary">&nbsp;</div>
   </div>
-  <div class="stats-grid">
-    <div class="stat-card accent"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Cirurgias</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-alerts">0</div><div class="stat-label">Retornos pend.</div></div>
-    <div class="stat-card" id="stat-atrasos-card" onclick="goPage('atrasos')" style="cursor:pointer;position:relative"><div class="stat-num" id="stat-compl">0</div><div class="stat-label">Em atraso</div></div>
-    <div class="stat-card"><div class="stat-num" id="stat-today">0</div><div class="stat-label">Retornos hoje</div></div>
-  </div>
-  <!-- AGENDA SEMANAL -->
-  <div class="agenda-week">
-    <div class="agenda-week-header">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-      <div class="agenda-week-title" id="agenda-week-label">Agenda da semana</div>
-      <div class="agenda-nav">
-        <button onclick="agendaNavWeek(-1)" title="Semana anterior">‹</button>
-        <button onclick="agendaNavWeek(0)" title="Semana atual" style="font-size:0.55rem;width:32px;font-weight:700">Hoje</button>
-        <button onclick="agendaNavWeek(1)" title="Próxima semana">›</button>
-        <button onclick="openCalMonth()" title="Ver mês completo" style="width:30px;margin-left:4px;border-color:var(--black);color:var(--black)"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
-      </div>
+  <!-- Panorama -->
+  <div style="padding:20px 16px 0">
+    <div class="section-label-row"><span class="section-label">Panorama</span></div>
+    <div class="stats-grid">
+      <div class="stat-tile"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Cirurgias<span class="stat-sub">registradas</span></div></div>
+      <div class="stat-tile" id="stat-retornos-tile"><div class="stat-num" id="stat-alerts">0</div><div class="stat-label">Retornos<span class="stat-sub">próx. 7 dias</span></div></div>
+      <div class="stat-tile" id="stat-atrasos-card" onclick="goPage('atrasos')" style="cursor:pointer"><div class="stat-num" id="stat-compl">0</div><div class="stat-label">Em atraso</div></div>
+      <div class="stat-tile" onclick="goPage('fila')" style="cursor:pointer"><div class="stat-num" id="stat-fila">0</div><div class="stat-label">Fila 2º olho</div></div>
     </div>
-    <div class="agenda-grid" id="agenda-grid"></div>
   </div>
-  <div class="sec-title" style="font-size:0.95rem;margin-bottom:12px">Alertas de retorno</div>
-  <div id="alerts-list"></div>
+  <!-- 14-day calendar strip -->
+  <div style="padding:20px 16px 0">
+    <div class="section-label-row">
+      <span class="section-label">Calendário — próximos retornos</span>
+      <span class="section-action" onclick="openCalMonth()">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+        Agenda
+      </span>
+    </div>
+    <div class="cal-strip-card">
+      <div class="cal-strip-legend">
+        <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#C85A28"></span>PO1</span>
+        <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#221611"></span>PO7</span>
+        <span class="cal-strip-leg-item"><span class="cal-strip-dot" style="background:#3E7C59"></span>PO30</span>
+      </div>
+      <div class="cal-strip-scroll" id="home-cal-strip"></div>
+    </div>
+  </div>
+  <!-- Próximos retornos -->
+  <div style="padding:20px 16px 0">
+    <div class="section-label-row">
+      <span class="section-label">Próximos retornos</span>
+      <span class="section-action" id="home-overdue-link" style="display:none" onclick="goPage('atrasos')"></span>
+    </div>
+    <div id="alerts-list"></div>
+  </div>
+  <!-- Fila preview -->
+  <div style="padding:0 16px" id="home-fila-section"></div>
+  <!-- Mental mini -->
+  <div style="padding:0 16px 24px" id="home-mental-section"></div>
 </div>
 
 <!-- ATRASOS -->
@@ -957,8 +1043,20 @@ function atualizarNomeHeader(){
   var primeiro=parts[0]||nome;
   var el=document.getElementById('header-nome-sub');
   if(el)el.textContent=nome;
+  // Greeting: split "Bom dia, " + italic nome
   var saudacao=document.getElementById('home-saudacao');
-  if(saudacao)saudacao.textContent='Olá, '+primeiro;
+  var nomeItalic=document.getElementById('home-nome-italic');
+  if(saudacao&&nomeItalic){
+    var h=new Date().getHours();
+    var period=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+    saudacao.childNodes[0].nodeValue=period+', ';
+    nomeItalic.textContent=primeiro+'.';
+  }
+  // Date label
+  var dl=document.getElementById('home-date-label');
+  if(dl){
+    dl.textContent=new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'}).replace(/^\w/,function(c){return c.toUpperCase();});
+  }
 }
 
 // ── SUPABASE AUTH ────────────────────────────────────────────────
@@ -1734,7 +1832,7 @@ function closeAgendaModal(){
 
 function renderHome(){
   const h=hoje(),total=db.length;
-  let alerts=[],overdue=[],todayCount=0;
+  let alerts=[],overdue=[],allReturns=[];
   db.forEach(p=>{
     if(!p.dataCirurgia)return;
     const expD1=addD1(p.dataCirurgia);
@@ -1749,39 +1847,175 @@ function renderHome(){
       if(!exp)return;
       if(!(p.posOps&&p.posOps[tipo])){
         const diff=diffDays(exp,h);
+        allReturns.push({p,tipo,exp,diff});
         if(diff<0){
           overdue.push({p,tipo,exp,diff});
-        } else if(tipo==='D1'||diff<=3){
-          // D1: sempre mostra se pendente (cirurgia já foi)
-          // D7/D30: só nos 3 dias anteriores
-          if(tipo==='D1'||diff<=3){
-            alerts.push({p,tipo,exp,diff});
-            if(diff===0)todayCount++;
-          }
+        } else if(diff<=7){
+          alerts.push({p,tipo,exp,diff});
         }
       }
     });
   });
+  alerts.sort((a,b)=>a.diff-b.diff);
+  overdue.sort((a,b)=>a.diff-b.diff);
+
+  // Stats
+  const returns7d=alerts.filter(a=>a.diff>=0&&a.diff<=7).length;
   document.getElementById('stat-total').textContent=total;
-  document.getElementById('stat-alerts').textContent=alerts.length;
+  document.getElementById('stat-alerts').textContent=returns7d;
   document.getElementById('stat-compl').textContent=overdue.length;
-  document.getElementById('stat-today').textContent=todayCount;
-  const atrasosCard=document.getElementById('stat-atrasos-card');
-  if(atrasosCard){atrasosCard.classList.toggle('accent-warn',overdue.length>0);}
+  document.getElementById('stat-fila').textContent=filaDB.filter(f=>!f.done).length;
+  // Tone stat tiles
+  const retTile=document.getElementById('stat-retornos-tile');
+  if(retTile)retTile.className='stat-tile'+(returns7d>0?' warn-tone':'');
+  const atTile=document.getElementById('stat-atrasos-card');
+  if(atTile)atTile.className='stat-tile'+(overdue.length>0?' danger-tone':'')+(overdue.length>0?' ':'');
+
+  // Summary line
+  const sum=document.getElementById('home-summary');
+  if(sum){
+    if(returns7d>0)sum.innerHTML='Você tem <b>'+returns7d+' retorno'+(returns7d!==1?'s':'')+'</b> nos próximos 7 dias.';
+    else sum.textContent='Nenhum retorno nos próximos 7 dias.';
+  }
+
+  // Overdue link
+  const ol=document.getElementById('home-overdue-link');
+  if(ol){if(overdue.length>0){ol.style.display='';ol.textContent=overdue.length+' atrasado'+(overdue.length!==1?'s':'')+' →';}else{ol.style.display='none';}}
+
+  // 14-day strip
+  renderHomeCalStrip(allReturns,h);
+
+  // Alert cards
   const al=document.getElementById('alerts-list');
   if(alerts.length===0){
-    al.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nenhum retorno pendente nos próximos dias</div></div>';
-    renderAgenda();
-    return;
+    al.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nenhum retorno nos próximos dias</div></div>';
+  } else {
+    al.innerHTML=alerts.slice(0,6).map(({p,tipo,exp,diff})=>{
+      const dayNum=tipo.slice(1); // "1","7","30"
+      const label=diff===0?'Hoje':diff===1?'Amanhã':'Em '+diff+'d';
+      const badgeCls=diff===0?'po-badge-today':diff<=1?'po-badge-soon':'po-badge-later';
+      const todayCls=diff===0?' today-card':'';
+      return `<div class="po-alert-card${todayCls}" onclick="showDetail('${p.id}')">
+        <div class="po-tile"><span class="po-tile-label">PO</span><span class="po-tile-num">${dayNum}</span></div>
+        <div class="po-alert-info"><div class="po-alert-name">${p.nome}</div><div class="po-alert-meta">${p.olho} · ${fmtDate(exp)}</div></div>
+        <span class="po-badge ${badgeCls}">${label}</span>
+      </div>`;
+    }).join('');
   }
-  renderAgenda();
-  alerts.sort((a,b)=>a.diff-b.diff);
-  al.innerHTML=alerts.map(({p,tipo,exp,diff})=>{
-    const cls=diff===0?'today':'soon';
-    const label=diff===0?'Hoje':`Em ${diff}d`;
-    const icon=diff===0?'●':'○';
-    return `<div class="alert-card alert-${cls}" onclick="showDetail('${p.id}')"><div style="font-size:1.1rem;font-weight:900;color:${diff===0?'#333':'#aaa'};width:20px;text-align:center">${icon}</div><div class="alert-info"><div class="alert-name">${p.nome}</div><div class="alert-detail">${tipo} · ${p.olho} · ${fmtDate(exp)}</div></div><div class="alert-day alert-day-${cls}">${label}</div></div>`;
+
+  // Fila preview
+  renderHomeFila();
+  // Mental mini
+  renderHomeMental();
+}
+
+function renderHomeCalStrip(allReturns,h){
+  const strip=document.getElementById('home-cal-strip');
+  if(!strip)return;
+  const DAYS=14;
+  const PO_COLOR={D1:'#C85A28',D7:'#221611',D30:'#3E7C59'};
+  const WD=['D','S','T','Q','Q','S','S'];
+  // bucket by offset
+  const byOffset={};
+  for(let i=0;i<DAYS;i++)byOffset[i]=[];
+  allReturns.forEach(r=>{if(r.diff>=0&&r.diff<DAYS)byOffset[r.diff].push(r);});
+  let html='';
+  const todayDate=new Date(h+'T00:00');
+  for(let i=0;i<DAYS;i++){
+    const d=new Date(todayDate);d.setDate(todayDate.getDate()+i);
+    const items=byOffset[i];
+    const isToday=i===0;
+    const hasCls=items.length?' has-items':'';
+    const todayCls=isToday?' is-today':'';
+    // unique types sorted
+    const types=[...new Set(items.map(x=>x.tipo))].sort((a,b)=>['D1','D7','D30'].indexOf(a)-['D1','D7','D30'].indexOf(b));
+    const dotsHtml=types.length?types.map(t=>{
+      const dotCol=isToday?'rgba(246,242,236,'+(t==='D1'?'1':t==='D7'?'0.65':'0.4')+')':PO_COLOR[t];
+      return `<span style="width:6px;height:6px;border-radius:3px;background:${dotCol};display:inline-block"></span>`;
+    }).join(''):'<span style="width:6px;height:6px;display:inline-block"></span>';
+    const clickFn=items.length?`onclick="agendaDayClick('${h.slice(0,8).replace(/-/g,'')}${String(d.getDate()).padStart(2,'0')}')"`:'' ;
+    // build date string
+    const ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    html+=`<div class="cal-strip-day${hasCls}${todayCls}" data-date="${ds}" onclick="homeStripClick('${ds}')">
+      <span class="cal-strip-day-dow">${WD[d.getDay()]}</span>
+      <span class="cal-strip-day-num">${d.getDate()}</span>
+      <div class="cal-strip-day-dots">${dotsHtml}</div>
+    </div>`;
+  }
+  strip.innerHTML=html;
+}
+function homeStripClick(ds){
+  // find returns for that date
+  const h=hoje();
+  const items=[];
+  db.forEach(p=>{
+    if(!p.dataCirurgia)return;
+    const expD1=addD1(p.dataCirurgia);
+    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const d1done=p.posOps&&p.posOps.D1;
+    [{tipo:'D1',exp:expD1,req:true},{tipo:'D7',exp:expD7,req:!!d1done},{tipo:'D30',exp:expD30,req:!!d1done}].forEach(function(t){
+      if(!t.req||!t.exp||t.exp!==ds)return;
+      if(p.posOps&&p.posOps[t.tipo])return;
+      items.push({p,tipo:t.tipo});
+    });
+  });
+  if(!items.length)return;
+  agendaDayClick(ds);
+}
+
+function renderHomeFila(){
+  const sec=document.getElementById('home-fila-section');
+  if(!sec)return;
+  const active=filaDB.filter(f=>!f.done);
+  if(active.length===0){sec.innerHTML='';return;}
+  const rows=active.slice(0,3).map((f,i)=>{
+    const initials=(f.nome||'?').split(' ').filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('');
+    const difCls=f.dificuldade==='T3'?'po-badge-danger':f.dificuldade==='T2xP'?'po-badge-soon':'po-badge-later';
+    const last=i===Math.min(active.length,3)-1;
+    return `<div class="fila-preview-row" onclick="goPage('fila')" style="${last?'border-bottom:none':''}">
+      <div class="fila-preview-avatar">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--fontUI);font-size:0.85rem;font-weight:600;color:var(--black);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.nome}</div>
+        <div style="font-family:var(--fontMono);font-size:0.6rem;color:var(--muted);margin-top:2px;letter-spacing:0.03em">${f.olho||''}${f.grau?' · '+f.grau:''}</div>
+      </div>
+      ${f.dificuldade?`<span class="po-badge ${difCls}">${f.dificuldade}</span>`:''}
+    </div>`;
   }).join('');
+  sec.innerHTML=`<div style="margin-top:20px">
+    <div class="section-label-row">
+      <span class="section-label">Fila — 2º olho</span>
+      <span class="section-action" onclick="goPage('fila')">Ver fila →</span>
+    </div>
+    <div class="fila-preview-card">${rows}</div>
+  </div>`;
+}
+
+function renderHomeMental(){
+  const sec=document.getElementById('home-mental-section');
+  if(!sec)return;
+  const withMental=db.filter(p=>p.mental&&(p.mental.confianca||p.mental.controle||p.mental.estresse));
+  if(withMental.length<2){sec.innerHTML='';return;}
+  const avg=arr=>(arr.reduce((a,b)=>a+b,0)/arr.length).toFixed(1);
+  const conf=withMental.map(p=>p.mental.confianca).filter(Boolean);
+  const ctrl=withMental.map(p=>p.mental.controle).filter(Boolean);
+  const stress=withMental.map(p=>p.mental.estresse).filter(Boolean);
+  const dims=[{label:'Confiança',val:avg(conf)},{label:'Controle',val:avg(ctrl)},{label:'Estresse',val:avg(stress)}];
+  const gridHtml=dims.map(m=>`<div class="mental-mini-item">
+    <div class="mental-mini-lbl">${m.label}</div>
+    <div class="mental-mini-val">${m.val}<span style="font-family:var(--fontMono);font-size:0.65rem;color:var(--muted)">/5</span></div>
+    <div class="mental-mini-track"><div class="mental-mini-fill" style="width:${parseFloat(m.val)*20}%"></div></div>
+  </div>`).join('');
+  sec.innerHTML=`<div style="margin-top:20px">
+    <div class="section-label-row">
+      <span class="section-label">Autopercepção</span>
+      <span class="section-action" onclick="goPage('analise')">Analytics →</span>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="mental-mini-grid">${gridHtml}</div>
+      <div class="mental-mini-foot">Baseado em <b style="color:var(--black)">${withMental.length}</b> cirurgias com avaliação mental.</div>
+    </div>
+  </div>`;
 }
 
 // ── ATRASOS ──────────────────────────────────────────────────────
