@@ -2881,7 +2881,8 @@ function salvarCirurgia(){
   document.getElementById('mct3').checked=true;
   document.getElementById('ms3').checked=true;
   document.getElementById('f-data').value=hoje();
-  showDetail(p.id);
+  goPage('home');
+  showToast('✓ Cirurgia registrada com sucesso!');
 }
 
 // ── EXCLUIR ──────────────────────────────────────────────────────
@@ -2889,7 +2890,7 @@ function deletePaciente(id){
   if(!confirm('Excluir este registro?'))return;
   db=db.filter(x=>x.id!==id);
   filaDB=filaDB.filter(x=>x.patId!==id);
-  save();updateFilaBadge();goPage('pacientes');
+  save();updateFilaBadge();goPage('home');
 }
 
 // ── ANALYTICS ────────────────────────────────────────────────────
