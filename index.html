@@ -454,6 +454,57 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .vbar-lbl{flex:1;text-align:center;font-family:var(--fontMono);font-size:0.5rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em}
 .compl-chip{padding:5px 10px;border-radius:4px;background:var(--bgDeep);border:1px solid var(--border);font-family:var(--fontUI);font-size:0.75rem;color:var(--black);display:inline-flex;align-items:center;gap:6px}
 .compl-chip-count{font-family:var(--fontMono);font-size:0.6rem;color:var(--muted);font-weight:600}
+
+/* DARK MODE */
+.dark{
+  --black:#F0EBE3;--dark:#D8CEC4;--mid:#B0A090;--muted:#706050;--light:#4A3A2E;
+  --border:#3A2820;--line:#2C1E16;
+  --bg:#140D08;--bgDeep:#1E1208;--card:#231510;--surface2:#1A0F08;
+  --text:#F0EBE3;--accent:#E07040;--amberSoft:rgba(200,90,40,0.15);
+  --ok:#5BA87A;--okSoft:rgba(62,124,89,0.15);
+  --warn:#D09040;--warnSoft:rgba(184,118,43,0.15);
+  --danger:#D05040;--dangerSoft:rgba(166,58,42,0.15);
+  --info:#5A8AA8;--infoSoft:rgba(58,90,120,0.15);
+}
+.dark .auth-overlay{background:var(--bg)}
+.dark .nav-nova-circle{background:var(--accent)}
+.dark .detail-hero{background:var(--card)}
+.dark input,.dark select,.dark textarea{background:var(--bgDeep);color:var(--text);border-color:var(--border)}
+
+/* THEME TOGGLE */
+.theme-toggle{width:34px;height:34px;border-radius:50%;background:none;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);transition:all 0.2s;flex-shrink:0}
+.theme-toggle:active{background:var(--bgDeep)}
+.header-right{display:flex;align-items:center;gap:10px}
+
+/* DIÁRIO CIRÚRGICO */
+.diary-top{padding:20px 16px 0}
+.diary-prompt-label{font-family:var(--fontMono);font-size:0.6rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
+.diary-streak{display:inline-flex;align-items:center;gap:5px;font-family:var(--fontMono);font-size:0.68rem;font-weight:600;color:var(--accent);background:var(--amberSoft);border:1px solid var(--accent);border-radius:20px;padding:3px 10px;margin-bottom:12px}
+.diary-capture{width:100%;min-height:90px;padding:14px;border-radius:var(--r);border:1.5px solid var(--border);font-family:var(--fontUI);font-size:0.9rem;color:var(--text);background:var(--card);resize:none;outline:none;line-height:1.55;transition:border-color 0.2s}
+.diary-capture:focus{border-color:var(--accent)}
+.diary-tags-row{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.diary-tags-row::-webkit-scrollbar{display:none}
+.diary-tag{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-family:var(--fontMono);font-size:0.6rem;font-weight:500;color:var(--muted);background:var(--card);cursor:pointer;white-space:nowrap;transition:all 0.15s;letter-spacing:0.04em}
+.diary-tag.sel{background:var(--black);color:var(--bg);border-color:var(--black)}
+.diary-save-btn{width:100%;margin-top:12px;padding:13px;border-radius:var(--rs);border:none;background:var(--black);color:var(--bg);font-family:var(--fontUI);font-size:0.88rem;font-weight:500;cursor:pointer;letter-spacing:-0.005em;transition:background 0.15s}
+.diary-save-btn:active{background:var(--dark)}
+.diary-timeline{padding:20px 16px 32px}
+.diary-date-header{font-family:var(--fontMono);font-size:0.58rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.diary-date-header::after{content:'';flex:1;height:1px;background:var(--border)}
+.diary-entry{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px;margin-bottom:8px;position:relative}
+.diary-entry-text{font-size:0.88rem;color:var(--text);line-height:1.55;margin-bottom:10px;white-space:pre-wrap}
+.diary-entry-footer{display:flex;align-items:center;justify-content:space-between}
+.diary-entry-chips{display:flex;gap:5px;flex-wrap:wrap}
+.diary-entry-chip{padding:3px 8px;border-radius:4px;font-family:var(--fontMono);font-size:0.58rem;font-weight:500;letter-spacing:0.04em;background:var(--bgDeep);color:var(--muted);border:1px solid var(--border)}
+.diary-entry-chip.mood-ok{background:var(--okSoft);color:var(--ok);border-color:var(--okSoft)}
+.diary-entry-chip.mood-warn{background:var(--warnSoft);color:var(--warn);border-color:var(--warnSoft)}
+.diary-entry-chip.step{background:var(--amberSoft);color:var(--accent);border-color:var(--amberSoft)}
+.diary-entry-time{font-family:var(--fontMono);font-size:0.58rem;color:var(--light)}
+.diary-entry-del{background:none;border:none;color:var(--light);cursor:pointer;padding:4px;font-size:14px;line-height:1;border-radius:4px;transition:color 0.15s}
+.diary-entry-del:active{color:var(--danger)}
+.diary-empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.diary-empty-icon{font-size:2rem;margin-bottom:10px;opacity:0.4}
+.diary-header-row{display:flex;align-items:flex-end;justify-content:space-between;padding:18px 16px 0}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -474,7 +525,13 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
       <div class="header-sub" id="header-nome-sub">Logbook</div>
     </div>
   </div>
-  <div class="header-date" id="headerDate"></div>
+  <div class="header-right">
+    <div class="header-date" id="headerDate"></div>
+    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar modo escuro">
+      <svg id="theme-icon-moon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
+      <svg id="theme-icon-sun" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+  </div>
 </div>
 
 <!-- HOME -->
@@ -727,6 +784,45 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   <div id="fila-list"></div>
 </div>
 
+<!-- DIÁRIO CIRÚRGICO -->
+<div class="page" id="page-notas">
+  <!-- Header -->
+  <div class="diary-header-row">
+    <div>
+      <div style="font-family:var(--fontMono);font-size:0.6rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px">Reflexão</div>
+      <div style="font-family:var(--fontDisplay);font-size:1.9rem;font-weight:400;color:var(--black);letter-spacing:-0.02em;line-height:1">Diário</div>
+    </div>
+    <div id="diary-streak-badge" style="display:none" class="diary-streak">
+      <span>🔥</span><span id="diary-streak-num">0</span>&nbsp;dias
+    </div>
+  </div>
+  <!-- Capture area -->
+  <div class="diary-top">
+    <div class="diary-prompt-label" id="diary-prompt-label">O que você aprendeu hoje?</div>
+    <textarea class="diary-capture" id="diary-text" placeholder="Escreva aqui — sem julgamentos, sem formalidade…" rows="3"></textarea>
+    <!-- Step tags -->
+    <div class="diary-tags-row" id="diary-step-tags">
+      <span class="diary-tag" data-group="step" data-val="Capsulotrexe" onclick="toggleDiaryTag(this)">Capsulotrexe</span>
+      <span class="diary-tag" data-group="step" data-val="Faco" onclick="toggleDiaryTag(this)">Faco</span>
+      <span class="diary-tag" data-group="step" data-val="Irrigação-Aspiração" onclick="toggleDiaryTag(this)">I&A</span>
+      <span class="diary-tag" data-group="step" data-val="Implante IOL" onclick="toggleDiaryTag(this)">Implante</span>
+      <span class="diary-tag" data-group="step" data-val="Incisão" onclick="toggleDiaryTag(this)">Incisão</span>
+      <span class="diary-tag" data-group="step" data-val="Outra etapa" onclick="toggleDiaryTag(this)">Outra etapa</span>
+    </div>
+    <!-- Mood tags -->
+    <div class="diary-tags-row" style="margin-top:4px" id="diary-mood-tags">
+      <span class="diary-tag" data-group="mood" data-val="Fluiu bem" onclick="toggleDiaryTag(this)">Fluiu bem</span>
+      <span class="diary-tag" data-group="mood" data-val="Aprendi muito" onclick="toggleDiaryTag(this)">Aprendi muito</span>
+      <span class="diary-tag" data-group="mood" data-val="Tive dificuldade" onclick="toggleDiaryTag(this)">Tive dificuldade</span>
+      <span class="diary-tag" data-group="mood" data-val="A rever" onclick="toggleDiaryTag(this)">A rever</span>
+      <span class="diary-tag" data-group="mood" data-val="Confiança cresceu" onclick="toggleDiaryTag(this)">Confiança cresceu</span>
+    </div>
+    <button class="diary-save-btn" onclick="saveDiaryEntry()">Registrar</button>
+  </div>
+  <!-- Timeline -->
+  <div class="diary-timeline" id="diary-timeline"></div>
+</div>
+
 <!-- MAPA CIRÚRGICO -->
 <div class="page" id="page-mapa">
   <div style="margin-top:6px;margin-bottom:18px">
@@ -783,10 +879,10 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
       <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
     </div>
   </button>
-  <button class="nav-btn" id="nav-fila" onclick="goPage('fila')">
-    <svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg>
-    Fila
-    <span class="nav-badge" id="fila-badge" style="display:none"></span>
+  <button class="nav-btn" id="nav-notas" onclick="goPage('notas')">
+    <svg fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Diário
+    <span class="nav-badge" id="notas-badge" style="display:none"></span>
     <span class="nav-btn-dot"></span>
   </button>
   <button class="nav-btn" id="nav-analise" onclick="goPage('analise')">
@@ -1638,6 +1734,7 @@ function goPage(p){
   if(p==='nova')initIntercSteps();
   if(p==='atrasos')renderAtrasos();
   if(p==='mapa')initMapaPage();
+  if(p==='notas')renderDiaryTimeline();
 }
 function goBack(){goPage(prevPage||'pacientes')}
 function showDetail(id){
@@ -3444,7 +3541,8 @@ document.addEventListener('DOMContentLoaded',function(){
   document.getElementById('headerDate').textContent=d.toLocaleDateString('pt-BR',{weekday:'short',day:'numeric',month:'short'});
   document.getElementById('f-data').value=hoje();
   var _calM=document.getElementById('cal-month-modal');if(_calM)_calM.addEventListener('click',function(e){if(e.target===this)closeCalMonth();});
-  loadDB();initIntercSteps();initSupabase();checkA2HS();
+  loadDB();initIntercSteps();initSupabase();checkA2HS();initTheme();initDiary();
+  window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window._deferredInstallPrompt=e;});
   document.getElementById('posop-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
   document.getElementById('indica-modal').addEventListener('click',function(e){if(e.target===this)closeIndicaModal();});
   document.getElementById('reset-modal').addEventListener('click',function(e){if(e.target===this)fecharResetModal();});
@@ -3552,42 +3650,57 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- MENU BOTÃO FLUTUANTE -->
 <div id="fab-menu-overlay" onclick="closeFabMenu()" style="display:none;position:fixed;inset:0;z-index:498;background:transparent"></div>
-<div id="fab-panel" style="display:none;position:fixed;bottom:80px;right:16px;z-index:499;background:#FFFFFF;border-radius:16px;box-shadow:0 4px 24px rgba(34,22,17,0.15);padding:8px 0;min-width:200px;border:1px solid #E6DDD0">
-  <!-- Importar -->
-  <button onclick="importarDados();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⬆</span>
-    Importar backup
+<div id="fab-panel" style="display:none;position:fixed;bottom:80px;right:16px;z-index:499;background:var(--card);border-radius:16px;box-shadow:0 4px 28px rgba(34,22,17,0.18);padding:8px 0;min-width:210px;border:1px solid var(--border)">
+  <!-- Sincronizar agora -->
+  <button onclick="syncNow();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--infoSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--info)" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+    </span>
+    Sincronizar agora
   </button>
-  <!-- Exportar -->
-  <button onclick="exportarDados();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#0a0a0a;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⬇</span>
-    Exportar backup
+  <!-- Compartilhar com supervisor -->
+  <button onclick="compartilharComSupervisor();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--okSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--ok)" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+    </span>
+    Compartilhar com supervisor
   </button>
-  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
+  <!-- Instalar app -->
+  <button onclick="triggerInstallApp();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--amberSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2.2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+    </span>
+    Instalar app
+  </button>
+  <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <!-- Análise PDF -->
-  <button onclick="exportarAnalise();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#2c3e7a;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#eef0f8;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📄</span>
+  <button onclick="exportarAnalise();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--bgDeep);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    </span>
     Análise em PDF
   </button>
-  <!-- Excel -->
-  <button onclick="exportarExcel();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#1a7a4a;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#eef8f2;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📊</span>
-    Exportar para Excel
-  </button>
-  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
-  <button onclick="registrarPush();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#7a4a1a;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#fdf5ee;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔔</span>
+  <!-- Notificações -->
+  <button onclick="registrarPush();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--warnSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--warn)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </span>
     Ativar notificações
   </button>
-  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
-  <button onclick="doLogout();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#555;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">⏻</span>
+  <div style="height:1px;background:var(--border);margin:4px 0"></div>
+  <!-- Sair -->
+  <button onclick="doLogout();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--muted);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--bgDeep);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </span>
     Sair da conta
   </button>
-  <div style="height:1px;background:#f0f0f0;margin:4px 0"></div>
+  <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <!-- Excluir tudo -->
-  <button onclick="mostrarResetConfirm();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:#c0392b;text-align:left">
-    <span style="width:32px;height:32px;border-radius:50%;background:#fdf0f0;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🗑</span>
+  <button onclick="mostrarResetConfirm();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--danger);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--dangerSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--danger)" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    </span>
     Excluir tudo
   </button>
 </div>
@@ -3822,6 +3935,210 @@ function closeFabMenu(){
   document.getElementById('fab-panel').style.display='none';
   document.getElementById('fab-menu-overlay').style.display='none';
   document.getElementById('fab-btn').style.transform='';
+}
+
+// ── THEME TOGGLE ──────────────────────────────────────────────────
+function toggleTheme(){
+  var dark=document.body.classList.toggle('dark');
+  localStorage.setItem('phacolog_theme',dark?'dark':'light');
+  document.getElementById('theme-icon-moon').style.display=dark?'none':'block';
+  document.getElementById('theme-icon-sun').style.display=dark?'block':'none';
+  var meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.setAttribute('content',dark?'#140D08':'#F6F2EC');
+}
+function initTheme(){
+  var saved=localStorage.getItem('phacolog_theme');
+  if(saved==='dark'){
+    document.body.classList.add('dark');
+    document.getElementById('theme-icon-moon').style.display='none';
+    document.getElementById('theme-icon-sun').style.display='block';
+    var meta=document.querySelector('meta[name="theme-color"]');
+    if(meta)meta.setAttribute('content','#140D08');
+  }
+}
+
+// ── FAB ACTIONS ───────────────────────────────────────────────────
+function syncNow(){
+  if(!_sb||!currentUser){showToast('Sem conexão. Verifique sua internet.');return;}
+  showToast('Sincronizando…');
+  var promises=db.map(function(p){return syncOneSurgery(p);});
+  Promise.all(promises).then(function(){
+    showToast('Dados sincronizados com sucesso!');
+  }).catch(function(){
+    showToast('Erro ao sincronizar. Tente novamente.');
+  });
+}
+function compartilharComSupervisor(){
+  var total=db.length;
+  var compl=db.filter(function(p){return(p.intercorrencias||[]).some(function(c){return c&&c!=='Sem intercorrências';});}).length;
+  var txt='Relatório Phacolog — '+new Date().toLocaleDateString('pt-BR')+'\n';
+  txt+='Total de cirurgias: '+total+'\n';
+  txt+='Intercorrências registradas: '+compl+'\n';
+  if(navigator.share){
+    navigator.share({title:'Relatório Phacolog',text:txt}).catch(function(){});
+  } else {
+    exportarAnalise();
+  }
+}
+function triggerInstallApp(){
+  var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  if(isIOS){
+    localStorage.removeItem('a2hs_dismissed');
+    var banner=document.getElementById('a2hs-banner');
+    if(banner)banner.classList.remove('hidden');
+  } else if(window._deferredInstallPrompt){
+    window._deferredInstallPrompt.prompt();
+    window._deferredInstallPrompt.userChoice.then(function(){window._deferredInstallPrompt=null;});
+  } else {
+    showToast('App já instalado ou instalação não disponível neste navegador.');
+  }
+}
+function showToast(msg){
+  var t=document.getElementById('toast-msg');
+  if(!t){
+    t=document.createElement('div');t.id='toast-msg';
+    t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--black);color:var(--bg);padding:10px 18px;border-radius:20px;font-family:var(--fontUI);font-size:0.78rem;font-weight:500;z-index:9999;pointer-events:none;transition:opacity 0.3s;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.25)';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._hide);
+  t._hide=setTimeout(function(){t.style.opacity='0';},2800);
+}
+
+// ── DIÁRIO CIRÚRGICO ──────────────────────────────────────────────
+var DIARY_KEY='phacolog_diary_v1';
+var _diaryStep=null,_diaryMood=null;
+var DIARY_PROMPTS=[
+  'O que você aprendeu hoje na mesa?',
+  'Qual momento te fez pensar mais?',
+  'Anote enquanto ainda está fresco.',
+  'Como se sentiu durante o procedimento?',
+  'O que faria diferente da próxima vez?',
+  'Qual etapa mais te surpreendeu hoje?',
+  'Escreva sem filtro — o diário é seu.',
+];
+function getDiary(){
+  try{return JSON.parse(localStorage.getItem(DIARY_KEY)||'[]');}catch(e){return[];}
+}
+function saveDiary(entries){localStorage.setItem(DIARY_KEY,JSON.stringify(entries));}
+function toggleDiaryTag(el){
+  var group=el.getAttribute('data-group');
+  var val=el.getAttribute('data-val');
+  var allInGroup=el.closest('.diary-tags-row').querySelectorAll('.diary-tag');
+  var wasSelected=el.classList.contains('sel');
+  allInGroup.forEach(function(t){t.classList.remove('sel');});
+  if(!wasSelected){
+    el.classList.add('sel');
+    if(group==='step')_diaryStep=val;
+    else _diaryMood=val;
+  } else {
+    if(group==='step')_diaryStep=null;
+    else _diaryMood=null;
+  }
+}
+function saveDiaryEntry(){
+  var text=document.getElementById('diary-text').value.trim();
+  if(!text){document.getElementById('diary-text').focus();return;}
+  var entries=getDiary();
+  entries.unshift({
+    id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    date:new Date().toISOString().slice(0,10),
+    text:text,
+    step:_diaryStep||null,
+    mood:_diaryMood||null,
+    createdAt:new Date().toISOString()
+  });
+  saveDiary(entries);
+  document.getElementById('diary-text').value='';
+  document.querySelectorAll('.diary-tag.sel').forEach(function(t){t.classList.remove('sel');});
+  _diaryStep=null;_diaryMood=null;
+  renderDiaryTimeline();
+  showToast('Anotado no diário.');
+}
+function deleteDiaryEntry(id){
+  var entries=getDiary().filter(function(e){return e.id!==id;});
+  saveDiary(entries);
+  renderDiaryTimeline();
+}
+function renderDiaryTimeline(){
+  var entries=getDiary();
+  var tl=document.getElementById('diary-timeline');
+  if(!tl)return;
+  // Streak
+  var streak=calcDiaryStreak(entries);
+  var sb=document.getElementById('diary-streak-badge');
+  var sn=document.getElementById('diary-streak-num');
+  if(sb&&sn){sb.style.display=streak>1?'inline-flex':'none';sn.textContent=streak;}
+  if(!entries.length){
+    tl.innerHTML='<div class="diary-empty"><div class="diary-empty-icon">📖</div><div style="font-family:var(--fontDisplay);font-size:1.1rem;color:var(--black);margin-bottom:6px">Nenhuma anotação ainda</div><div style="font-size:0.78rem">Registre sua primeira reflexão acima.</div></div>';
+    return;
+  }
+  var grouped={};
+  entries.forEach(function(e){
+    if(!grouped[e.date])grouped[e.date]=[];
+    grouped[e.date].push(e);
+  });
+  var html='';
+  var dates=Object.keys(grouped).sort().reverse();
+  dates.forEach(function(d){
+    var label=formatDiaryDate(d);
+    html+='<div class="diary-date-header">'+label+'</div>';
+    grouped[d].forEach(function(e){
+      var moodClass=e.mood==='Fluiu bem'||e.mood==='Aprendi muito'||e.mood==='Confiança cresceu'?'mood-ok':e.mood==='Tive dificuldade'||e.mood==='A rever'?'mood-warn':'';
+      html+='<div class="diary-entry">';
+      html+='<div class="diary-entry-text">'+escapeHtml(e.text)+'</div>';
+      html+='<div class="diary-entry-footer">';
+      html+='<div class="diary-entry-chips">';
+      if(e.step)html+='<span class="diary-entry-chip step">'+escapeHtml(e.step)+'</span>';
+      if(e.mood)html+='<span class="diary-entry-chip '+moodClass+'">'+escapeHtml(e.mood)+'</span>';
+      html+='</div>';
+      html+='<div style="display:flex;align-items:center;gap:6px">';
+      html+='<span class="diary-entry-time">'+formatDiaryTime(e.createdAt)+'</span>';
+      html+='<button class="diary-entry-del" onclick="deleteDiaryEntry(\''+e.id+'\')" title="Remover">×</button>';
+      html+='</div>';
+      html+='</div>';
+      html+='</div>';
+    });
+  });
+  tl.innerHTML=html;
+}
+function calcDiaryStreak(entries){
+  if(!entries.length)return 0;
+  var dates=[...new Set(entries.map(function(e){return e.date;}))].sort().reverse();
+  var today=new Date().toISOString().slice(0,10);
+  if(dates[0]!==today&&dates[0]!==yesterday())return 0;
+  var streak=1;
+  for(var i=1;i<dates.length;i++){
+    var prev=new Date(dates[i-1]);prev.setDate(prev.getDate()-1);
+    var prevStr=prev.toISOString().slice(0,10);
+    if(dates[i]===prevStr)streak++;
+    else break;
+  }
+  return streak;
+}
+function yesterday(){var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);}
+function formatDiaryDate(d){
+  var today=new Date().toISOString().slice(0,10);
+  var yest=yesterday();
+  if(d===today)return 'Hoje';
+  if(d===yest)return 'Ontem';
+  var dt=new Date(d+'T12:00:00');
+  return dt.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+}
+function formatDiaryTime(iso){
+  if(!iso)return '';
+  var d=new Date(iso);
+  return d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+}
+function escapeHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function initDiary(){
+  var prompts=DIARY_PROMPTS;
+  var idx=new Date().getDate()%prompts.length;
+  var lbl=document.getElementById('diary-prompt-label');
+  if(lbl)lbl.textContent=prompts[idx];
+  renderDiaryTimeline();
 }
 
 function exportarExcel(){
