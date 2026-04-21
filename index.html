@@ -1232,6 +1232,7 @@ function initSupabase(){
       atualizarNomeHeader();
       document.getElementById('auth-overlay').classList.add('hidden');
       loadDB();
+      cleanupPacEntries();
       var didMigrate=localStorage.getItem('sb_migration_done');
       if(!didMigrate){migrateLocalToSupabase();}
       else{syncDown();}
@@ -1368,6 +1369,19 @@ function migrateLocalToSupabase(){
   db.forEach(function(p){syncOneSurgery(p);});
   localStorage.setItem('sb_migration_done','1');
   syncDown();
+}
+function cleanupPacEntries(){
+  if(!_sb||!currentUser)return;
+  if(localStorage.getItem('pac_cleanup_done'))return;
+  var pacIds=db.filter(function(p){return p.nome==='[Pac.]';}).map(function(p){return p.id;});
+  if(!pacIds.length){localStorage.setItem('pac_cleanup_done','1');return;}
+  pacIds.forEach(function(lid){
+    _sb.from('surgeries').delete().eq('user_id',currentUser.id).eq('local_id',lid).then(function(){});
+    _sb.from('surgeries').delete().eq('user_id',currentUser.id).eq('id',lid).then(function(){});
+  });
+  db=db.filter(function(p){return p.nome!=='[Pac.]';});
+  save();
+  localStorage.setItem('pac_cleanup_done','1');
 }
 function syncDown(){
   if(!_sb||!currentUser)return;
