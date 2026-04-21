@@ -1836,9 +1836,9 @@ function renderCalMonth(){
   var map={};
   db.forEach(function(p){
     if(!p.dataCirurgia)return;
-    var expD1=addD1(p.dataCirurgia);
-    var expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    var expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    var expD1=(p.posOps&&p.posOps.D1&&p.posOps.D1.data)?p.dataCirurgia:((p.proximoRetornoD1)||addD1(p.dataCirurgia));
+    var expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    var expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     var d1done=p.posOps&&p.posOps.D1;
     [{tipo:'D1',exp:expD1,req:true},{tipo:'D7',exp:expD7,req:!!d1done},{tipo:'D30',exp:expD30,req:!!d1done}].forEach(function(t){
       if(!t.req||!t.exp)return;
@@ -1921,9 +1921,9 @@ function renderAgenda(){
   var todayStr=hoje();
   db.forEach(function(p){
     if(!p.dataCirurgia)return;
-    var expD1=addD1(p.dataCirurgia);
-    var expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    var expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    var expD1=(p.posOps&&p.posOps.D1&&p.posOps.D1.data)?p.dataCirurgia:((p.proximoRetornoD1)||addD1(p.dataCirurgia));
+    var expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    var expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     var d1done=p.posOps&&p.posOps.D1;
     [{tipo:'D1',exp:expD1,req:true},{tipo:'D7',exp:expD7,req:!!d1done},{tipo:'D30',exp:expD30,req:!!d1done}].forEach(function(t){
       if(!t.req||!t.exp)return;
@@ -1972,9 +1972,9 @@ function agendaDayClick(dateStr){
   var items=[];
   db.forEach(function(p){
     if(!p.dataCirurgia)return;
-    var expD1=addD1(p.dataCirurgia);
-    var expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    var expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    var expD1=(p.posOps&&p.posOps.D1&&p.posOps.D1.data)?p.dataCirurgia:((p.proximoRetornoD1)||addD1(p.dataCirurgia));
+    var expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    var expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     var d1done=p.posOps&&p.posOps.D1;
     [{tipo:'D1',exp:expD1,req:true},{tipo:'D7',exp:expD7,req:!!d1done},{tipo:'D30',exp:expD30,req:!!d1done}].forEach(function(t){
       if(!t.req||!t.exp||t.exp!==dateStr)return;
@@ -2028,8 +2028,8 @@ function renderHome(){
   db.forEach(p=>{
     if(!p.dataCirurgia)return;
     const expD1=addD1(p.dataCirurgia);
-    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     const d1done=p.posOps&&p.posOps.D1;
     const tipoExps={D1:expD1,D7:expD7,D30:expD30};
     ['D1','D7','D30'].forEach(tipo=>{
@@ -2144,8 +2144,8 @@ function homeStripClick(ds){
   db.forEach(p=>{
     if(!p.dataCirurgia)return;
     const expD1=addD1(p.dataCirurgia);
-    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     const d1done=p.posOps&&p.posOps.D1;
     [{tipo:'D1',exp:expD1,req:true},{tipo:'D7',exp:expD7,req:!!d1done},{tipo:'D30',exp:expD30,req:!!d1done}].forEach(function(t){
       if(!t.req||!t.exp||t.exp!==ds)return;
@@ -2221,8 +2221,8 @@ function renderAtrasos(){
   db.forEach(p=>{
     if(!p.dataCirurgia)return;
     const expD1=addD1(p.dataCirurgia);
-    const expD7=addDaysSkipWeekend(p.dataCirurgia,7);
-    const expD30=addDaysSkipWeekend(p.dataCirurgia,30);
+    const expD7=(p.posOps&&p.posOps.D1&&p.posOps.D1.proximoRetorno)?p.posOps.D1.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,7);
+    const expD30=(p.posOps&&p.posOps.D7&&p.posOps.D7.proximoRetorno)?p.posOps.D7.proximoRetorno:addDaysSkipWeekend(p.dataCirurgia,30);
     const d1done=p.posOps&&p.posOps.D1;
     const tipoExps={D1:expD1,D7:expD7,D30:expD30};
     ['D1','D7','D30'].forEach(tipo=>{
