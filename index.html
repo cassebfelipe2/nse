@@ -1364,9 +1364,10 @@ function syncDeleteSurgery(localId){
 }
 function migrateLocalToSupabase(){
   if(!_sb||!currentUser)return;
-  if(!db.length){localStorage.setItem('sb_migration_done','1');return;}
+  if(!db.length){localStorage.setItem('sb_migration_done','1');syncDown();return;}
   db.forEach(function(p){syncOneSurgery(p);});
   localStorage.setItem('sb_migration_done','1');
+  syncDown();
 }
 function syncDown(){
   if(!_sb||!currentUser)return;
