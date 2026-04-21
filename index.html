@@ -1369,19 +1369,10 @@ function migrateLocalToSupabase(){
   localStorage.setItem('sb_migration_done','1');
   syncDown();
 }
-function dbgToast(msg){
-  var t=document.createElement('div');
-  t.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#221611;color:#f6f2ec;padding:8px 16px;border-radius:8px;font-size:0.75rem;z-index:9999;max-width:90vw;text-align:center;font-family:-apple-system,sans-serif';
-  t.textContent=msg;document.body.appendChild(t);
-  setTimeout(function(){t.remove();},5000);
-}
 function syncDown(){
-  if(!_sb||!currentUser){dbgToast('syncDown: sem _sb ou currentUser');return;}
-  dbgToast('Buscando no Supabase…');
+  if(!_sb||!currentUser)return;
   _sb.from('surgeries').select('*').eq('user_id',currentUser.id).then(function(res){
-    if(res.error){dbgToast('Erro Supabase: '+res.error.message);return;}
-    if(!res.data||!res.data.length){dbgToast('Supabase: 0 cirurgias encontradas para este usuário');return;}
-    dbgToast('Supabase: '+res.data.length+' cirurgias encontradas');
+    if(res.error||!res.data||!res.data.length)return;
     var surgeries=res.data;
     var ids=surgeries.map(function(s){return s.id;});
     Promise.all([
