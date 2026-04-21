@@ -1234,7 +1234,7 @@ function initSupabase(){
       loadDB();
       var didMigrate=localStorage.getItem('sb_migration_done');
       if(!didMigrate){migrateLocalToSupabase();}
-      else if(db.length===0){syncDown();}
+      else{syncDown();}
       renderHome();updateFilaBadge();
       setTimeout(checkPushPrompt,1200);
     } else {
@@ -1381,7 +1381,25 @@ function syncDown(){
     ]).then(function(results){
       var compls=results[0].data||[];var fups=results[1].data||[];var changed=false;
       surgeries.forEach(function(s){
-        var exists=db.some(function(x){return x.id===s.local_id;});if(exists)return;
+        var localId=s.local_id||s.id;
+        var existsIdx=db.findIndex(function(x){return x.id===localId;});
+        if(existsIdx>=0){
+          var p=db[existsIdx];
+          if(!p.posOps||!Object.keys(p.posOps).length){
+            var myFups2=fups.filter(function(f){return f.surgery_id===s.id;});
+            var posOps2={};
+            myFups2.forEach(function(f){
+              if(f.type==='D1'||f.type==='D7'||f.type==='D30'){
+                posOps2[f.type]={data:f.completed_at||'',av:f.visual_acuity||'',
+                  pio:f.pio!=null?String(f.pio):'',ref:f.refraction||'',ca:f.anterior_chamber||'',
+                  cornea:f.cornea||'',obs:f.obs||'',conduta:f.conduta||'',
+                  proximoRetorno:f.proximo_retorno||''};
+              }
+            });
+            if(Object.keys(posOps2).length){db[existsIdx].posOps=posOps2;changed=true;}
+          }
+          return;
+        }
         var myCompls=compls.filter(function(c){return c.surgery_id===s.id;});
         var interc=myCompls.map(function(c){return c.name;});if(!interc.length)interc=['Sem intercorrências'];
         var myFups=fups.filter(function(f){return f.surgery_id===s.id;});
