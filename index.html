@@ -1258,13 +1258,16 @@ function showSignup(){
   showAuthErrorSu('');
 }
 function doLogin(){
-  if(!_sb)return;
+  if(!_sb){showAuthError('Carregando… tente novamente em instantes.');return;}
   var email=document.getElementById('auth-email').value.trim();
   var pass=document.getElementById('auth-pass').value;
   if(!email||!pass){showAuthError('Preencha e-mail e senha.');return;}
   showAuthError('');
+  var btn=document.querySelector('#auth-login-view .auth-btn');
+  if(btn){btn.disabled=true;btn.textContent='Entrando…';}
   _sb.auth.signInWithPassword({email:email,password:pass}).then(function(res){
-    if(res.error){showAuthError(res.error.message||'Erro ao entrar.');}
+    if(btn){btn.disabled=false;btn.textContent='Entrar';}
+    if(res.error){showAuthError('Senha ou e-mail incorretos. Tente novamente.');}
   });
 }
 function doSignup(){
@@ -3616,11 +3619,9 @@ function importarDoMapa(){
     db.push(novo); ids.push(novo.id); count++;
   });
   if(!count)return;
-  save(); updateFilaBadge();
-  alert(`✓ ${count} cirurgia${count>1?'s':''} importada${count>1?'s':''}!\n\nD1 agendado automaticamente (próximo dia útil).\nPreencha: técnica, aparelho, intercorrências e avaliação mental.`);
-  renderMapaChecklist();
-  if(count===1) showDetail(ids[0]);
-  else goPage('pacientes');
+  save(); updateFilaBadge(); renderHome();
+  goPage('home');
+  showToast('✓ '+count+' cirurgia'+(count>1?'s':'')+' importada'+(count>1?'s':'')+' do mapa!');
 }
 
 // ── INIT ─────────────────────────────────────────────────────────
