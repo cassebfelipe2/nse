@@ -806,6 +806,10 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 
 <!-- FILA (indicações contralaterais) -->
 <div class="page" id="page-fila">
+  <button class="detail-back" onclick="goBack()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Voltar
+  </button>
   <div style="margin-top:6px;margin-bottom:18px">
     <div class="sec-title">Fila Cirúrgica</div>
     <div class="sec-sub" id="fila-sub">Olhos contralaterais indicados</div>
@@ -815,6 +819,10 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 
 <!-- DIÁRIO CIRÚRGICO -->
 <div class="page" id="page-notas">
+  <button class="detail-back" onclick="goBack()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Voltar
+  </button>
   <!-- Header -->
   <div class="diary-header-row">
     <div>
@@ -854,27 +862,15 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 
 <!-- MAPA CIRÚRGICO -->
 <div class="page" id="page-mapa">
+  <button class="detail-back" onclick="goBack()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Voltar
+  </button>
   <div style="margin-top:6px;margin-bottom:18px">
     <div class="sec-title">Mapa Cirúrgico</div>
     <div class="sec-sub">Cole o texto do mapa e importe suas cirurgias</div>
   </div>
   <div id="mapa-upload-area">
-    <div class="mapa-hint">
-      <div id="mapa-img-area" style="margin-bottom:14px">
-        <label style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--card);border:1.5px dashed var(--accent);border-radius:var(--rs);cursor:pointer;font-size:0.78rem;color:var(--accent);font-weight:600">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-          Enviar foto/JPG do mapa
-          <input type="file" id="mapa-img-input" accept="image/*" style="display:none" onchange="processarMapaImagem(this)">
-        </label>
-        <div id="mapa-ocr-progress" style="display:none;margin-top:8px">
-          <div style="background:var(--border);border-radius:2px;overflow:hidden;height:3px">
-            <div id="mapa-ocr-bar" style="width:0%;height:3px;background:var(--accent);transition:width 0.3s"></div>
-          </div>
-          <div id="mapa-ocr-label" style="font-size:0.65rem;color:var(--muted);margin-top:4px">Lendo imagem…</div>
-        </div>
-      </div>
-      <div style="text-align:center;font-size:0.65rem;color:var(--muted);margin-bottom:10px">— ou cole o texto abaixo —</div>
-    </div>
     <div class="field">
       <label>Texto do mapa cirúrgico</label>
       <textarea id="mapa-textarea" style="min-height:160px;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Abra o PDF do mapa → Ctrl+A → Ctrl+C → cole aqui"></textarea>
@@ -1090,8 +1086,13 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
       <input type="date" id="po-data">
     </div>
 
-    <div class="field"><label>AV sem correção</label>
-      <select id="po-av"><option value="">—</option><option>20/20</option><option>20/25</option><option>20/30</option><option>20/40</option><option>20/50</option><option>20/60</option><option>20/80</option><option>20/100</option><option>20/200</option><option>CD 1m</option><option>CD 50cm</option><option>MM</option><option>PL+</option><option>SPL</option></select>
+    <div class="field-row">
+      <div class="field"><label>AV sem correção</label>
+        <select id="po-av"><option value="">—</option><option>20/20</option><option>20/25</option><option>20/30</option><option>20/40</option><option>20/50</option><option>20/60</option><option>20/80</option><option>20/100</option><option>20/200</option><option>CD 1m</option><option>CD 50cm</option><option>MM</option><option>PL+</option><option>SPL</option></select>
+      </div>
+      <div class="field"><label>AV com correção</label>
+        <select id="po-avcc"><option value="">—</option><option>20/20</option><option>20/25</option><option>20/30</option><option>20/40</option><option>20/50</option><option>20/60</option><option>20/80</option><option>20/100</option><option>20/200</option><option>CD 1m</option><option>CD 50cm</option><option>MM</option><option>PL+</option><option>SPL</option></select>
+      </div>
     </div>
     <div class="field-row">
       <div class="field"><label>PIO (mmHg)</label><input type="number" id="po-pio" placeholder="14"></div>
@@ -2320,7 +2321,7 @@ function renderDetail(id){
       diff===0?`<span class="badge badge-teal">Hoje</span>`:
       `<span class="badge badge-navy">Em ${diff}d</span>`;
     const obsH=done
-      ?`<div class="tl-obs"><b>Córnea:</b> ${done.cornea||done.obs||'—'} · <b>CA:</b> ${done.ca||'—'}<br><b>AV:</b> ${done.av||'—'} · <b>PIO:</b> ${done.pio?done.pio+' mmHg':'—'}${done.obs&&done.obs!==done.cornea?`<br>${done.obs}`:''}${done.conduta?`<br><span style="font-size:0.7rem;color:var(--muted)">Conduta: ${done.conduta}</span>`:''}${done.proximoRetorno?`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font-size:0.7rem;font-weight:700;color:var(--black)">Próximo retorno: ${fmtDate(done.proximoRetorno)}</span><span style="font-size:0.65rem;color:var(--muted)">(${diffDays(done.proximoRetorno,hoje())>0?'em '+diffDays(done.proximoRetorno,hoje())+'d':diffDays(done.proximoRetorno,hoje())===0?'hoje':'atrasado'})</span></div>`:''}</div>
+      ?`<div class="tl-obs"><b>Córnea:</b> ${done.cornea||done.obs||'—'} · <b>CA:</b> ${done.ca||'—'}<br><b>AVSC:</b> ${done.av||'—'} · <b>AVCC:</b> ${done.avcc||'—'} · <b>PIO:</b> ${done.pio?done.pio+' mmHg':'—'}${done.obs&&done.obs!==done.cornea?`<br>${done.obs}`:''}${done.conduta?`<br><span style="font-size:0.7rem;color:var(--muted)">Conduta: ${done.conduta}</span>`:''}${done.proximoRetorno?`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font-size:0.7rem;font-weight:700;color:var(--black)">Próximo retorno: ${fmtDate(done.proximoRetorno)}</span><span style="font-size:0.65rem;color:var(--muted)">(${diffDays(done.proximoRetorno,hoje())>0?'em '+diffDays(done.proximoRetorno,hoje())+'d':diffDays(done.proximoRetorno,hoje())===0?'hoje':'atrasado'})</span></div>`:''}</div>
         <button class="tl-add-btn" style="background:#444;margin-top:6px" onclick="openPosOp('${id}','${tipo}')">✏ Editar</button>`
       :`<div class="tl-obs-empty">${diff<0?'Retorno não realizado — registre abaixo':'Não registrado'}</div><button class="tl-add-btn" onclick="openPosOp('${id}','${tipo}')">+ Registrar ${tipo}</button>`;
     return `<div class="tl-item"><div class="tl-dot ${dotCls}">${done?'✓':tipo==='D1'?'1':tipo==='D7'?'7':'30'}</div><div class="tl-content"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tl-title">${tInfo[tipo].label}</span>${sb}</div><div class="tl-date">${exp?fmtDate(exp):'—'}</div>${obsH}</div></div>`;
@@ -2736,7 +2737,8 @@ function salvarIndicacao(){
   save();
   updateFilaBadge();
   closeIndicaModal();
-  renderDetail(indicaContext.patId);
+  showToast('✓ '+olho+' adicionado à fila cirúrgica');
+  goPage('home');
 }
 
 // ── PÓS-OP ───────────────────────────────────────────────────────
@@ -2752,12 +2754,14 @@ function openPosOp(patId,tipo){
 
   // Preenche campos — usa dados existentes se houver, senão limpa
   const fAv=document.getElementById('po-av');
+  const fAvcc=document.getElementById('po-avcc');
   const fPio=document.getElementById('po-pio');
   const fRef=document.getElementById('po-ref');
   const fObs=document.getElementById('po-obs');
   const fCond=document.getElementById('po-conduta');
 
-  if(fAv)  fAv.value  = existing?existing.av||'':'';
+  if(fAv)   fAv.value   = existing?existing.av||'':'';
+  if(fAvcc) fAvcc.value = existing?existing.avcc||'':'';
   if(fPio) fPio.value = existing?existing.pio||'':'';
   if(fRef) fRef.value = existing?existing.ref||'':'';
   if(fObs) fObs.value = existing?existing.obs||'':'';
@@ -2882,6 +2886,7 @@ function salvarPosOp(){
   p.posOps[tipo]={
     data:dataRegistro,
     av:document.getElementById('po-av').value,
+    avcc:document.getElementById('po-avcc').value,
     pio:document.getElementById('po-pio').value,
     ref:document.getElementById('po-ref').value,
     ca:_poCa?_poCa.value:'',
@@ -3549,88 +3554,6 @@ function parseMapa(rawText){
 }
 
 
-function loadTesseract(cb){
-  if(window.Tesseract){cb();return;}
-  var s=document.createElement('script');
-  s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
-  s.onload=cb;
-  document.head.appendChild(s);
-}
-
-function preprocessImagem(img){
-  var canvas=document.createElement('canvas');
-  // Arquivo digital: manter resolução original ou escalar levemente
-  var scale=Math.min(2, 2400/img.naturalWidth);
-  canvas.width=Math.round(img.naturalWidth*scale);
-  canvas.height=Math.round(img.naturalHeight*scale);
-  var ctx=canvas.getContext('2d');
-  ctx.imageSmoothingEnabled=true;
-  ctx.imageSmoothingQuality='high';
-  ctx.drawImage(img,0,0,canvas.width,canvas.height);
-  // Grayscale suave — sem binarização (arquivo digital já é limpo)
-  var id=ctx.getImageData(0,0,canvas.width,canvas.height);
-  var d=id.data;
-  for(var i=0;i<d.length;i+=4){
-    var g=Math.round(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
-    d[i]=d[i+1]=d[i+2]=g;
-  }
-  ctx.putImageData(id,0,0);
-  return canvas;
-}
-
-function processarMapaImagem(input){
-  var file=input.files[0]; if(!file)return;
-  document.getElementById('mapa-ocr-progress').style.display='block';
-  document.getElementById('mapa-ocr-label').textContent='Carregando leitor…';
-  document.getElementById('mapa-error').style.display='none';
-  loadTesseract(function(){
-    var img=new Image();
-    img.onload=function(){
-      var canvas=preprocessImagem(img);
-      var loggerFn=function(m){
-        if(m.status==='recognizing text'){
-          var pct=Math.round(m.progress*100);
-          document.getElementById('mapa-ocr-bar').style.width=pct+'%';
-          document.getElementById('mapa-ocr-label').textContent='Lendo… '+pct+'%';
-        } else if(m.status==='loading tesseract core'||m.status==='initializing tesseract'){
-          document.getElementById('mapa-ocr-label').textContent='Iniciando…';
-        }
-      };
-      // Worker API: permite configurar PSM 6 (bloco uniforme) — melhor para tabelas digitais
-      Tesseract.createWorker('por',1,{logger:loggerFn}).then(function(worker){
-        return worker.setParameters({
-          tessedit_pageseg_mode:'6'   // single uniform block — lê tabela sem confundir colunas
-        }).then(function(){
-          return worker.recognize(canvas);
-        }).then(function(result){
-          worker.terminate();
-          return result;
-        });
-      }).then(function(result){
-        document.getElementById('mapa-ocr-progress').style.display='none';
-        var texto=result.data.text||'';
-        if(!texto.trim()){
-          document.getElementById('mapa-error').textContent='Não foi possível ler o arquivo.';
-          document.getElementById('mapa-error').style.display='block';
-          return;
-        }
-        document.getElementById('mapa-img-area').style.display='none';
-        var ta=document.getElementById('mapa-textarea');
-        ta.value=texto;
-        // Mostra texto OCR na textarea — usuário revisa antes de processar
-        var lbl=document.querySelector('#mapa-upload-area label[for="mapa-textarea"], #mapa-upload-area .field label');
-        if(lbl) lbl.textContent='Texto lido pelo OCR — revise e clique "Ler mapa"';
-        // Tenta processar automaticamente; se falhar deixa o texto visível para correção manual
-        try{ processarMapaTexto(); } catch(e){}
-      }).catch(function(e){
-        document.getElementById('mapa-ocr-progress').style.display='none';
-        document.getElementById('mapa-error').textContent='Erro OCR: '+e.message;
-        document.getElementById('mapa-error').style.display='block';
-      });
-    };
-    img.src=URL.createObjectURL(file);
-  });
-}
 
 function processarMapaTexto(){
   const ta=document.getElementById('mapa-textarea');
@@ -3641,7 +3564,7 @@ function processarMapaTexto(){
   try{
     const parsed=parseMapa(texto);
     if(!parsed.pacientes||!parsed.pacientes.length){
-      err.textContent='Nenhum paciente encontrado. O OCR pode ter lido mal a tabela — verifique o texto na caixa abaixo e corrija manualmente se necessário.';
+      err.textContent='Nenhum paciente encontrado. Verifique se o texto copiado contém o cabeçalho da tabela (Nome, Lente, Ceratometria…).';
       err.style.display='block'; return;
     }
     mapaData=parsed;
