@@ -3331,10 +3331,10 @@ function parseMapa(rawText){
 
   // ── Divide por cabeçalho da tabela (tolerante a ruído de OCR) ──
   let blocos=rawText.split(/Nome\s+LENTE\s+RxD\s+AV\s+Ceratometria\s+AL\s+AC\s+LIO/i).slice(1);
-  // Fallback 1: qualquer OCR que tenha "Nome" + "Ceratometria" na mesma linha
-  if(!blocos.length) blocos=rawText.split(/Nome.{0,60}Ceratoimetria|Nome.{0,60}Ceratometria/i).slice(1);
-  // Fallback 2: split direto em "Ceratometria" — aparece apenas nos cabeçalhos
-  if(!blocos.length) blocos=rawText.split(/Ceratoimetria|Ceratometria/i).slice(1);
+  // Fallback 1: "Nome" + qualquer variante de Ceratometria na mesma linha
+  if(!blocos.length) blocos=rawText.split(/Nome.{0,80}\bCerat\w{4,}/i).slice(1);
+  // Fallback 2: qualquer variante de Cerat(o/a)metr... — palavra-chave única nos cabeçalhos de bloco
+  if(!blocos.length) blocos=rawText.split(/\bCerat\w{4,}/i).slice(1);
   if(!blocos.length) return result;
 
   // Linhas do texto completo para busca de dificuldade por contexto
@@ -3617,7 +3617,11 @@ function processarMapaImagem(input){
         document.getElementById('mapa-img-area').style.display='none';
         var ta=document.getElementById('mapa-textarea');
         ta.value=texto;
-        processarMapaTexto();
+        // Mostra texto OCR na textarea — usuário revisa antes de processar
+        var lbl=document.querySelector('#mapa-upload-area label[for="mapa-textarea"], #mapa-upload-area .field label');
+        if(lbl) lbl.textContent='Texto lido pelo OCR — revise e clique "Ler mapa"';
+        // Tenta processar automaticamente; se falhar deixa o texto visível para correção manual
+        try{ processarMapaTexto(); } catch(e){}
       }).catch(function(e){
         document.getElementById('mapa-ocr-progress').style.display='none';
         document.getElementById('mapa-error').textContent='Erro OCR: '+e.message;
