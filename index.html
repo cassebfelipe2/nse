@@ -3550,38 +3550,20 @@ function loadTesseract(cb){
 
 function preprocessImagem(img){
   var canvas=document.createElement('canvas');
-  // 2400px para OCR de documentos com texto fino
-  var scale=Math.min(3, 2400/img.naturalWidth);
+  // Arquivo digital: manter resolução original ou escalar levemente
+  var scale=Math.min(2, 2400/img.naturalWidth);
   canvas.width=Math.round(img.naturalWidth*scale);
   canvas.height=Math.round(img.naturalHeight*scale);
   var ctx=canvas.getContext('2d');
   ctx.imageSmoothingEnabled=true;
   ctx.imageSmoothingQuality='high';
   ctx.drawImage(img,0,0,canvas.width,canvas.height);
+  // Grayscale suave — sem binarização (arquivo digital já é limpo)
   var id=ctx.getImageData(0,0,canvas.width,canvas.height);
   var d=id.data;
-  var n=canvas.width*canvas.height;
-  // Grayscale
-  var gray=new Uint8Array(n);
-  for(var i=0;i<n;i++){var p=i*4;gray[i]=Math.round(0.299*d[p]+0.587*d[p+1]+0.114*d[p+2]);}
-  // Otsu: calcula limiar ideal automaticamente
-  var hist=new Array(256).fill(0);
-  for(var i=0;i<n;i++) hist[gray[i]]++;
-  var sum=0; for(var i=0;i<256;i++) sum+=i*hist[i];
-  var sumB=0,wB=0,maxVar=0,thr=128;
-  for(var i=0;i<256;i++){
-    wB+=hist[i]; if(!wB) continue;
-    var wF=n-wB; if(!wF) break;
-    sumB+=i*hist[i];
-    var mB=sumB/wB, mF=(sum-sumB)/wF;
-    var vb=wB*wF*(mB-mF)*(mB-mF);
-    if(vb>maxVar){maxVar=vb;thr=i;}
-  }
-  // Binariza: thr+10 captura tinta levemente desbotada
-  var t2=Math.min(thr+10,245);
-  for(var i=0;i<n;i++){
-    var v=gray[i]<t2?0:255;
-    var p=i*4; d[p]=d[p+1]=d[p+2]=v; d[p+3]=255;
+  for(var i=0;i<d.length;i+=4){
+    var g=Math.round(0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]);
+    d[i]=d[i+1]=d[i+2]=g;
   }
   ctx.putImageData(id,0,0);
   return canvas;
@@ -3596,19 +3578,30 @@ function processarMapaImagem(input){
     var img=new Image();
     img.onload=function(){
       var canvas=preprocessImagem(img);
-      Tesseract.recognize(canvas,'por',{
-        logger:function(m){
-          if(m.status==='recognizing text'){
-            var pct=Math.round(m.progress*100);
-            document.getElementById('mapa-ocr-bar').style.width=pct+'%';
-            document.getElementById('mapa-ocr-label').textContent='Lendo… '+pct+'%';
-          }
+      var loggerFn=function(m){
+        if(m.status==='recognizing text'){
+          var pct=Math.round(m.progress*100);
+          document.getElementById('mapa-ocr-bar').style.width=pct+'%';
+          document.getElementById('mapa-ocr-label').textContent='Lendo… '+pct+'%';
+        } else if(m.status==='loading tesseract core'||m.status==='initializing tesseract'){
+          document.getElementById('mapa-ocr-label').textContent='Iniciando…';
         }
+      };
+      // Worker API: permite configurar PSM 6 (bloco uniforme) — melhor para tabelas digitais
+      Tesseract.createWorker('por',1,{logger:loggerFn}).then(function(worker){
+        return worker.setParameters({
+          tessedit_pageseg_mode:'6'   // single uniform block — lê tabela sem confundir colunas
+        }).then(function(){
+          return worker.recognize(canvas);
+        }).then(function(result){
+          worker.terminate();
+          return result;
+        });
       }).then(function(result){
         document.getElementById('mapa-ocr-progress').style.display='none';
         var texto=result.data.text||'';
         if(!texto.trim()){
-          document.getElementById('mapa-error').textContent='Não foi possível ler a imagem. Tente melhorar a qualidade da foto.';
+          document.getElementById('mapa-error').textContent='Não foi possível ler o arquivo.';
           document.getElementById('mapa-error').style.display='block';
           return;
         }
