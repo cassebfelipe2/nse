@@ -903,6 +903,57 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   </div>
 </div>
 
+<!-- PAGE IMPORTAR DADOS ANTIGOS -->
+<div class="page" id="page-importar">
+  <button class="detail-back" onclick="goBack()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    Voltar
+  </button>
+  <div style="margin-top:6px;margin-bottom:18px">
+    <div class="sec-title">Importar dados antigos</div>
+    <div class="sec-sub">Traga cirurgias de planilhas ou anotações anteriores</div>
+  </div>
+
+  <!-- Passo 1 -->
+  <div class="card" style="margin-bottom:14px;padding:16px">
+    <div class="form-section-title" style="margin-bottom:10px">Passo 1 — Gerar JSON com IA</div>
+    <p style="font-size:0.77rem;color:var(--muted);line-height:1.55;margin-bottom:12px">Copie o prompt abaixo, abra o Claude.ai (ou ChatGPT), cole o prompt seguido dos seus dados brutos (planilha, texto, PDF) e peça para gerar o JSON.</p>
+    <div style="position:relative">
+      <div id="importar-prompt-box" style="background:var(--bgDeep);border-radius:var(--rs);padding:12px 14px;font-size:0.7rem;font-family:var(--fontMono);color:var(--black);line-height:1.6;white-space:pre-wrap;word-break:break-word;border:1px solid var(--border)">Converta os dados abaixo para um array JSON. Cada cirurgia deve seguir exatamente este schema (campos ausentes ficam null):
+[{ nome, prontuario, telefone, data (YYYY-MM-DD), olho (OD/OE/AO), tecnica, lioModelo, lioPoder, catGrau, intercorrencias (array de strings), avPre }]
+Retorne APENAS o JSON puro, sem texto antes ou depois, sem markdown, sem explicação.</div>
+      <button onclick="copiarPromptImportar()" style="position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:0.65rem;font-weight:700;cursor:pointer" id="importar-copy-btn">Copiar</button>
+    </div>
+  </div>
+
+  <!-- Passo 2 -->
+  <div class="card" style="margin-bottom:14px;padding:16px">
+    <div class="form-section-title" style="margin-bottom:10px">Passo 2 — Cole o JSON aqui</div>
+    <div class="field" style="margin-bottom:10px">
+      <label>Resposta da IA (JSON)</label>
+      <textarea id="importar-json-textarea" style="min-height:120px;font-size:0.7rem;font-family:var(--fontMono);resize:vertical" placeholder='[{"nome":"Maria Silva","data":"2024-03-15","olho":"OD",...}]'></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="importarLegado()" style="width:100%">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Validar e pré-visualizar
+    </button>
+    <div id="importar-error" style="display:none;font-size:0.72rem;color:#c0392b;margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rs);border:1px solid #fcc"></div>
+  </div>
+
+  <!-- Preview -->
+  <div id="importar-preview-area" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+      <div style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px">Pré-visualização</div>
+      <span id="importar-count-badge" class="badge badge-ok" style="font-size:0.65rem"></span>
+    </div>
+    <div id="importar-preview-table" style="background:var(--card);border-radius:var(--r);border:1px solid var(--border);overflow:hidden;margin-bottom:14px"></div>
+    <button class="btn btn-primary" onclick="confirmarImportacao()" style="width:100%">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+      Confirmar importação
+    </button>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav class="nav">
   <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
@@ -3804,6 +3855,13 @@ document.addEventListener('DOMContentLoaded',function(){
     </span>
     Importar backup
   </button>
+  <!-- Importar dados antigos -->
+  <button onclick="goPage('importar');closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--infoSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--info)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 8v4l3 3"/></svg>
+    </span>
+    Importar dados antigos
+  </button>
   <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <!-- Sincronizar agora -->
   <button onclick="syncNow();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
@@ -4417,6 +4475,149 @@ function mostrarResetConfirm(){
   document.getElementById('reset-modal').classList.add('open');
   document.body.classList.add('no-scroll');
 }
+// ── IMPORTAR DADOS ANTIGOS ─────────────────────────────────────────
+var _legadoRows=[];
+
+function copiarPromptImportar(){
+  var txt=document.getElementById('importar-prompt-box').textContent||'';
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){
+      var btn=document.getElementById('importar-copy-btn');
+      btn.textContent='Copiado!';
+      setTimeout(function(){btn.textContent='Copiar';},2000);
+    });
+  } else {
+    var ta=document.createElement('textarea');
+    ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');}catch(e){}
+    document.body.removeChild(ta);
+    var btn2=document.getElementById('importar-copy-btn');
+    btn2.textContent='Copiado!';
+    setTimeout(function(){btn2.textContent='Copiar';},2000);
+  }
+}
+
+function importarLegado(){
+  var errEl=document.getElementById('importar-error');
+  errEl.style.display='none';
+  document.getElementById('importar-preview-area').style.display='none';
+  var raw=document.getElementById('importar-json-textarea').value.trim();
+  if(!raw){
+    errEl.textContent='Cole o JSON gerado pela IA no campo acima.';
+    errEl.style.display='block';return;
+  }
+  var parsed;
+  try{parsed=JSON.parse(raw);}catch(e){
+    errEl.textContent='JSON inválido: '+e.message+'. Verifique se copiou apenas o conteúdo JSON, sem texto extra.';
+    errEl.style.display='block';return;
+  }
+  if(!Array.isArray(parsed)||!parsed.length){
+    errEl.textContent='O JSON deve ser um array com pelo menos uma cirurgia.';
+    errEl.style.display='block';return;
+  }
+  _legadoRows=parsed.map(function(r,i){
+    return {
+      _idx:i,
+      nome:r.nome||null,
+      prontuario:r.prontuario||null,
+      telefone:r.telefone||null,
+      data:r.data||null,
+      olho:r.olho||null,
+      tecnica:r.tecnica||null,
+      lioModelo:r.lioModelo||null,
+      lioPoder:r.lioPoder||null,
+      catGrau:r.catGrau||null,
+      intercorrencias:Array.isArray(r.intercorrencias)&&r.intercorrencias.length?r.intercorrencias:['Sem intercorrências'],
+      avPre:r.avPre||null
+    };
+  });
+  renderImportarPreview();
+}
+
+function renderImportarPreview(){
+  var area=document.getElementById('importar-preview-area');
+  var table=document.getElementById('importar-preview-table');
+  var badge=document.getElementById('importar-count-badge');
+  badge.textContent=_legadoRows.length+' cirurgia'+(+(_legadoRows.length!==1)?'s':'');
+  var html='<table style="width:100%;border-collapse:collapse;font-size:0.72rem">';
+  html+='<thead><tr style="background:var(--bgDeep)">';
+  html+='<th style="padding:8px 10px;text-align:left;font-weight:700;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px">Nome</th>';
+  html+='<th style="padding:8px 6px;text-align:left;font-weight:700;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px">Data</th>';
+  html+='<th style="padding:8px 6px;text-align:left;font-weight:700;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px">Olho</th>';
+  html+='<th style="padding:8px 6px;text-align:left;font-weight:700;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px">Técnica</th>';
+  html+='<th style="padding:8px 6px;text-align:left;font-weight:700;color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.5px">LIO</th>';
+  html+='<th style="padding:8px 6px;width:32px"></th>';
+  html+='</tr></thead><tbody>';
+  for(var i=0;i<_legadoRows.length;i++){
+    var r=_legadoRows[i];
+    var bg=i%2===0?'var(--card)':'var(--bgDeep)';
+    html+='<tr style="background:'+bg+';border-top:1px solid var(--border)">';
+    html+='<td style="padding:8px 10px;font-weight:600;color:var(--black)">'+(r.nome||'—')+'</td>';
+    html+='<td style="padding:8px 6px;color:var(--muted)">'+(r.data||'—')+'</td>';
+    html+='<td style="padding:8px 6px;color:var(--muted)">'+(r.olho||'—')+'</td>';
+    html+='<td style="padding:8px 6px;color:var(--muted)">'+(r.tecnica||'—')+'</td>';
+    html+='<td style="padding:8px 6px;color:var(--muted)">'+(r.lioModelo||(r.lioPoder?r.lioPoder+'D':'—'))+'</td>';
+    html+='<td style="padding:8px 6px;text-align:center"><button onclick="removerLegadoRow('+i+')" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:1rem;line-height:1;padding:2px 4px">✕</button></td>';
+    html+='</tr>';
+  }
+  html+='</tbody></table>';
+  table.innerHTML=html;
+  area.style.display='block';
+}
+
+function removerLegadoRow(idx){
+  _legadoRows.splice(idx,1);
+  for(var i=0;i<_legadoRows.length;i++){_legadoRows[i]._idx=i;}
+  if(!_legadoRows.length){
+    document.getElementById('importar-preview-area').style.display='none';
+    return;
+  }
+  renderImportarPreview();
+}
+
+function confirmarImportacao(){
+  if(!_legadoRows.length)return;
+  var base=Date.now();
+  for(var i=0;i<_legadoRows.length;i++){
+    var r=_legadoRows[i];
+    var p={
+      id:String(base+i),
+      nome:r.nome||'',
+      dataCirurgia:r.data||hoje(),
+      idade:'',
+      prontuario:r.prontuario||'',
+      telefone:r.telefone||'',
+      convenio:'',
+      olho:r.olho||'',
+      tecnica:r.tecnica||'',
+      aparelho:'',
+      orientacao:'',
+      anestesia:'',
+      catGrau:r.catGrau||'',
+      obsPreOp:'',
+      lioModelo:r.lioModelo||'',
+      lioPoder:r.lioPoder||'',
+      lioTipo:'',
+      lioMat:'',
+      intercorrencias:r.intercorrencias,
+      obsIntra:'',
+      mental:{confianca:3,controle:3,estresse:3,obs:''},
+      cirurgiao:getNomeCompleto(),
+      posOps:{}
+    };
+    db.push(p);
+    if(_sb&&currentUser){syncOneSurgery(p);}
+  }
+  var n=_legadoRows.length;
+  _legadoRows=[];
+  save();
+  document.getElementById('importar-json-textarea').value='';
+  document.getElementById('importar-preview-area').style.display='none';
+  goPage('home');
+  showToast(n+' cirurgia'+(n!==1?'s':'')+' importada'+(n!==1?'s':'')+'!');
+}
+
 function fecharResetModal(){
   document.getElementById('reset-modal').classList.remove('open');
   document.body.classList.remove('no-scroll');
