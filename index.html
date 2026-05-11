@@ -4480,21 +4480,19 @@ var _legadoRows=[];
 
 function copiarPromptImportar(){
   var txt=document.getElementById('importar-prompt-box').textContent||'';
-  if(navigator.clipboard&&navigator.clipboard.writeText){
-    navigator.clipboard.writeText(txt).then(function(){
-      var btn=document.getElementById('importar-copy-btn');
-      btn.textContent='Copiado!';
-      setTimeout(function(){btn.textContent='Copiar';},2000);
-    });
-  } else {
+  var btn=document.getElementById('importar-copy-btn');
+  function marcarCopiado(){btn.textContent='Copiado!';setTimeout(function(){btn.textContent='Copiar';},2000);}
+  function fallback(){
     var ta=document.createElement('textarea');
     ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
     document.body.appendChild(ta);ta.select();
-    try{document.execCommand('copy');}catch(e){}
+    try{document.execCommand('copy');marcarCopiado();}catch(e){}
     document.body.removeChild(ta);
-    var btn2=document.getElementById('importar-copy-btn');
-    btn2.textContent='Copiado!';
-    setTimeout(function(){btn2.textContent='Copiar';},2000);
+  }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(marcarCopiado).catch(fallback);
+  } else {
+    fallback();
   }
 }
 
@@ -4507,29 +4505,35 @@ function importarLegado(){
     errEl.textContent='Cole o JSON gerado pela IA no campo acima.';
     errEl.style.display='block';return;
   }
+  // Strip markdown code fences that AI often adds (```json ... ```)
+  raw=raw.replace(/^```[a-z]*\s*/i,'').replace(/\s*```\s*$/,'').trim();
   var parsed;
   try{parsed=JSON.parse(raw);}catch(e){
-    errEl.textContent='JSON inválido: '+e.message+'. Verifique se copiou apenas o conteúdo JSON, sem texto extra.';
+    errEl.textContent='JSON inválido: '+e.message+'. Verifique se copiou apenas o JSON, sem texto extra.';
     errEl.style.display='block';return;
   }
+  // Auto-wrap single object in array
+  if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed)){parsed=[parsed];}
   if(!Array.isArray(parsed)||!parsed.length){
     errEl.textContent='O JSON deve ser um array com pelo menos uma cirurgia.';
     errEl.style.display='block';return;
   }
-  _legadoRows=parsed.map(function(r,i){
+  _legadoRows=parsed.map(function(r){
+    var intercs=Array.isArray(r.intercorrencias)
+      ?r.intercorrencias.filter(function(x){return x&&typeof x==='string';}).map(function(x){return x.trim();}).filter(function(x){return x.length>0;})
+      :[];
     return {
-      _idx:i,
       nome:r.nome||null,
       prontuario:r.prontuario||null,
       telefone:r.telefone||null,
       data:r.data||null,
       olho:r.olho||null,
       tecnica:r.tecnica||null,
-      lioModelo:r.lioModelo||null,
-      lioPoder:r.lioPoder||null,
-      catGrau:r.catGrau||null,
-      intercorrencias:Array.isArray(r.intercorrencias)&&r.intercorrencias.length?r.intercorrencias:['Sem intercorrências'],
-      avPre:r.avPre||null
+      lioModelo:r.lioModelo!=null?String(r.lioModelo):null,
+      lioPoder:r.lioPoder!=null?String(r.lioPoder):null,
+      catGrau:r.catGrau!=null?String(r.catGrau):null,
+      intercorrencias:intercs.length?intercs:['Sem intercorrências'],
+      avPre:r.avPre!=null?String(r.avPre):null
     };
   });
   renderImportarPreview();
@@ -4568,7 +4572,6 @@ function renderImportarPreview(){
 
 function removerLegadoRow(idx){
   _legadoRows.splice(idx,1);
-  for(var i=0;i<_legadoRows.length;i++){_legadoRows[i]._idx=i;}
   if(!_legadoRows.length){
     document.getElementById('importar-preview-area').style.display='none';
     return;
@@ -4600,6 +4603,7 @@ function confirmarImportacao(){
       lioPoder:r.lioPoder||'',
       lioTipo:'',
       lioMat:'',
+      avPre:r.avPre||'',
       intercorrencias:r.intercorrencias,
       obsIntra:'',
       mental:{confianca:3,controle:3,estresse:3,obs:''},
