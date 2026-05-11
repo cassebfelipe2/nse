@@ -3357,15 +3357,19 @@ function parseMapa(rawText){
     let nomeLine='', nomeIdx=-1;
     for(let i=0;i<Math.min(lines.length,4);i++){
       const l=lines[i];
-      if(/^(T2|T3|AT\s+TELEFONE|TARDE|MANHÃ|DATA\s+CONFIRM|LIO:|AVISO|^OK\s|^Não\s*OK|CHEGAR|LIO:\s)/i.test(l)) continue;
-      const words=l.split(/\s+/);
+      // Pula cabeçalhos de seção — mas NÃO pula linhas T2/T3 (OCR pode juntar dif+nome)
+      if(/^(AT\s+TELEFONE|TARDE|MANHÃ|DATA\s+CONFIRM|LIO:|AVISO|OK\s|Não\s*OK|CHEGAR)/i.test(l)) continue;
+      // Remove prefixo de dificuldade e artefatos de 1-2 chars do OCR (ex: "T2 LL NOME...")
+      const lProc=l.replace(/^(T2XP|T2[XPºo°]{0,2}|T3)\s+(?:[A-Z]{1,2}\s+)*/i,'').trim();
+      if(!lProc) continue;
+      const words=lProc.split(/\s+/);
       const caps=[];
       for(const w of words){
         if(/^[A-ZÁÉÍÓÚÀÂÊÎÔÛÃÕÇDE]{2,}$/.test(w)&&!stopName.test(w)) caps.push(w);
         else if(particulas.test(w)&&caps.length>0) caps.push(w); // aceita partícula no meio
         else break;
       }
-      if(caps.filter(w=>!particulas.test(w)).length>=2){nomeLine=l;nomeIdx=i;break;}
+      if(caps.filter(w=>!particulas.test(w)).length>=2){nomeLine=lProc;nomeIdx=i;break;}
     }
     if(!nomeLine) continue;
 
@@ -3421,6 +3425,11 @@ function parseMapa(rawText){
     // e também nas linhas anteriores ao "Nome LENTE" no texto completo
     p.dificuldade='T2';
     let difFound=false;
+    // 0. Prefixo da linha do nome — formato OCR: "T3 JOSE IZAILDO DOS PASSOS ..."
+    if(nomeIdx>=0){
+      const prefDif=lines[nomeIdx].match(/^(T2XP|T2\s*XP|T2|T3)\b/i);
+      if(prefDif){p.dificuldade=prefDif[1].replace(/\s/g,'').toUpperCase();difFound=true;}
+    }
     // 1. Dentro do bloco (após o nome)
     for(let i=nomeIdx+1;i<Math.min(lines.length,nomeIdx+4);i++){
       const lu=lines[i].toUpperCase().trim();
