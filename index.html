@@ -1540,7 +1540,7 @@ function checkPushPrompt(){
     });
   });
 }
-var VAPID_PUBLIC_KEY='BNy87uc6_7GmjCiUTaJ51zJa-R8PZpBMA5E0F_oKh8C_EsRw_nT3eaVM1a3KPNOR2JXyth8ipoz8Q3r3Zj2GlWM';
+var VAPID_PUBLIC_KEY='BJJmSppOXlmVU8TxjAa2W7BW4rnWe8_D4Mx0JBB63CMa-caHIqk-5tBil5qLQRlnsJXOYbcys-9D9nkWy8P6IPk';
 function urlBase64ToUint8Array(base64String){
   var padding='='.repeat((4-base64String.length%4)%4);
   var base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');
@@ -1549,21 +1549,30 @@ function urlBase64ToUint8Array(base64String){
   return outputArray;
 }
 function registrarPush(){
-  if(!('serviceWorker' in navigator)){alert('Seu navegador não suporta notificações push.');return;}
-  if(!currentUser){alert('Faça login antes de ativar notificações.');return;}
-  navigator.serviceWorker.ready.then(function(reg){
-    reg.pushManager.getSubscription().then(function(existing){
-      if(existing){alert('Notificações já estão ativas neste dispositivo!');return;}
-      reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)})
-      .then(function(sub){
-        var subJson=sub.toJSON();
-        if(!_sb){alert('Sem conexão com o servidor.');return;}
-        _sb.from('push_subscriptions').upsert({user_id:currentUser.id,subscription:subJson},{onConflict:'user_id'})
-        .then(function(res){
-          if(res.error){console.error('Push sub save error',res.error);}
-          else{alert('Notificações ativadas! Você receberá lembretes de retorno às 20h.');}
+  if(!('serviceWorker' in navigator)||!('PushManager' in window)){
+    showToast('Seu navegador não suporta notificações push.');return;
+  }
+  if(!currentUser){showToast('Faça login antes de ativar notificações.');return;}
+  Notification.requestPermission().then(function(perm){
+    if(perm==='denied'){showToast('Permissão de notificação bloqueada. Verifique as configurações do seu dispositivo.');return;}
+    if(perm!=='granted'){return;}
+    navigator.serviceWorker.ready.then(function(reg){
+      reg.pushManager.getSubscription().then(function(existing){
+        if(existing){showToast('Notificações já estão ativas neste dispositivo!');fecharPushPrompt();return;}
+        reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)})
+        .then(function(sub){
+          var subJson=sub.toJSON();
+          if(!_sb){showToast('Sem conexão — tente novamente após sincronizar.');return;}
+          _sb.from('push_subscriptions').upsert({user_id:currentUser.id,subscription:subJson},{onConflict:'user_id'})
+          .then(function(res){
+            if(res.error){console.error('Push sub save error',res.error);showToast('Erro ao salvar notificação — tente novamente.');}
+            else{fecharPushPrompt();showToast('Notificações ativadas! Você receberá lembretes às 20h.');}
+          });
+        }).catch(function(err){
+          console.error('Push subscribe error',err);
+          showToast('Não foi possível ativar notificações. No iOS, o app precisa estar instalado na tela inicial.');
         });
-      }).catch(function(err){console.error('Push subscribe error',err);alert('Não foi possível ativar notificações.');});
+      });
     });
   });
 }
