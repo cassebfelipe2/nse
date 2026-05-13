@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phacolog · Partner Dashboard</title>
+<meta name="theme-color" content="#333333">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root {
+  --accent: #333333;
+  --dark:   #1a1a1a;
+  --bg:     #F4F4F2;
+  --card:   #FFFFFF;
+  --border: #E5E5E5;
+  --muted:  #6B6B6B;
+  --text:   #1a1a1a;
+  --r:  12px;
+  --rs:  8px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+/* ── LOGIN ─────────────────────────────────────────────────────────── */
+#login-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: var(--bg);
+}
+.login-card {
+  background: var(--card);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  padding: 36px 28px 28px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 28px rgba(0,0,0,0.09);
+}
+.login-logo-wrap {
+  width: 60px; height: 60px;
+  border-radius: 18px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  transition: background 0.3s;
+}
+.login-title { font-family: Georgia, 'Times New Roman', serif; font-size: 1.4rem; color: var(--text); text-align: center; margin-bottom: 5px; }
+.login-sub { font-size: 0.73rem; color: var(--muted); text-align: center; margin-bottom: 28px; line-height: 1.5; }
+.login-label { display: block; font-size: 0.63rem; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; }
+.login-input {
+  width: 100%; padding: 12px 14px;
+  border-radius: var(--rs); border: 1.5px solid var(--border);
+  font-size: 0.9rem; color: var(--text); background: #fff;
+  outline: none; font-family: inherit;
+  transition: border-color 0.2s;
+  letter-spacing: 0.5px;
+}
+.login-input:focus { border-color: var(--accent); }
+.login-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px; margin-top: 14px;
+  border-radius: var(--rs); border: none;
+  background: var(--accent); color: #fff;
+  font-size: 0.88rem; font-weight: 700; cursor: pointer;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  font-family: inherit; transition: opacity 0.2s;
+}
+.login-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.login-error {
+  background: #fff2f2; border: 1px solid #ffb3b3;
+  border-radius: var(--rs); padding: 10px 14px;
+  font-size: 0.78rem; color: #c00; margin-top: 12px; display: none;
+}
+.login-footer { font-size: 0.62rem; color: var(--muted); text-align: center; margin-top: 22px; line-height: 1.6; }
+
+/* ── HEADER ─────────────────────────────────────────────────────────── */
+.header {
+  background: var(--card);
+  padding: 10px 16px;
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 2.5px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.header-logo {
+  width: 30px; height: 30px; border-radius: 8px;
+  background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.3s;
+}
+.header-partner { font-size: 0.8rem; font-weight: 700; color: var(--text); }
+.header-app { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.4px; text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 10px; }
+.header-date { font-size: 0.66rem; color: var(--muted); }
+.btn-logout {
+  background: none; border: 1px solid var(--border);
+  border-radius: 5px; color: var(--muted);
+  font-size: 0.62rem; font-weight: 700; cursor: pointer;
+  font-family: inherit; padding: 4px 9px;
+  letter-spacing: 0.4px; text-transform: uppercase;
+  transition: all 0.15s;
+}
+.btn-logout:hover { border-color: var(--text); color: var(--text); }
+
+/* ── BOTTOM NAV ──────────────────────────────────────────────────────── */
+.nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 520px;
+  background: var(--dark); display: flex; z-index: 200;
+  border-top: 2.5px solid var(--accent);
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 10px 4px 14px; cursor: pointer;
+  border: none; background: none;
+  color: rgba(255,255,255,0.4);
+  font-family: inherit; font-size: 0.56rem; font-weight: 700;
+  gap: 4px; transition: color 0.18s;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.nav-btn svg { width: 20px; height: 20px; }
+.nav-btn.active { color: #fff; }
+
+/* ── PAGES ───────────────────────────────────────────────────────────── */
+.page { display: none; padding: 14px 14px 90px; }
+.page.active { display: block; }
+
+/* ── TYPOGRAPHY ──────────────────────────────────────────────────────── */
+.sec-title { font-family: Georgia, serif; font-size: 1.15rem; color: var(--text); margin-bottom: 3px; }
+.sec-sub { font-size: 0.71rem; color: var(--muted); margin-bottom: 16px; }
+.section-hd {
+  font-size: 0.62rem; font-weight: 700; color: var(--text);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+}
+
+/* ── CARDS ────────────────────────────────────────────────────────────── */
+.card { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+
+/* ── KPI GRID ─────────────────────────────────────────────────────────── */
+.kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 18px; }
+.kpi-card { background: var(--card); border-radius: var(--r); border: 1px solid var(--border); padding: 16px; text-align: center; }
+.kpi-card.accent { background: var(--accent); border-color: var(--accent); }
+.kpi-num { font-family: Georgia, serif; font-size: 2.1rem; color: var(--text); line-height: 1; }
+.kpi-card.accent .kpi-num { color: #fff; }
+.kpi-lbl { font-size: 0.61rem; color: var(--muted); margin-top: 5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+.kpi-card.accent .kpi-lbl { color: rgba(255,255,255,0.72); }
+.kpi-card.accent .kpi-sub { color: rgba(255,255,255,0.55); }
+.kpi-sub { font-size: 0.62rem; color: var(--muted); margin-top: 2px; }
+
+/* ── BAR CHART ────────────────────────────────────────────────────────── */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+.bar-lbl { font-size: 0.7rem; color: var(--text); width: 110px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { flex: 1; height: 8px; background: #eaeaea; border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 2px; background: var(--accent); transition: width 0.65s cubic-bezier(.4,0,.2,1); width: 0; }
+.bar-val { font-size: 0.7rem; font-weight: 700; color: var(--muted); width: 30px; text-align: right; flex-shrink: 0; }
+
+/* ── SEARCH / FILTERS ─────────────────────────────────────────────────── */
+.search-wrap { position: relative; margin-bottom: 10px; }
+.search-wrap input {
+  width: 100%; padding: 10px 12px 10px 36px;
+  border-radius: var(--rs); border: 1.5px solid var(--border);
+  font-size: 0.85rem; color: var(--text); background: var(--card);
+  outline: none; font-family: inherit; transition: border-color 0.2s;
+}
+.search-wrap input:focus { border-color: var(--accent); }
+.search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.filter-tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 4px; }
+.filter-tab {
+  padding: 6px 13px; border-radius: 3px; border: 1.5px solid var(--border);
+  font-size: 0.66rem; font-weight: 700; cursor: pointer;
+  background: var(--card); color: var(--muted);
+  white-space: nowrap; flex-shrink: 0;
+  text-transform: uppercase; letter-spacing: 0.4px; font-family: inherit;
+  transition: all 0.15s;
+}
+.filter-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+/* ── SURGERY LIST ─────────────────────────────────────────────────────── */
+.surg-item {
+  background: var(--card); border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 13px 14px; margin-bottom: 8px;
+  cursor: pointer; transition: border-color 0.15s;
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.surg-item:active { border-color: var(--accent); }
+.surg-date-col { text-align: center; flex-shrink: 0; min-width: 38px; }
+.surg-day { font-family: Georgia, serif; font-size: 1.28rem; color: var(--text); line-height: 1; }
+.surg-mon { font-size: 0.57rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; }
+.surg-body { flex: 1; min-width: 0; }
+.surg-tech { font-weight: 700; font-size: 0.85rem; color: var(--text); }
+.surg-meta { font-size: 0.66rem; color: var(--muted); margin-top: 3px; }
+.surg-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 7px; }
+.tag { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 3px; font-size: 0.59rem; font-weight: 700; letter-spacing: 0.3px; white-space: nowrap; }
+.tag-equip { background: var(--bg); color: var(--accent); border: 1px solid var(--border); }
+.tag-lio   { background: var(--bg); color: #444; border: 1px solid var(--border); }
+.tag-compl { background: #fff2f2; color: #b30000; border: 1px solid #ffc0c0; }
+.tag-d30   { background: #f0fff4; color: #1a7a3a; border: 1px solid #b8e8c8; }
+
+/* ── DETAIL ───────────────────────────────────────────────────────────── */
+.detail-back {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--text); font-size: 0.74rem; font-weight: 700; cursor: pointer;
+  margin-bottom: 16px; background: none; border: none;
+  font-family: inherit; padding: 0; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.detail-hero {
+  background: var(--accent); border-radius: var(--r);
+  padding: 20px; margin-bottom: 14px;
+}
+.detail-hero-title { font-family: Georgia, serif; font-size: 1.3rem; color: #fff; }
+.detail-hero-sub { font-size: 0.69rem; color: rgba(255,255,255,0.68); margin-top: 4px; }
+.detail-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+.detail-chip { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.85); padding: 4px 10px; border-radius: 3px; font-size: 0.63rem; letter-spacing: 0.3px; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.info-item { background: var(--card); border-radius: var(--rs); border: 1px solid var(--border); padding: 11px; }
+.info-lbl { font-size: 0.57rem; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
+.info-val { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-top: 3px; }
+
+/* ── TIMELINE ─────────────────────────────────────────────────────────── */
+.tl-item { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.tl-item:last-child { border-bottom: none; }
+.tl-dot { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.62rem; font-weight: 700; flex-shrink: 0; }
+.tl-done { background: var(--accent); color: #fff; }
+.tl-pend { background: #f0f0f0; color: #aaa; border: 1.5px solid var(--border); }
+.tl-body { flex: 1; }
+.tl-title { font-size: 0.85rem; font-weight: 700; color: var(--text); }
+.tl-date { font-size: 0.66rem; color: var(--muted); margin-top: 2px; }
+.tl-metrics { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 7px; }
+.tl-metric { font-size: 0.71rem; color: var(--text); }
+.tl-metric strong { font-weight: 700; }
+
+/* ── MENTAL METRICS ──────────────────────────────────────────────────── */
+.stars { display: flex; gap: 3px; margin-top: 6px; }
+.star { width: 13px; height: 13px; border-radius: 2px; background: var(--accent); opacity: 0.15; }
+.star.on { opacity: 1; }
+
+/* ── LOADING / EMPTY ──────────────────────────────────────────────────── */
+.loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 36px; gap: 12px; }
+.spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty { text-align: center; padding: 42px 20px; color: var(--muted); }
+.empty-icon { font-size: 2rem; margin-bottom: 10px; }
+.empty-txt { font-size: 0.81rem; }
+
+/* ── FOOTER NOTE ──────────────────────────────────────────────────────── */
+.foot-note { font-size: 0.61rem; color: var(--muted); text-align: center; padding: 12px 0 4px; line-height: 1.5; }
+
+/* ── COMPLICATION BADGE ───────────────────────────────────────────────── */
+.compl-row { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.compl-row:last-child { border-bottom: none; }
+.compl-dot-r { width: 8px; height: 8px; border-radius: 50%; background: #c00; flex-shrink: 0; margin-top: 4px; }
+.compl-name { font-size: 0.82rem; font-weight: 700; color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN SCREEN ══════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo-wrap" id="login-logo">
+      <svg width="30" height="30" fill="none" viewBox="0 0 28 28">
+        <path d="M4 14C8 8 20 8 24 14C20 20 8 20 4 14Z" stroke="#fff" stroke-width="2.2" fill="none"/>
+        <circle cx="14" cy="14" r="5" stroke="#fff" stroke-width="2.2" fill="none"/>
+        <circle cx="14" cy="14" r="2.2" fill="#fff"/>
+      </svg>
+    </div>
+    <div class="login-title">Phacolog Partner</div>
+    <div class="login-sub">Dashboard analítico para empresas parceiras.<br>Acesso restrito — dados LGPD-compliant.</div>
+    <label class="login-label" for="token-input">Token de acesso</label>
+    <input class="login-input" type="password" id="token-input" placeholder="Insira o token da sua empresa" autocomplete="off">
+    <button class="login-btn" id="login-btn" onclick="doLogin()">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      Entrar
+    </button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-footer">Powered by Phacolog &mdash; Cirurgia de Catarata<br>Nenhum dado pessoal de paciente é exibido nesta plataforma.</div>
+  </div>
+</div>
+
+<!-- ══════════ APP (oculto até login) ══════════ -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="header-logo" id="hd-logo">
+        <svg width="17" height="17" fill="none" viewBox="0 0 28 28">
+          <path d="M4 14C8 8 20 8 24 14C20 20 8 20 4 14Z" stroke="#fff" stroke-width="2.5" fill="none"/>
+          <circle cx="14" cy="14" r="5" stroke="#fff" stroke-width="2.5" fill="none"/>
+          <circle cx="14" cy="14" r="2" fill="#fff"/>
+        </svg>
+      </div>
+      <div>
+        <div class="header-partner" id="hd-partner">—</div>
+        <div class="header-app">Phacolog Analytics</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="header-date" id="hd-date"></div>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- PAGE: INÍCIO -->
+  <div class="page active" id="page-home">
+    <div style="margin:12px 0 16px">
+      <div class="sec-title">Visão Geral</div>
+      <div class="sec-sub" id="home-sub">Dados de performance cirúrgica</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card accent">
+        <div class="kpi-num" id="kpi-total">—</div>
+        <div class="kpi-lbl">Cirurgias</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-compl">—</div>
+        <div class="kpi-lbl">Intercorrências</div>
+        <div class="kpi-sub" id="kpi-compl-pct"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-d30">—</div>
+        <div class="kpi-lbl">Retorno D30</div>
+        <div class="kpi-sub" id="kpi-d30-n"></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num" id="kpi-conf">—</div>
+        <div class="kpi-lbl">Confiança média</div>
+        <div class="kpi-sub">escala 1–5</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Cirurgias por mês</div>
+      <div id="chart-monthly"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Técnicas</div>
+      <div id="chart-technique"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Últimas cirurgias</div>
+      <div id="list-recent"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: CIRURGIAS -->
+  <div class="page" id="page-surgeries">
+    <div style="margin:12px 0 13px">
+      <div class="sec-title">Cirurgias</div>
+      <div class="sec-sub" id="surg-sub">0 registros</div>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="surg-search" placeholder="Buscar por cirurgião ou supervisor…" oninput="renderSurgeries()">
+    </div>
+    <div class="filter-tabs" id="surg-filter-tabs">
+      <button class="filter-tab active" onclick="setSurgFilter('all',this)">Todos</button>
+      <button class="filter-tab" onclick="setSurgFilter('compl',this)">⚠ Intercorrências</button>
+      <button class="filter-tab" onclick="setSurgFilter('d30',this)">✓ Com D30</button>
+      <button class="filter-tab" onclick="setSurgFilter('no-d30',this)">Sem D30</button>
+    </div>
+    <div id="list-surgeries"></div>
+    <div class="foot-note">Dados anonimizados — nenhum dado pessoal de paciente é exibido (LGPD Art. 7)</div>
+  </div>
+
+  <!-- PAGE: ANALYTICS -->
+  <div class="page" id="page-analytics">
+    <div style="margin:12px 0 16px">
+      <div class="sec-title">Analytics</div>
+      <div class="sec-sub">Distribuição detalhada e indicadores de resultado</div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">LIOs implantadas</div>
+      <div id="chart-lio"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Equipamentos</div>
+      <div id="chart-equip"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Intercorrências registradas</div>
+      <div id="chart-compl"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Performance por cirurgião</div>
+      <div id="chart-surgeon"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-hd">Resultados visuais (D30)</div>
+      <div id="chart-outcomes"></div>
+    </div>
+
+    <div class="foot-note">Dados anonimizados — nenhum dado pessoal de paciente é exibido (LGPD Art. 7)</div>
+  </div>
+
+  <!-- PAGE: DETALHE -->
+  <div class="page" id="page-detail">
+    <button class="detail-back" onclick="goBack()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      Voltar
+    </button>
+    <div id="detail-content"></div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <button class="nav-btn active" id="nav-home" onclick="goPage('home')">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </button>
+    <button class="nav-btn" id="nav-surgeries" onclick="goPage('surgeries');renderSurgeries()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+      Cirurgias
+    </button>
+    <button class="nav-btn" id="nav-analytics" onclick="goPage('analytics');renderAnalytics()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+var EDGE_URL = 'https://lvvlapgsrljvjenneobf.supabase.co/functions/v1/partner-data';
+
+var partner    = null;
+var surgeries  = [];
+var surgFilter = 'all';
+var prevPage   = 'home';
+var currentPage = 'home';
+var analyticsReady = false;
+
+var MON = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var MON_LONG = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+/* ─── INIT ─────────────────────────────────────────────────────────── */
+
+window.addEventListener('load', function() {
+  document.getElementById('hd-date').textContent = fmtDateLong(new Date());
+  document.getElementById('token-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  var tok = sessionStorage.getItem('pd_tok');
+  var par = sessionStorage.getItem('pd_par');
+  var sur = sessionStorage.getItem('pd_sur');
+  if (tok && par && sur) {
+    try {
+      partner   = JSON.parse(par);
+      surgeries = JSON.parse(sur);
+      applyTheme(partner);
+      showApp();
+      renderHome();
+    } catch(e) {
+      sessionStorage.clear();
+    }
+  }
+});
+
+/* ─── AUTH ──────────────────────────────────────────────────────────── */
+
+function doLogin() {
+  var token = document.getElementById('token-input').value.trim();
+  if (!token) return;
+
+  var btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:16px;height:16px;border-width:2px;margin:0"></div> Verificando…';
+  document.getElementById('login-error').style.display = 'none';
+
+  // optimistic theme from token prefix
+  var prefix = token.split('-')[0].toLowerCase();
+  var themes = {
+    jj:   { color:'#C8102E', darkColor:'#900A1F', bgColor:'#FFF5F5' },
+    ofta: { color:'#004B87', darkColor:'#003366', bgColor:'#EEF4FF' }
+  };
+  if (themes[prefix]) applyTheme(themes[prefix]);
+
+  fetch(EDGE_URL, { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(function(res) {
+      return res.json().then(function(d) { return { ok: res.ok, data: d }; });
+    })
+    .then(function(r) {
+      if (!r.ok) { showLoginErr(r.data.error || 'Token inválido'); return; }
+      partner   = r.data.partner;
+      surgeries = r.data.surgeries || [];
+      sessionStorage.setItem('pd_tok', token);
+      sessionStorage.setItem('pd_par', JSON.stringify(partner));
+      sessionStorage.setItem('pd_sur', JSON.stringify(surgeries));
+      applyTheme(partner);
+      showApp();
+      renderHome();
+    })
+    .catch(function() { showLoginErr('Erro de conexão. Tente novamente.'); })
+    .finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg> Entrar';
+    });
+}
+
+function doLogout() {
+  sessionStorage.clear();
+  partner = null; surgeries = []; analyticsReady = false;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('token-input').value = '';
+  applyTheme({ color:'#333', darkColor:'#1a1a1a', bgColor:'#F4F4F2' });
+}
+
+function showLoginErr(msg) {
+  var el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+/* ─── THEME ─────────────────────────────────────────────────────────── */
+
+function applyTheme(p) {
+  var r = document.documentElement;
+  r.style.setProperty('--accent',  p.color     || '#333333');
+  r.style.setProperty('--dark',    p.darkColor || p.color || '#1a1a1a');
+  r.style.setProperty('--bg',      p.bgColor   || '#F4F4F2');
+  var logo = document.getElementById('login-logo');
+  if (logo) logo.style.background = p.color || '#333';
+}
+
+/* ─── NAVIGATION ─────────────────────────────────────────────────────── */
+
+function goPage(p) {
+  if (p !== 'detail') prevPage = currentPage;
+  document.querySelectorAll('.page').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('page-' + p).classList.add('active');
+  var nb = document.getElementById('nav-' + p);
+  if (nb) nb.classList.add('active');
+  currentPage = p;
+  window.scrollTo(0, 0);
+}
+
+function goBack() { goPage(prevPage); }
+
+/* ─── SHOW APP ───────────────────────────────────────────────────────── */
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('hd-partner').textContent = partner.name;
+  document.getElementById('hd-logo').style.background = partner.color;
+  document.getElementById('home-sub').textContent = partner.filterLabel || 'Dados de performance cirúrgica';
+}
+
+/* ─── RENDER HOME ────────────────────────────────────────────────────── */
+
+function renderHome() {
+  var total = surgeries.length;
+  var nCompl = 0, nD30 = 0, confSum = 0, confN = 0;
+
+  for (var i = 0; i < surgeries.length; i++) {
+    var s = surgeries[i];
+    var comps = s.complications;
+    if (comps && comps.length > 0) nCompl++;
+    var fups = s.followups;
+    if (fups) {
+      for (var j = 0; j < fups.length; j++) {
+        if (fups[j].type === 'D30') { nD30++; break; }
+      }
+    }
+    if (s.mental_confidence) { confSum += parseFloat(s.mental_confidence); confN++; }
+  }
+
+  document.getElementById('kpi-total').textContent = total;
+  document.getElementById('kpi-compl').textContent = nCompl;
+  document.getElementById('kpi-compl-pct').textContent = total > 0 ? '(' + (nCompl/total*100).toFixed(1) + '%)' : '';
+  document.getElementById('kpi-d30').textContent    = total > 0 ? Math.round(nD30/total*100) + '%' : '—';
+  document.getElementById('kpi-d30-n').textContent  = nD30 + ' de ' + total;
+  document.getElementById('kpi-conf').textContent   = confN > 0 ? (confSum/confN).toFixed(1) : '—';
+
+  renderBarChart('chart-monthly',  buildMonthlyData());
+  renderBarChart('chart-technique', buildCountMap('technique'));
+  renderRecentList();
+}
+
+function buildMonthlyData() {
+  var byM = {};
+  for (var i = 0; i < surgeries.length; i++) {
+    var d = surgeries[i].surgery_date;
+    if (!d) continue;
+    var k = d.substring(0, 7);
+    byM[k] = (byM[k] || 0) + 1;
+  }
+  var entries = [];
+  for (var i = 5; i >= 0; i--) {
+    var dt = new Date();
+    dt.setDate(1);
+    dt.setMonth(dt.getMonth() - i);
+    var y = dt.getFullYear();
+    var m = dt.getMonth();
+    var key = y + '-' + (m < 9 ? '0' : '') + (m + 1);
+    entries.push({ label: MON[m], count: byM[key] || 0 });
+  }
+  return entries;
+}
+
+function buildCountMap(field) {
+  var map = {};
+  for (var i = 0; i < surgeries.length; i++) {
+    var v = surgeries[i][field] || 'Não especificado';
+    map[v] = (map[v] || 0) + 1;
+  }
+  var entries = [];
+  for (var k in map) entries.push({ label: k, count: map[k] });
+  entries.sort(function(a, b) { return b.count - a.count; });
+  return entries;
+}
+
+function renderBarChart(containerId, entries, limit) {
+  var max = 0;
+  var lim = limit || 20;
+  for (var i = 0; i < entries.length; i++) if (entries[i].count > max) max = entries[i].count;
+  if (max === 0) max = 1;
+
+  var html = '';
+  for (var i = 0; i < Math.min(entries.length, lim); i++) {
+    var e = entries[i];
+    var pct = Math.round(e.count / max * 100);
+    var lbl = e.label.length > 22 ? e.label.substring(0, 22) + '…' : e.label;
+    html += '<div class="bar-row">' +
+      '<div class="bar-lbl" title="' + esc(e.label) + '">' + esc(lbl) + '</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="bar-val">' + e.count + '</div>' +
+      '</div>';
+  }
+  document.getElementById(containerId).innerHTML = html ||
+    '<div class="empty"><div class="empty-txt">Nenhum dado disponível</div></div>';
+}
+
+function renderRecentList() {
+  var html = '';
+  var n = Math.min(surgeries.length, 5);
+  for (var i = 0; i < n; i++) html += surgItemHtml(surgeries[i]);
+  document.getElementById('list-recent').innerHTML =
+    html || '<div class="empty"><div class="empty-txt">Nenhuma cirurgia registrada</div></div>';
+}
+
+/* ─── RENDER SURGERIES ───────────────────────────────────────────────── */
+
+function setSurgFilter(f, el) {
+  surgFilter = f;
+  document.querySelectorAll('#surg-filter-tabs .filter-tab').forEach(function(t) { t.classList.remove('active'); });
+  el.classList.add('active');
+  renderSurgeries();
+}
+
+function renderSurgeries() {
+  var q = (document.getElementById('surg-search').value || '').toLowerCase();
+  var filtered = [];
+
+  for (var i = 0; i < surgeries.length; i++) {
+    var s = surgeries[i];
+    var sn = (s.surgeon_name || '').toLowerCase();
+    var sv = (s.supervisor   || '').toLowerCase();
+    var matchQ = !q || sn.indexOf(q) >= 0 || sv.indexOf(q) >= 0;
+    var hasCompl = s.complications && s.complications.length > 0;
+    var hasD30   = hasFollowup(s, 'D30');
+    var matchF   = true;
+    if      (surgFilter === 'compl')  matchF = hasCompl;
+    else if (surgFilter === 'd30')    matchF = hasD30;
+    else if (surgFilter === 'no-d30') matchF = !hasD30;
+    if (matchQ && matchF) filtered.push(s);
+  }
+
+  document.getElementById('surg-sub').textContent = filtered.length + ' de ' + surgeries.length + ' cirurgias';
+
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) html += surgItemHtml(filtered[i]);
+  document.getElementById('list-surgeries').innerHTML =
+    html || '<div class="empty"><div class="empty-icon">🔍</div><div class="empty-txt">Nenhuma cirurgia encontrada</div></div>';
+}
+
+function surgItemHtml(s) {
+  var d = s.surgery_date ? new Date(s.surgery_date + 'T12:00:00') : null;
+  var dayStr = d ? d.getDate() : '—';
+  var monStr = d ? MON[d.getMonth()] : '';
+  var hasC   = s.complications && s.complications.length > 0;
+  var hasD30 = hasFollowup(s, 'D30');
+
+  var tags = '';
+  if (s.equipment) tags += '<span class="tag tag-equip">' + esc(s.equipment) + '</span>';
+  if (s.lio_model) {
+    var lioShort = s.lio_model.length > 18 ? s.lio_model.substring(0, 18) + '…' : s.lio_model;
+    tags += '<span class="tag tag-lio">' + esc(lioShort) + '</span>';
+  }
+  if (hasC)   tags += '<span class="tag tag-compl">⚠ Intercorrência</span>';
+  if (hasD30) tags += '<span class="tag tag-d30">✓ D30</span>';
+
+  var meta = [s.eye, s.surgeon_name, s.cat_grade].filter(Boolean).map(esc).join(' · ');
+
+  return '<div class="surg-item" onclick="showDetail(\'' + esc(s.id) + '\')">' +
+    '<div class="surg-date-col">' +
+      '<div class="surg-day">' + dayStr + '</div>' +
+      '<div class="surg-mon">' + monStr + '</div>' +
+    '</div>' +
+    '<div class="surg-body">' +
+      '<div class="surg-tech">' + esc(s.technique || 'Técnica não especificada') + '</div>' +
+      (meta ? '<div class="surg-meta">' + meta + '</div>' : '') +
+      (tags ? '<div class="surg-tags">' + tags + '</div>' : '') +
+    '</div>' +
+    '</div>';
+}
+
+/* ─── RENDER ANALYTICS ───────────────────────────────────────────────── */
+
+function renderAnalytics() {
+  if (analyticsReady) return;
+  analyticsReady = true;
+
+  renderBarChart('chart-lio',  buildCountMap('lio_model'), 10);
+  renderBarChart('chart-equip', buildCountMap('equipment'));
+
+  // Complications breakdown
+  var compMap = {};
+  for (var i = 0; i < surgeries.length; i++) {
+    var comps = surgeries[i].complications;
+    if (!comps) continue;
+    for (var j = 0; j < comps.length; j++) {
+      var name = comps[j].name || 'Intercorrência';
+      compMap[name] = (compMap[name] || 0) + 1;
+    }
+  }
+  var compEntries = [];
+  for (var k in compMap) compEntries.push({ label: k, count: compMap[k] });
+  compEntries.sort(function(a,b){ return b.count - a.count; });
+
+  if (compEntries.length === 0) {
+    document.getElementById('chart-compl').innerHTML =
+      '<div style="text-align:center;padding:18px;color:var(--muted);font-size:0.81rem">Nenhuma intercorrência registrada</div>';
+  } else {
+    renderBarChart('chart-compl', compEntries);
+  }
+
+  // Surgeon performance
+  var surgMap = {};
+  for (var i = 0; i < surgeries.length; i++) {
+    var s = surgeries[i];
+    var nm = s.surgeon_name || 'Desconhecido';
+    if (!surgMap[nm]) surgMap[nm] = { count: 0, cSum: 0, cN: 0 };
+    surgMap[nm].count++;
+    if (s.mental_confidence) { surgMap[nm].cSum += parseFloat(s.mental_confidence); surgMap[nm].cN++; }
+  }
+  var surgEntries = [];
+  for (var k in surgMap) {
+    var b = surgMap[k];
+    surgEntries.push({ label: k, count: b.count, avg: b.cN > 0 ? (b.cSum/b.cN).toFixed(1) : '—' });
+  }
+  surgEntries.sort(function(a,b){ return b.count - a.count; });
+
+  var sHtml = '';
+  var sMax  = surgEntries.length > 0 ? surgEntries[0].count : 1;
+  for (var i = 0; i < surgEntries.length; i++) {
+    var e = surgEntries[i];
+    var pct = Math.round(e.count / sMax * 100);
+    sHtml += '<div class="bar-row">' +
+      '<div class="bar-lbl">' + esc(e.label) + '</div>' +
+      '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="bar-val">' + e.count + '</div>' +
+      '</div>' +
+      '<div style="margin:-5px 0 10px 120px;font-size:0.61rem;color:var(--muted)">Confiança média: <strong>' + e.avg + '</strong>/5</div>';
+  }
+  document.getElementById('chart-surgeon').innerHTML = sHtml ||
+    '<div class="empty"><div class="empty-txt">Nenhum dado</div></div>';
+
+  // D30 outcomes
+  var avList = [], pioList = [];
+  for (var i = 0; i < surgeries.length; i++) {
+    var fups = surgeries[i].followups;
+    if (!fups) continue;
+    for (var j = 0; j < fups.length; j++) {
+      if (fups[j].type === 'D30') {
+        if (fups[j].visual_acuity) avList.push(fups[j].visual_acuity);
+        if (fups[j].pio)           pioList.push(parseFloat(fups[j].pio));
+        break;
+      }
+    }
+  }
+  var oHtml = '';
+  if (avList.length === 0 && pioList.length === 0) {
+    oHtml = '<div style="text-align:center;padding:18px;color:var(--muted);font-size:0.81rem">Nenhum retorno D30 registrado</div>';
+  } else {
+    oHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+    oHtml += '<div class="info-item"><div class="info-lbl">Retornos D30</div><div class="info-val">' + avList.length + '</div></div>';
+    if (pioList.length > 0) {
+      var pioAvg = (pioList.reduce(function(a,b){return a+b;},0) / pioList.length).toFixed(1);
+      oHtml += '<div class="info-item"><div class="info-lbl">PIO média (D30)</div><div class="info-val">' + pioAvg + ' mmHg</div></div>';
+    }
+    oHtml += '</div>';
+    // AV distribution
+    var avMap = {};
+    for (var i = 0; i < avList.length; i++) { avMap[avList[i]] = (avMap[avList[i]] || 0) + 1; }
+    var avEntries = [];
+    for (var k in avMap) avEntries.push({ label: k, count: avMap[k] });
+    avEntries.sort(function(a,b){ return b.count - a.count; });
+    if (avEntries.length > 0) {
+      oHtml += '<div style="margin-top:14px"><div style="font-size:0.62rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px">AV sem correção (D30)</div>';
+      var avMax = avEntries[0].count;
+      for (var i = 0; i < avEntries.length; i++) {
+        var e = avEntries[i];
+        var pct = Math.round(e.count / avMax * 100);
+        oHtml += '<div class="bar-row">' +
+          '<div class="bar-lbl">' + esc(e.label) + '</div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="bar-val">' + e.count + '</div>' +
+          '</div>';
+      }
+      oHtml += '</div>';
+    }
+  }
+  document.getElementById('chart-outcomes').innerHTML = oHtml;
+}
+
+/* ─── DETAIL ─────────────────────────────────────────────────────────── */
+
+function showDetail(id) {
+  var s = null;
+  for (var i = 0; i < surgeries.length; i++) {
+    if (surgeries[i].id === id) { s = surgeries[i]; break; }
+  }
+  if (!s) return;
+
+  var d = s.surgery_date ? new Date(s.surgery_date + 'T12:00:00') : null;
+  var dateStr = d ? d.getDate() + ' de ' + MON_LONG[d.getMonth()] + ' de ' + d.getFullYear() : '—';
+  var hasC = s.complications && s.complications.length > 0;
+
+  var chips = [s.eye, s.technique, s.equipment, s.anesthesia].filter(Boolean).map(function(c) {
+    return '<span class="detail-chip">' + esc(c) + '</span>';
+  }).join('');
+
+  var hero = '<div class="detail-hero">' +
+    '<div class="detail-hero-title">' + esc(s.technique || 'Cirurgia de Catarata') + '</div>' +
+    '<div class="detail-hero-sub">' + dateStr + '</div>' +
+    '<div class="detail-chips">' + chips + '</div>' +
+    '</div>';
+
+  var grid = '<div class="info-grid">';
+  grid += mkInfo('Cirurgião',  s.surgeon_name);
+  grid += mkInfo('Supervisor', s.supervisor);
+  grid += mkInfo('Olho',       s.eye);
+  grid += mkInfo('Anestesia',  s.anesthesia);
+  grid += mkInfo('Grau / Cat.', s.cat_grade);
+  grid += mkInfo('Aparelho',   s.equipment);
+  if (s.lio_model)    grid += mkInfo('LIO',      s.lio_model);
+  if (s.lio_power)    grid += mkInfo('Poder',    s.lio_power + ' D');
+  if (s.lio_type)     grid += mkInfo('Tipo LIO', s.lio_type);
+  if (s.lio_material) grid += mkInfo('Material', s.lio_material);
+  grid += '</div>';
+
+  // Complications
+  var complHtml = '';
+  if (hasC) {
+    complHtml = '<div class="card" style="border-left:3px solid #c00">' +
+      '<div class="section-hd" style="border-bottom-color:#c00">Intercorrências</div>';
+    for (var i = 0; i < s.complications.length; i++) {
+      var c = s.complications[i];
+      complHtml += '<div class="compl-row"><div class="compl-dot-r"></div><div class="compl-name">' + esc(c.name || 'Intercorrência') + '</div></div>';
+    }
+    complHtml += '</div>';
+  }
+
+  // Followup timeline
+  var fuHtml = '<div class="card"><div class="section-hd">Pós-operatório</div>';
+  var fuTypes  = ['D1', 'D7', 'D30'];
+  var fuLabels = { D1: '1º Dia', D7: '7º Dia', D30: '30º Dia' };
+  for (var fi = 0; fi < fuTypes.length; fi++) {
+    var type = fuTypes[fi];
+    var fu = null;
+    if (s.followups) {
+      for (var fj = 0; fj < s.followups.length; fj++) {
+        if (s.followups[fj].type === type) { fu = s.followups[fj]; break; }
+      }
+    }
+    fuHtml += '<div class="tl-item">';
+    fuHtml += '<div class="tl-dot ' + (fu ? 'tl-done' : 'tl-pend') + '">' + (fi + 1) + '</div>';
+    fuHtml += '<div class="tl-body">';
+    fuHtml += '<div class="tl-title">' + fuLabels[type] + '</div>';
+    if (fu) {
+      if (fu.completed_at) fuHtml += '<div class="tl-date">' + new Date(fu.completed_at).toLocaleDateString('pt-BR') + '</div>';
+      fuHtml += '<div class="tl-metrics">';
+      if (fu.visual_acuity) fuHtml += '<div class="tl-metric">AV <strong>' + esc(fu.visual_acuity) + '</strong></div>';
+      if (fu.avcc)          fuHtml += '<div class="tl-metric">AVCC <strong>' + esc(fu.avcc) + '</strong></div>';
+      if (fu.pio)           fuHtml += '<div class="tl-metric">PIO <strong>' + fu.pio + ' mmHg</strong></div>';
+      if (fu.refraction)    fuHtml += '<div class="tl-metric">Refração <strong>' + esc(fu.refraction) + '</strong></div>';
+      fuHtml += '</div>';
+    } else {
+      fuHtml += '<div style="font-size:0.71rem;color:var(--muted);font-style:italic;margin-top:3px">Não realizado</div>';
+    }
+    fuHtml += '</div></div>';
+  }
+  fuHtml += '</div>';
+
+  // Mental metrics
+  var mentalHtml = '';
+  if (s.mental_confidence || s.mental_control || s.mental_stress) {
+    mentalHtml = '<div class="card"><div class="section-hd">Auto-avaliação do cirurgião</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">' +
+      mkMental('Confiança', s.mental_confidence) +
+      mkMental('Controle',  s.mental_control) +
+      mkMental('Estresse',  s.mental_stress) +
+      '</div></div>';
+  }
+
+  document.getElementById('detail-content').innerHTML =
+    hero + grid + complHtml + fuHtml + mentalHtml +
+    '<div class="foot-note">Dados anonimizados — nenhum dado pessoal de paciente é exibido (LGPD Art. 7)</div>';
+
+  goPage('detail');
+}
+
+/* ─── HELPERS ────────────────────────────────────────────────────────── */
+
+function hasFollowup(s, type) {
+  if (!s.followups) return false;
+  for (var i = 0; i < s.followups.length; i++) {
+    if (s.followups[i].type === type) return true;
+  }
+  return false;
+}
+
+function mkInfo(lbl, val) {
+  if (!val && val !== 0) return '';
+  return '<div class="info-item"><div class="info-lbl">' + esc(lbl) + '</div><div class="info-val">' + esc(String(val)) + '</div></div>';
+}
+
+function mkMental(lbl, val) {
+  if (!val) return '<div class="info-item"><div class="info-lbl">' + esc(lbl) + '</div><div class="info-val" style="color:var(--muted)">—</div></div>';
+  var v = parseInt(val);
+  var stars = '';
+  for (var i = 1; i <= 5; i++) stars += '<div class="star' + (i <= v ? ' on' : '') + '"></div>';
+  return '<div class="info-item"><div class="info-lbl">' + esc(lbl) + '</div><div class="info-val">' + v + '/5</div><div class="stars">' + stars + '</div></div>';
+}
+
+function esc(s) {
+  if (!s && s !== 0) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function fmtDateLong(d) {
+  var days = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+  return days[d.getDay()] + ', ' + d.getDate() + ' de ' + MON_LONG[d.getMonth()];
+}
+</script>
+</body>
+</html>
