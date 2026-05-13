@@ -598,6 +598,14 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   .push-prompt-overlay{align-items:center}
   .push-prompt-card{border-radius:20px;max-width:440px}
 }
+/* ── MAPA CIRÚRGICO — PDF UPLOAD ─────────────────────────────────────── */
+.mapa-tabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:16px}
+.mapa-tab{flex:1;padding:9px 0;font-size:0.67rem;font-weight:700;background:none;border:none;border-bottom:2.5px solid transparent;margin-bottom:-2px;cursor:pointer;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-family:inherit;transition:color 0.15s}
+.mapa-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.mapa-pdf-drop{border:2px dashed var(--border);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;margin-bottom:12px}
+.mapa-pdf-drop:hover,.mapa-pdf-drop.drag-over{border-color:var(--accent);background:rgba(200,90,40,0.04)}
+.mapa-pdf-icon{width:44px;height:44px;background:var(--bgDeep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--muted)}
+.mapa-pdf-spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -939,20 +947,48 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   </button>
   <div style="margin-top:6px;margin-bottom:18px">
     <div class="sec-title">Mapa Cirúrgico</div>
-    <div class="sec-sub">Cole o texto do mapa e importe suas cirurgias</div>
+    <div class="sec-sub">Cole o texto ou envie o PDF do mapa para importar cirurgias</div>
   </div>
   <div id="mapa-upload-area">
-    <div class="field">
-      <label>Texto do mapa cirúrgico</label>
-      <textarea id="mapa-textarea" style="min-height:160px;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Abra o PDF do mapa → Ctrl+A → Ctrl+C → cole aqui"></textarea>
+    <!-- Tabs -->
+    <div class="mapa-tabs" id="mapa-input-tabs">
+      <button class="mapa-tab active" id="mapa-tab-texto" onclick="switchMapaTab('texto')">Colar texto</button>
+      <button class="mapa-tab" id="mapa-tab-pdf" onclick="switchMapaTab('pdf')">Enviar PDF</button>
     </div>
-    <div style="font-size:0.68rem;color:var(--muted);margin-bottom:14px;line-height:1.5">
-      Como fazer: abra o PDF → selecione tudo (Ctrl+A ou ⌘A) → copie (Ctrl+C ou ⌘C) → cole no campo acima.
+
+    <!-- Painel: Colar texto -->
+    <div id="mapa-panel-texto">
+      <div class="field">
+        <label>Texto do mapa cirúrgico</label>
+        <textarea id="mapa-textarea" style="min-height:160px;font-size:0.75rem;font-family:monospace;resize:vertical" placeholder="Abra o PDF do mapa → Ctrl+A → Ctrl+C → cole aqui"></textarea>
+      </div>
+      <div class="mapa-hint" style="font-size:0.68rem;color:var(--muted);margin-bottom:14px;line-height:1.5">
+        Como fazer: abra o PDF → selecione tudo (Ctrl+A ou ⌘A) → copie (Ctrl+C ou ⌘C) → cole no campo acima.
+      </div>
+      <button class="btn btn-primary" onclick="processarMapaTexto()" style="margin-bottom:6px">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Ler mapa
+      </button>
     </div>
-    <button class="btn btn-primary" onclick="processarMapaTexto()" style="margin-bottom:6px">
-      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      Ler mapa
-    </button>
+
+    <!-- Painel: Enviar PDF -->
+    <div id="mapa-panel-pdf" style="display:none">
+      <div class="mapa-pdf-drop" id="mapa-pdf-drop"
+           onclick="document.getElementById('mapa-pdf-input').click()"
+           ondragover="event.preventDefault();this.classList.add('drag-over')"
+           ondragleave="this.classList.remove('drag-over')"
+           ondrop="this.classList.remove('drag-over');processarPdf(event.dataTransfer&&event.dataTransfer.files?event.dataTransfer.files[0]:null);event.preventDefault()">
+        <input type="file" id="mapa-pdf-input" accept=".pdf" style="display:none" onchange="processarPdf(this.files&&this.files[0]?this.files[0]:null)">
+        <div class="mapa-pdf-icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
+        </div>
+        <div style="font-size:0.8rem;font-weight:700;color:var(--black);margin-bottom:5px">Clique ou arraste o PDF aqui</div>
+        <div style="font-size:0.67rem;color:var(--muted)">O texto será extraído automaticamente</div>
+      </div>
+      <div id="mapa-pdf-status" style="display:none;font-size:0.72rem;color:var(--muted);text-align:center;padding:10px 0"></div>
+      <div id="mapa-pdf-error" style="display:none;font-size:0.72rem;color:#c0392b;padding:10px 12px;background:#fff5f5;border-radius:var(--rs);border:1px solid #fcc;margin-top:4px"></div>
+    </div>
+
     <div id="mapa-error" style="display:none;font-size:0.72rem;color:#c0392b;margin-top:8px;padding:10px 12px;background:#fff5f5;border-radius:var(--rs);border:1px solid #fcc"></div>
   </div>
   <div id="mapa-checklist-area" style="display:none">
@@ -3431,14 +3467,123 @@ function initMapaPage(){
 
 function resetarMapa(){
   mapaData=null;
-  const ta=document.getElementById('mapa-textarea');
+  var ta=document.getElementById('mapa-textarea');
   if(ta){ ta.value=''; ta.style.display=''; }
-  const err=document.getElementById('mapa-error');
+  var err=document.getElementById('mapa-error');
   if(err) err.style.display='none';
-  // Restore upload area elements
-  document.querySelectorAll('#mapa-upload-area .field, #mapa-upload-area .btn, #mapa-upload-area .mapa-hint').forEach(el=>el.style.display='');
+  // Restore panels + tabs
+  var tabs=document.getElementById('mapa-input-tabs');
+  if(tabs) tabs.style.display='';
+  var panelTexto=document.getElementById('mapa-panel-texto');
+  if(panelTexto) panelTexto.style.display='';
+  switchMapaTab('texto');
+  // Reset PDF panel state
+  var pdfInput=document.getElementById('mapa-pdf-input');
+  if(pdfInput) pdfInput.value='';
+  var pdfStatus=document.getElementById('mapa-pdf-status');
+  if(pdfStatus) pdfStatus.style.display='none';
+  var pdfErr=document.getElementById('mapa-pdf-error');
+  if(pdfErr) pdfErr.style.display='none';
   document.getElementById('mapa-upload-area').style.display='block';
   document.getElementById('mapa-checklist-area').style.display='none';
+}
+
+// ── MAPA — ALTERNÂNCIA DE ABAS ───────────────────────────────────
+function switchMapaTab(tab){
+  var panelTexto=document.getElementById('mapa-panel-texto');
+  var panelPdf=document.getElementById('mapa-panel-pdf');
+  var tabTexto=document.getElementById('mapa-tab-texto');
+  var tabPdf=document.getElementById('mapa-tab-pdf');
+  if(panelTexto) panelTexto.style.display=tab==='texto'?'block':'none';
+  if(panelPdf)   panelPdf.style.display=tab==='pdf'?'block':'none';
+  if(tabTexto){  tabTexto.classList.remove('active'); if(tab==='texto') tabTexto.classList.add('active'); }
+  if(tabPdf){    tabPdf.classList.remove('active');   if(tab==='pdf')   tabPdf.classList.add('active'); }
+  // Limpa erros ao trocar de aba
+  var pdfErr=document.getElementById('mapa-pdf-error');
+  if(pdfErr){ pdfErr.style.display='none'; pdfErr.textContent=''; }
+  var pdfSt=document.getElementById('mapa-pdf-status');
+  if(pdfSt) pdfSt.style.display='none';
+}
+
+// ── MAPA — ENVIO DE PDF ──────────────────────────────────────────
+var _pdfJsReady=false;
+
+function _loadPdfJs(cb){
+  if(_pdfJsReady){ cb(); return; }
+  var s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  s.onload=function(){
+    if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    _pdfJsReady=true;
+    cb();
+  };
+  s.onerror=function(){ _setPdfErr('Não foi possível carregar o leitor de PDF. Verifique sua conexão e tente novamente.'); };
+  document.head.appendChild(s);
+}
+
+function processarPdf(file){
+  if(!file){ return; }
+  if(file.type!=='application/pdf'){ _setPdfErr('Selecione um arquivo PDF válido (.pdf).'); return; }
+  _setPdfErr('');
+  _setPdfStatus('<div class="mapa-pdf-spinner"></div>Carregando leitor de PDF…');
+  _loadPdfJs(function(){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      _setPdfStatus('<div class="mapa-pdf-spinner"></div>Extraindo texto…');
+      var arr=new Uint8Array(e.target.result);
+      pdfjsLib.getDocument({data:arr}).promise.then(function(pdf){
+        var total=pdf.numPages;
+        var pages=[];
+        var done=0;
+        for(var i=1;i<=total;i++){
+          (function(n){
+            pdf.getPage(n).then(function(pg){
+              pg.getTextContent().then(function(ct){
+                pages[n-1]=ct.items.map(function(it){ return it.str; }).join(' ');
+                done++;
+                if(done===total) _finalizarPdf(pages.join('\n'));
+              }).catch(function(){ pages[n-1]=''; done++; if(done===total) _finalizarPdf(pages.join('\n')); });
+            }).catch(function(){ pages[n-1]=''; done++; if(done===total) _finalizarPdf(pages.join('\n')); });
+          })(i);
+        }
+      }).catch(function(er){
+        _setPdfStatus('');
+        _setPdfErr('Erro ao abrir o PDF: '+(er&&er.message?er.message:'formato inválido'));
+      });
+    };
+    reader.onerror=function(){ _setPdfStatus(''); _setPdfErr('Erro ao ler o arquivo.'); };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function _finalizarPdf(texto){
+  _setPdfStatus('');
+  try{
+    var parsed=parseMapa(texto);
+    if(!parsed.pacientes||!parsed.pacientes.length){
+      _setPdfErr('Nenhum paciente encontrado neste PDF. O layout pode não ser compatível — tente usar a aba "Colar texto" colando o conteúdo do PDF manualmente.');
+      return;
+    }
+    mapaData=parsed;
+    document.getElementById('mapa-upload-area').style.display='none';
+    renderMapaChecklist();
+  }catch(er){
+    _setPdfErr('Erro ao processar: '+(er&&er.message?er.message:'erro desconhecido'));
+  }
+}
+
+function _setPdfStatus(html){
+  var el=document.getElementById('mapa-pdf-status');
+  if(!el) return;
+  if(html){ el.innerHTML=html; el.style.display='block'; }
+  else el.style.display='none';
+}
+
+function _setPdfErr(msg){
+  var el=document.getElementById('mapa-pdf-error');
+  if(!el) return;
+  if(msg){ el.textContent=msg; el.style.display='block'; }
+  else el.style.display='none';
 }
 
 // ── Parser offline ───────────────────────────────────────────────
@@ -3687,21 +3832,22 @@ function parseMapa(rawText){
 
 
 function processarMapaTexto(){
-  const ta=document.getElementById('mapa-textarea');
-  const err=document.getElementById('mapa-error');
-  const texto=(ta?ta.value:'').trim();
+  var ta=document.getElementById('mapa-textarea');
+  var err=document.getElementById('mapa-error');
+  var texto=(ta?ta.value:'').trim();
   err.style.display='none';
   if(!texto){ err.textContent='Cole o texto do mapa antes de continuar.'; err.style.display='block'; return; }
   try{
-    const parsed=parseMapa(texto);
+    var parsed=parseMapa(texto);
     if(!parsed.pacientes||!parsed.pacientes.length){
       err.textContent='Nenhum paciente encontrado. Verifique se o texto copiado contém o cabeçalho da tabela (Nome, Lente, Ceratometria…).';
       err.style.display='block'; return;
     }
     mapaData=parsed;
-    // Hide input area elements
-    ta.style.display='none';
-    document.querySelectorAll('#mapa-upload-area .field, #mapa-upload-area .btn, #mapa-upload-area .mapa-hint').forEach(el=>el.style.display='none');
+    var tabs=document.getElementById('mapa-input-tabs');
+    if(tabs) tabs.style.display='none';
+    var panelTexto=document.getElementById('mapa-panel-texto');
+    if(panelTexto) panelTexto.style.display='none';
     renderMapaChecklist();
   }catch(e){ err.textContent='Erro ao processar: '+e.message; err.style.display='block'; }
 }
