@@ -6,19 +6,25 @@
 <title>Phacolog · Analytics</title>
 <meta name="theme-color" content="#C85A28">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&display=swap" rel="stylesheet">
 <style>
 /* ── DESIGN SYSTEM (Phacolog) ─────────────────────────────────────── */
 :root {
   --bg:       #F6F2EC;
+  --bgDeep:   #EFE9E1;
   --card:     #FFFFFF;
   --accent:   #C85A28;
   --accent2:  #A3431A;
   --border:   #E6DDD0;
   --muted:    #8C7B6E;
   --black:    #221611;
+  --dark:     #3A2A21;
   --text:     #221611;
   --r:  12px;
   --rs:  8px;
+  --fontDisplay: 'Fraunces', Georgia, serif;
   /* partner accent — set dynamically */
   --partner:  #333333;
   --partner2: #1a1a1a;
@@ -31,7 +37,8 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 .login-card { background: var(--card); border-radius: 20px; border: 1px solid var(--border); padding: 36px 26px 28px; width: 100%; max-width: 400px; box-shadow: 0 6px 32px rgba(200,90,40,0.10); }
 .login-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 22px; }
 .login-logo-mark { width: 48px; height: 48px; background: var(--accent); border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-.login-brand { font-family: Georgia, 'Times New Roman', serif; font-size: 1.6rem; color: var(--black); letter-spacing: -0.5px; }
+.login-brand { font-family: var(--fontDisplay); font-size: 1.7rem; color: var(--black); letter-spacing: -0.03em; display: inline-flex; align-items: baseline; gap: 0; }
+.login-brand em { font-style: italic; font-weight: 400; color: var(--accent); }
 .login-title { font-size: 1rem; font-weight: 700; color: var(--black); text-align: center; margin-bottom: 4px; }
 .login-sub { font-size: 0.72rem; color: var(--muted); text-align: center; margin-bottom: 26px; line-height: 1.5; }
 .login-lbl { display: block; font-size: 0.62rem; font-weight: 700; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; }
@@ -46,11 +53,14 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 .header { background: var(--card); padding: 10px 16px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; border-bottom: 2.5px solid var(--accent); box-shadow: 0 1px 6px rgba(34,22,17,0.07); }
 .hd-left { display: flex; align-items: center; gap: 9px; }
 .hd-mark { width: 30px; height: 30px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.hd-brand { font-family: Georgia, serif; font-size: 1rem; color: var(--black); letter-spacing: -0.3px; line-height: 1.1; }
+.hd-brand { font-family: var(--fontDisplay); font-size: 1.05rem; color: var(--black); letter-spacing: -0.02em; line-height: 1; }
+.hd-italic { font-style: italic; font-weight: 400; color: var(--accent); }
 .hd-sub { font-size: 0.57rem; color: var(--muted); letter-spacing: 0.4px; text-transform: uppercase; }
 .hd-right { display: flex; align-items: center; gap: 8px; }
 .partner-badge { background: var(--partner); color: #fff; border-radius: 5px; font-size: 0.6rem; font-weight: 700; padding: 3px 9px; letter-spacing: 0.4px; white-space: nowrap; }
 .btn-logout { background: none; border: 1px solid var(--border); border-radius: 5px; color: var(--muted); font-size: 0.6rem; font-weight: 700; cursor: pointer; font-family: inherit; padding: 4px 9px; letter-spacing: 0.4px; text-transform: uppercase; }
+.theme-toggle { width: 28px; height: 28px; border-radius: 50%; background: none; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--muted); transition: all 0.18s; flex-shrink: 0; }
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── BOTTOM NAV ──────────────────────────────────────────────────────── */
 .nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 520px; background: var(--black); display: flex; z-index: 200; border-top: 2.5px solid var(--accent); }
@@ -183,6 +193,30 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 .foot { font-size: 0.6rem; color: var(--muted); text-align: center; padding: 10px 0 4px; line-height: 1.5; }
 .divider { height: 1px; background: var(--border); margin: 12px 0; }
 
+/* ── DARK MODE ───────────────────────────────────────────────────────────── */
+.dark {
+  --bg:      #140D08;
+  --bgDeep:  #1E1208;
+  --card:    #231510;
+  --text:    #F0EBE3;
+  --black:   #F0EBE3;
+  --dark:    #D8CEC4;
+  --muted:   #706050;
+  --border:  #3A2820;
+  --accent:  #E07040;
+  --accent2: #C05030;
+}
+/* Dark mode — nav (mobile bottom bar) mantém cor escura */
+.dark .nav { background: #0E0705; border-top-color: var(--border); }
+/* Dark mode — login */
+.dark .login-input { background: var(--bgDeep); color: var(--text); border-color: var(--border); }
+.dark .login-err { background: rgba(200,60,30,0.15); border-color: rgba(180,60,30,0.4); color: #F5A090; }
+/* Dark mode — campos em geral */
+.dark input { background: var(--bgDeep); color: var(--text); border-color: var(--border); }
+/* Dark mode — sec-hd border usa accent ajustado automaticamente */
+/* Dark mode — hd-mark recebe cor do texto */
+.dark .hd-mark { background: var(--accent); }
+
 /* ── DESKTOP (≥ 900px) ──────────────────────────────────────────────────── */
 @media (min-width:900px){
   body { max-width:100%; margin:0; }
@@ -242,13 +276,14 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
   <div class="login-card">
     <div class="login-logo">
       <div class="login-logo-mark">
-        <svg width="26" height="26" fill="none" viewBox="0 0 28 28">
-          <path d="M3 14C7 7 21 7 25 14C21 21 7 21 3 14Z" stroke="#fff" stroke-width="2.2" fill="none"/>
-          <circle cx="14" cy="14" r="5.5" stroke="#fff" stroke-width="2.2" fill="none"/>
-          <circle cx="14" cy="14" r="2.3" fill="#fff"/>
+        <svg width="28" height="28" viewBox="0 0 48 48" fill="none">
+          <path d="M 18.5 18.2 C 14 15, 9 11, 6 7.5 C 5.2 6.6, 5.6 5.2, 6.8 5 C 11.5 4.3, 16.8 6, 20.8 9.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <path d="M 29.5 29.8 C 34 33, 39 37, 42 40.5 C 42.8 41.4, 42.4 42.8, 41.2 43 C 36.5 43.7, 31.2 42, 27.2 38.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="24" r="9.2" stroke="#fff" stroke-width="2.6" fill="none"/>
+          <circle cx="24" cy="24" r="2.4" fill="#fff"/>
         </svg>
       </div>
-      <span class="login-brand">Phacolog</span>
+      <div class="login-brand"><span>Phaco</span><em>log</em></div>
     </div>
     <div class="login-title">Partner Analytics</div>
     <div class="login-sub">Plataforma de dados para empresas parceiras.<br>Acesso restrito — dados LGPD-compliant.</div>
@@ -268,20 +303,23 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 
   <div class="header">
     <div class="hd-left">
-      <div class="hd-mark">
-        <svg width="17" height="17" fill="none" viewBox="0 0 28 28">
-          <path d="M3 14C7 7 21 7 25 14C21 21 7 21 3 14Z" stroke="#fff" stroke-width="2.5" fill="none"/>
-          <circle cx="14" cy="14" r="5.5" stroke="#fff" stroke-width="2.5" fill="none"/>
-          <circle cx="14" cy="14" r="2.2" fill="#fff"/>
-        </svg>
-      </div>
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none" style="flex-shrink:0;color:var(--black)">
+        <path d="M 18.5 18.2 C 14 15, 9 11, 6 7.5 C 5.2 6.6, 5.6 5.2, 6.8 5 C 11.5 4.3, 16.8 6, 20.8 9.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+        <path d="M 29.5 29.8 C 34 33, 39 37, 42 40.5 C 42.8 41.4, 42.4 42.8, 41.2 43 C 36.5 43.7, 31.2 42, 27.2 38.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+        <circle cx="24" cy="24" r="9.2" stroke="currentColor" stroke-width="2.6" fill="none"/>
+        <circle cx="24" cy="24" r="2.4" fill="var(--accent)"/>
+      </svg>
       <div>
-        <div class="hd-brand">Phacolog</div>
+        <div class="hd-brand">Phaco<em class="hd-italic">log</em></div>
         <div class="hd-sub">Partner Analytics</div>
       </div>
     </div>
     <div class="hd-right">
       <span class="partner-badge" id="hd-badge">—</span>
+      <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Alternar tema">
+        <svg id="theme-icon-moon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="theme-icon-sun" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
@@ -396,8 +434,33 @@ var analyticsReady = false;
 var MON  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 var MONL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
+/* ── THEME ────────────────────────────────────────────────────────── */
+function toggleTheme() {
+  var dark = document.body.classList.toggle('dark');
+  localStorage.setItem('phacolog_partner_theme', dark ? 'dark' : 'light');
+  var moon = document.getElementById('theme-icon-moon');
+  var sun  = document.getElementById('theme-icon-sun');
+  if (moon) moon.style.display = dark ? 'none' : 'block';
+  if (sun)  sun.style.display  = dark ? 'block' : 'none';
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', dark ? '#140D08' : '#C85A28');
+}
+function initTheme() {
+  var saved = localStorage.getItem('phacolog_partner_theme');
+  if (saved === 'dark') {
+    document.body.classList.add('dark');
+    var moon = document.getElementById('theme-icon-moon');
+    var sun  = document.getElementById('theme-icon-sun');
+    if (moon) moon.style.display = 'none';
+    if (sun)  sun.style.display  = 'block';
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', '#140D08');
+  }
+}
+
 /* ── INIT ─────────────────────────────────────────────────────────── */
 window.addEventListener('load', function() {
+  initTheme();
   document.getElementById('tok').addEventListener('keydown', function(e) { if (e.key === 'Enter') doLogin(); });
   try {
     var t = sessionStorage.getItem('pd_tok');
