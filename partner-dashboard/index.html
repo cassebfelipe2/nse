@@ -185,17 +185,14 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 
 /* ── DESKTOP (≥ 900px) ──────────────────────────────────────────────────── */
 @media (min-width:900px){
-  body { max-width:100%; }
+  body { max-width:100%; margin:0; }
 
-  /* Login — center card, more breathing room */
+  /* Login: full viewport width, card naturally centered */
   #login-screen { padding:40px; }
   .login-card { max-width:460px; padding:48px 44px 38px; }
   .login-brand { font-size:1.9rem; }
 
-  /* App: offset by sidebar so login screen is unaffected */
-  #app { margin-left:220px; }
-
-  /* Fixed sidebar nav */
+  /* Fixed sidebar nav — torna-se coluna esquerda */
   .nav {
     position:fixed; left:0; top:0; bottom:0;
     transform:none; width:220px; max-width:220px;
@@ -203,43 +200,37 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
     border-top:none; border-right:1px solid rgba(255,255,255,0.12);
     padding:0; gap:0; overflow-y:auto; z-index:300;
   }
-  /* Spacer aligned with header height */
-  .nav::before { content:""; display:block; height:53px; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0; }
+  /* Espaçador alinhado à altura do header */
+  .nav::before {
+    content:""; display:block;
+    height:53px; border-bottom:1px solid rgba(255,255,255,0.1); flex-shrink:0;
+  }
   .nav-btn {
-    flex-direction:row; justify-content:flex-start;
+    flex:none; flex-direction:row; justify-content:flex-start;
     padding:13px 22px; font-size:0.67rem; gap:13px;
-    width:100%; text-align:left; border-bottom:2.5px solid transparent;
+    width:100%; text-align:left; border-bottom:none;
   }
   .nav-btn.active {
     background:rgba(255,255,255,0.09); color:#fff;
-    border-bottom-color:transparent;
     border-left:3px solid var(--accent); padding-left:19px;
   }
   .nav-btn.active svg { stroke:var(--accent); }
   .nav-btn svg { width:18px; height:18px; flex-shrink:0; }
 
-  /* Fixed header — right of sidebar */
-  .header { position:fixed; left:220px; right:0; top:0; z-index:200; padding:10px 28px; }
+  /* Header: fica à direita da sidebar via margin-left */
+  .header { margin-left:220px; padding:10px 28px; }
 
-  /* Pages — offset for fixed header (53px) + content padding */
-  .page { padding:77px 40px 52px; max-width:1100px; }
+  /* Pages: deslocam à direita da sidebar, espaço para o header fixo */
+  .page { padding:77px 40px 52px; margin-left:220px; max-width:1100px; }
 
-  /* Home: spotlight + monthly chart side-by-side */
+  /* Home: spotlight + gráfico mensal lado a lado */
   .home-cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; }
 
   /* KPI grids */
   .kpi2 { grid-template-columns:repeat(3,1fr); }
-
-  /* Info grid: 3 columns */
   .info-grid { grid-template-columns:repeat(3,1fr); }
-
-  /* Bar labels — wider */
   .bar-lbl { width:160px; }
-
-  /* Market share — larger number */
   .share-pct { font-size:2.5rem; }
-
-  /* Detail hero — more spacious */
   .detail-hero { padding:28px 36px; }
 }
 </style>

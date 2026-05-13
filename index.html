@@ -535,18 +535,18 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   /* Fixed header — offset right of sidebar */
   .header{position:fixed;left:240px;right:0;top:0;z-index:100;background:var(--bg)}
 
-  /* Fixed sidebar nav */
+  /* Fixed sidebar nav — cores hardcoded (não mudam com dark mode) */
   nav.nav{
     position:fixed;left:0;top:0;bottom:0;
     transform:none;width:240px;max-width:240px;
     flex-direction:column;justify-content:flex-start;align-items:stretch;
     border-top:none;border-right:1px solid rgba(255,255,255,0.06);
-    padding:0;background:var(--black);overflow-y:auto;z-index:200;
+    padding:0;background:#1E0D08;overflow-y:auto;z-index:200;
   }
   nav.nav::before{
     content:"Phacolog";
     font-family:Georgia,serif;font-size:1.05rem;
-    color:rgba(246,242,236,0.9);
+    color:rgba(246,242,236,0.88);
     padding:20px 20px 19px;display:block;
     border-bottom:1px solid rgba(255,255,255,0.08);
     letter-spacing:-0.02em;flex-shrink:0;
@@ -554,22 +554,22 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   .nav-btn{
     flex-direction:row;justify-content:flex-start;align-items:center;
     padding:12px 20px;font-size:0.63rem;gap:12px;
-    width:100%;color:rgba(246,242,236,0.5);
+    width:100%;color:rgba(246,242,236,0.45);
     border-bottom:none;
   }
   .nav-btn.active{
-    color:var(--bg);background:rgba(255,255,255,0.07);
-    border-left:3px solid var(--accent);padding-left:17px;
+    color:rgba(246,242,236,0.95);background:rgba(255,255,255,0.07);
+    border-left:3px solid #C85A28;padding-left:17px;
   }
   .nav-btn.active .nav-btn-dot{display:none}
   .nav-btn svg{width:18px;height:18px;flex-shrink:0}
 
   /* Nova button — sidebar style */
   #nav-nova{flex-direction:row;justify-content:flex-start;padding:12px 20px;gap:12px;overflow:visible}
-  .nav-nova-circle{width:28px;height:28px;border-radius:8px;margin-top:0;box-shadow:none;flex-shrink:0}
+  .nav-nova-circle{width:28px;height:28px;border-radius:8px;margin-top:0;box-shadow:none;flex-shrink:0;background:#C85A28}
   #nav-nova::after{
     content:"NOVA";font-family:inherit;font-size:0.63rem;
-    font-weight:500;color:rgba(246,242,236,0.5);
+    font-weight:500;color:rgba(246,242,236,0.45);
     letter-spacing:0.06em;text-transform:uppercase;
   }
 
