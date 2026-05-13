@@ -1,7 +1,12 @@
-// Phacolog — Partner Data Edge Function v2
+// Phacolog — Partner Data Edge Function v3
 // GET /functions/v1/partner-data
 // Authorization: Bearer <partner-token>
 // Returns anonymized surgical data + platform metrics. No PII exposed.
+//
+// Security:
+//   - Tokens stored in Supabase Secrets (PARTNER_TOKEN_JJ, PARTNER_TOKEN_OFTA)
+//   - CORS restricted to known origins
+//   - Rate limiting: 30 req / IP / hour via rate_limits table
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
@@ -21,49 +26,75 @@ interface PartnerConfig {
   highlights: PartnerHighlights | null;
 }
 
-const TOKENS: Record<string, PartnerConfig> = {
-  "jj-phacolog-2025": {
-    name: "Johnson & Johnson MedTech",
-    type: "equipment",
-    shortName: "J&J",
-    color: "#C8102E",
-    darkColor: "#900A1F",
-    equipmentFilter: ["Intuitiv", "Signature", "Faros"],
-    filterLabel: "Cirurgias com equipamentos J&J",
-    highlights: { equipment: ["Intuitiv", "Signature", "Faros"], lio_prefix: "TECNIS" },
+// ── Partner config — public metadata, no secrets here ─────────────────────
+const PARTNER_DEFS: Array<{ envKey: string; cfg: PartnerConfig }> = [
+  {
+    envKey: "PARTNER_TOKEN_JJ",
+    cfg: {
+      name: "Johnson & Johnson MedTech",
+      type: "equipment",
+      shortName: "J&J",
+      color: "#C8102E",
+      darkColor: "#900A1F",
+      equipmentFilter: ["Intuitiv", "Signature", "Faros"],
+      filterLabel: "Cirurgias com equipamentos J&J",
+      highlights: { equipment: ["Intuitiv", "Signature", "Faros"], lio_prefix: "TECNIS" },
+    },
   },
-  "ofta-phacolog-2025": {
-    name: "Ofta",
-    type: "pharma",
-    shortName: "Ofta",
-    color: "#1A6BB5",
-    darkColor: "#124F87",
-    equipmentFilter: null,
-    filterLabel: "Todas as cirurgias do programa",
-    highlights: null,
+  {
+    envKey: "PARTNER_TOKEN_OFTA",
+    cfg: {
+      name: "Ofta",
+      type: "pharma",
+      shortName: "Ofta",
+      color: "#1A6BB5",
+      darkColor: "#124F87",
+      equipmentFilter: null,
+      filterLabel: "Todas as cirurgias do programa",
+      highlights: null,
+    },
   },
-};
+];
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Authorization, Content-Type",
-  "Access-Control-Allow-Methods": "GET, OPTIONS",
-};
-
-function resp(data: unknown, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { ...CORS, "Content-Type": "application/json" },
-  });
+// Resolved once at cold start — tokens come from Supabase Secrets
+const TOKENS: Record<string, PartnerConfig> = {};
+for (const { envKey, cfg } of PARTNER_DEFS) {
+  const tok = Deno.env.get(envKey);
+  if (tok) TOKENS[tok] = cfg;
 }
 
-Deno.serve(async (req: Request) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: CORS });
+// ── CORS — restricted to known origins ────────────────────────────────────
+const ALLOWED_ORIGINS = [
+  "https://cassebfelipe2.github.io",
+  "http://localhost:5500",
+  "http://127.0.0.1:5500",
+  "http://localhost:3000",
+];
 
-  const auth = req.headers.get("Authorization") ?? "";
-  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
-  const cfg = TOKENS[token];
-  if (!cfg) return resp({ error: "Token inválido ou expirado." }, 401);
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get("Origin") ?? "";
+  const allow = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allow,
+    "Access-Control-Allow-Headers": "Authorization, Content-Type",
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Vary": "Origin",
+  };
+}
+
+// ── Rate limit config ──────────────────────────────────────────────────────
+const RATE_LIMIT = 30; // max requests per IP per hour
+
+Deno.serve(async (req: Request) => {
+  const cors = corsHeaders(req);
+  if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+
+  function resp(data: unknown, status = 200) {
+    return new Response(JSON.stringify(data), {
+      status,
+      headers: { ...cors, "Content-Type": "application/json" },
+    });
+  }
 
   const sb = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -71,12 +102,45 @@ Deno.serve(async (req: Request) => {
     { auth: { persistSession: false } }
   );
 
+  // ── Rate limiting (degrades gracefully if table not yet created) ──────────
+  const rawIp = req.headers.get("x-forwarded-for") ?? "unknown";
+  const ip = rawIp.split(",")[0].trim().substring(0, 45);
+  const hour = new Date().toISOString().substring(0, 13); // "YYYY-MM-DDTHH"
+  const rlKey = `pd:${ip}:${hour}`;
+
+  const { data: rlRow, error: rlErr } = await sb
+    .from("rate_limits")
+    .select("count")
+    .eq("key", rlKey)
+    .maybeSingle();
+
+  if (!rlErr) {
+    const rlCount = (rlRow && rlRow.count ? Number(rlRow.count) : 0) + 1;
+
+    if (rlCount > RATE_LIMIT) {
+      return new Response(
+        JSON.stringify({ error: "Muitas tentativas. Tente novamente em 1 hora." }),
+        { status: 429, headers: { ...cors, "Content-Type": "application/json", "Retry-After": "3600" } }
+      );
+    }
+
+    sb.from("rate_limits")
+      .upsert({ key: rlKey, count: rlCount, updated_at: new Date().toISOString() })
+      .then(() => {})
+      .catch(() => {});
+  }
+
+  // ── Auth ─────────────────────────────────────────────────────────────────
+  const auth = req.headers.get("Authorization") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : "";
+  const cfg = TOKENS[token];
+  if (!cfg) return resp({ error: "Token inválido ou expirado." }, 401);
+
+  // ── 1. Platform metrics (global, unfiltered, no PII) ────────────────────
   const today = new Date();
   const d30 = new Date(today); d30.setDate(d30.getDate() - 30);
   const d30str = d30.toISOString().split("T")[0];
   const thisMonth = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0");
-
-  // ── 1. Platform metrics (global, unfiltered, no PII) ──────────────
 
   // Auth users (email/password accounts) — requires service role
   const { data: authData } = await sb.auth.admin.listUsers({ perPage: 1000, page: 1 });
@@ -93,15 +157,14 @@ Deno.serve(async (req: Request) => {
   ] = await Promise.all([
     sb.from("surgeries").select("*", { count: "exact", head: true }),
     sb.from("surgeries").select("*", { count: "exact", head: true }).gte("surgery_date", d30str),
-    // Active users = distinct user_id who performed surgery in last 30d
     sb.from("surgeries").select("user_id").gte("surgery_date", d30str).not("user_id", "is", null),
-    // Monthly counts for last 6 months (surgery_date YYYY-MM prefix)
     sb.from("surgeries").select("surgery_date").not("surgery_date", "is", null),
   ]);
 
-  const activeSurgeons = new Set((activeUserRows ?? []).map((r: { user_id: string }) => r.user_id)).size;
+  const activeSurgeons = new Set(
+    (activeUserRows ?? []).map((r: { user_id: string }) => r.user_id)
+  ).size;
 
-  // Build monthly map from raw dates
   const monthMap: Record<string, number> = {};
   for (const row of monthlyCounts ?? []) {
     const m = (row as { surgery_date: string }).surgery_date.substring(0, 7);
@@ -118,8 +181,7 @@ Deno.serve(async (req: Request) => {
     monthly_map: monthMap,
   };
 
-  // ── 2. Partner surgeries (filtered) ───────────────────────────────
-
+  // ── 2. Partner surgeries (filtered) ─────────────────────────────────────
   let surgQ = sb.from("surgeries").select(
     "id, surgery_date, eye, technique, equipment, cat_grade, " +
     "lio_model, lio_power, lio_type, lio_material, " +
@@ -135,13 +197,17 @@ Deno.serve(async (req: Request) => {
     return resp({ error: "Erro ao buscar cirurgias." }, 500);
   }
   if (!surgeries || surgeries.length === 0) {
-    return resp({ partner: cfg, platform_metrics: platformMetrics, surgeries: [], generated_at: new Date().toISOString() });
+    return resp({
+      partner: cfg,
+      platform_metrics: platformMetrics,
+      surgeries: [],
+      generated_at: new Date().toISOString(),
+    });
   }
 
   const ids = surgeries.map((s: { id: string }) => s.id);
 
-  // ── 3. Complications + followups (separate queries, safe) ─────────
-
+  // ── 3. Complications + followups ─────────────────────────────────────────
   const [{ data: complications }, { data: followups }] = await Promise.all([
     sb.from("complications").select("surgery_id, name").in("surgery_id", ids),
     sb.from("followups")
