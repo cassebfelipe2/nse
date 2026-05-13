@@ -78,24 +78,28 @@ Deno.serve(async (req: Request) => {
 
   // ── 1. Platform metrics (global, unfiltered, no PII) ──────────────
 
+  // Auth users (email/password accounts) — requires service role
+  const { data: authData } = await sb.auth.admin.listUsers({ perPage: 1000, page: 1 });
+  const authUsers: { created_at: string }[] = (authData && authData.users) ? authData.users : [];
+  const totalUsers: number = (authData && authData.total != null) ? authData.total : authUsers.length;
+  const d30iso = d30.toISOString();
+  const newUsers30d = authUsers.filter(function (u: { created_at: string }) { return u.created_at >= d30iso; }).length;
+
   const [
-    { count: totalUsers },
-    { count: newUsers30d },
     { count: totalSurgeries },
     { count: surgeries30d },
-    { data: activeSurgeonRows },
+    { data: activeUserRows },
     { data: monthlyCounts },
   ] = await Promise.all([
-    sb.from("users").select("*", { count: "exact", head: true }),
-    sb.from("users").select("*", { count: "exact", head: true }).gte("created_at", d30.toISOString()),
     sb.from("surgeries").select("*", { count: "exact", head: true }),
     sb.from("surgeries").select("*", { count: "exact", head: true }).gte("surgery_date", d30str),
-    sb.from("surgeries").select("surgeon_name").gte("surgery_date", d30str).not("surgeon_name", "is", null),
+    // Active users = distinct user_id who performed surgery in last 30d
+    sb.from("surgeries").select("user_id").gte("surgery_date", d30str).not("user_id", "is", null),
     // Monthly counts for last 6 months (surgery_date YYYY-MM prefix)
     sb.from("surgeries").select("surgery_date").not("surgery_date", "is", null),
   ]);
 
-  const activeSurgeons = new Set((activeSurgeonRows ?? []).map((r: { surgeon_name: string }) => r.surgeon_name)).size;
+  const activeSurgeons = new Set((activeUserRows ?? []).map((r: { user_id: string }) => r.user_id)).size;
 
   // Build monthly map from raw dates
   const monthMap: Record<string, number> = {};
@@ -105,8 +109,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const platformMetrics = {
-    total_users: totalUsers ?? 0,
-    new_users_30d: newUsers30d ?? 0,
+    total_users: totalUsers,
+    new_users_30d: newUsers30d,
     total_surgeries: totalSurgeries ?? 0,
     surgeries_30d: surgeries30d ?? 0,
     active_surgeons_30d: activeSurgeons,
