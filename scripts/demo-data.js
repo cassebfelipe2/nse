@@ -1,10 +1,26 @@
 /**
  * Phacolog — Script de dados demo
  * Cole no console do navegador em https://cassebfelipe2.github.io/nse/
- * Gera 125 cirurgias variadas no localStorage. ATENÇÃO: sobrescreve dados existentes.
+ * Gera 125 cirurgias variadas. Pergunta se deve substituir ou acrescentar aos dados existentes.
  */
 (function () {
-  if (!confirm('Isso vai substituir todos os dados atuais do app por 125 cirurgias demo.\n\nContinuar?')) return;
+  var existentes = [];
+  try {
+    var raw = localStorage.getItem('cataractadb_res_v1');
+    if (raw) existentes = JSON.parse(raw) || [];
+  } catch(e) { existentes = []; }
+
+  var modo;
+  if (existentes.length > 0) {
+    modo = confirm(
+      'Você já tem ' + existentes.length + ' cirurgia(s) salva(s).\n\n' +
+      'OK  → ACRESCENTAR as 125 cirurgias demo aos dados existentes\n' +
+      'Cancelar → SUBSTITUIR tudo pelos dados demo'
+    ) ? 'append' : 'replace';
+    if (modo === 'replace' && !confirm('Tem certeza? Os dados atuais serão perdidos.')) return;
+  } else {
+    modo = 'replace';
+  }
 
   /* ── POOLS DE DADOS ─────────────────────────────────────────── */
   var PRIMEIROS = ['Ana','Carlos','Maria','João','Pedro','Francisca','Antônio','Luiza','José',
@@ -230,8 +246,9 @@
   }
 
   /* ── SALVAR ─────────────────────────────────────────────────── */
-  localStorage.setItem('cataractadb_res_v1', JSON.stringify(db));
-  localStorage.removeItem('cataractafila_res_v1');
+  var final = modo === 'append' ? existentes.concat(db) : db;
+  localStorage.setItem('cataractadb_res_v1', JSON.stringify(final));
+  if (modo === 'replace') localStorage.removeItem('cataractafila_res_v1');
 
   /* ── RELATÓRIO ──────────────────────────────────────────────── */
   var comCompl  = db.filter(function(s){ return s.intercorrencias[0] !== 'Sem intercorrências'; }).length;
@@ -250,5 +267,6 @@
     '  Recarregue a página para ver os dados.'
   ].join('\n'));
 
-  alert('✓ 125 cirurgias demo carregadas!\n\nRecarregue a página (F5 ou ⌘R) para ver os dados no app.');
+  var acao = modo === 'append' ? 'acrescentadas aos seus dados' : 'carregadas (dados anteriores substituídos)';
+  alert('✓ 125 cirurgias demo ' + acao + '!\n\nRecarregue a página (F5 ou ⌘R) para ver.');
 })();
