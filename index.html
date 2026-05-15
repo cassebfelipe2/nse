@@ -578,9 +578,27 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   /* Nav badge — reposition for sidebar */
   .nav-badge{right:14px;left:auto;top:8px}
 
-  /* FAB — adjust bottom offset (no longer above bottom nav) */
-  #fab-btn{bottom:24px !important;right:24px !important}
-  #fab-panel{bottom:84px !important;right:24px !important}
+  /* FAB — oculto no desktop; ações ficam na sidebar */
+  #fab-btn{display:none !important}
+  #fab-panel{display:none !important}
+  #fab-panel-desktop{display:none !important}
+
+  /* Sidebar extras (ferramentas + conta na base) */
+  #sb-spacer{display:block;flex:1;min-height:16px}
+  #sb-extras{display:block}
+  .sb-divider{height:1px;background:rgba(255,255,255,0.07);margin:4px 0}
+  .sb-section-lbl{display:block;font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:500;
+    color:rgba(246,242,236,0.22);text-transform:uppercase;letter-spacing:0.14em;padding:10px 20px 3px}
+  .sb-action{display:flex;align-items:center;gap:12px;width:100%;padding:10px 20px;
+    background:none;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;
+    font-size:0.61rem;font-weight:500;color:rgba(246,242,236,0.42);
+    text-align:left;letter-spacing:0.04em;text-transform:uppercase;
+    transition:color 0.15s,background 0.15s}
+  .sb-action svg{width:15px;height:15px;flex-shrink:0;opacity:0.7;transition:opacity 0.15s}
+  .sb-action:hover{color:rgba(246,242,236,0.88);background:rgba(255,255,255,0.06)}
+  .sb-action:hover svg{opacity:1}
+  .sb-action.danger{color:rgba(200,90,40,0.45)}
+  .sb-action.danger:hover{color:#C85A28;background:rgba(200,90,40,0.08)}
 
   /* A2HS banner — not applicable on desktop */
   .a2hs-banner{display:none !important}
@@ -609,6 +627,7 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .mapa-pdf-icon{width:44px;height:44px;background:var(--bgDeep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--muted)}
 .mapa-pdf-spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
 @keyframes spin{to{transform:rotate(360deg)}}
+#sb-spacer,#sb-extras{display:none}
 
 /* ── CALCULADORA LIO ── */
 .lio-overlay{position:fixed;inset:0;z-index:700;background:rgba(34,22,17,0.55);display:flex;align-items:flex-end;justify-content:center}
@@ -1191,6 +1210,53 @@ Retorne APENAS o JSON puro, sem texto antes ou depois, sem markdown, sem explica
     Análise
     <span class="nav-btn-dot"></span>
   </button>
+
+  <!-- ── Sidebar extras — visível apenas no desktop ── -->
+  <div id="sb-spacer"></div>
+  <div id="sb-extras">
+    <div class="sb-divider"></div>
+    <span class="sb-section-lbl">Ferramentas</span>
+    <button class="sb-action" onclick="openLIOCalc()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+      Calculadora LIO
+    </button>
+    <button class="sb-action" onclick="openGoalModal()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Metas
+    </button>
+    <button class="sb-action" onclick="syncNow()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      Sincronizar
+    </button>
+    <div class="sb-divider"></div>
+    <span class="sb-section-lbl">Exportar</span>
+    <button class="sb-action" onclick="exportarAnalise()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Análise PDF
+    </button>
+    <button class="sb-action" onclick="exportarExcel()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar CSV
+    </button>
+    <button class="sb-action" onclick="importarDados()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Importar backup
+    </button>
+    <div class="sb-divider"></div>
+    <button class="sb-action" onclick="openProfile()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Minha conta
+    </button>
+    <button class="sb-action" onclick="doLogout()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair
+    </button>
+    <button class="sb-action danger" onclick="mostrarResetConfirm()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+      Excluir tudo
+    </button>
+    <div style="height:12px"></div>
+  </div>
 </nav>
 
 <!-- MODAL ONBOARDING (primeiro acesso) -->
