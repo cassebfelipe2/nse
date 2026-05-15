@@ -1338,6 +1338,7 @@ var SUPABASE_URL='https://lvvlapgsrljvjenneobf.supabase.co';
 var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2dmxhcGdzcmxqdmplbm5lb2JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY1NDY4NzcsImV4cCI6MjA5MjEyMjg3N30.NlCk2ZhTGeByHBdx5g744ySf_VYyGzuOuNcnB8QfZsA';
 var _sb=null;
 var currentUser=null;
+var _recoveryMode=false;
 
 let db=[], filaDB=[], currentPage='home', prevPage=null, selectedId=null, posOpContext=null, activeFilter='all', indicaContext=null;
 
@@ -1395,7 +1396,7 @@ function atualizarNomeHeader(){
 // ── SUPABASE AUTH ────────────────────────────────────────────────
 // ── AUTH VIEWS ───────────────────────────────────────────────────
 function showAuthView(view){
-  var views=['loading','login','signup','forgot'];
+  var views=['loading','login','signup','forgot','reset'];
   views.forEach(function(v){
     var el=document.getElementById('auth-'+v+'-view');
     if(el)el.style.display=(v===view?'block':'none');
@@ -1403,6 +1404,7 @@ function showAuthView(view){
   if(view==='login'){var e=document.getElementById('auth-error');if(e)e.textContent='';}
   if(view==='signup'){var e=document.getElementById('auth-error-su');if(e)e.textContent='';}
   if(view==='forgot'){var e=document.getElementById('auth-error-forgot');if(e)e.textContent='';}
+  if(view==='reset'){var e=document.getElementById('auth-error-reset');if(e)e.textContent='';}
 }
 // legacy aliases kept for existing onclick references
 function showLogin(){showAuthView('login');}
@@ -1445,26 +1447,35 @@ function initSupabase(){
     auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}
   });
 
-  // Step 1: check for stored session immediately — this is what prevents
-  // the login flash on page refresh. onAuthStateChange alone fires too late.
-  _sb.auth.getSession().then(function(res){
-    if(res.data&&res.data.session&&res.data.session.user){
-      _applySession(res.data.session.user);
-    } else {
-      showAuthView('login');
-    }
-  });
+  // Detect password-recovery redirect (hash contains type=recovery)
+  _recoveryMode=(window.location.hash.indexOf('type=recovery')!==-1);
 
-  // Step 2: react to subsequent auth events (login, logout, password reset)
+  // Step 1: check stored session — prevents login flash on refresh.
+  // Skip if this is a recovery redirect; onAuthStateChange will handle it.
+  if(!_recoveryMode){
+    _sb.auth.getSession().then(function(res){
+      if(res.data&&res.data.session&&res.data.session.user){
+        _applySession(res.data.session.user);
+      } else {
+        showAuthView('login');
+      }
+    });
+  }
+
+  // Step 2: react to auth events
   _sb.auth.onAuthStateChange(function(event,session){
-    if(event==='SIGNED_IN'&&session&&session.user){
+    if(event==='PASSWORD_RECOVERY'){
+      _recoveryMode=true;
+      showAuthView('reset');
+      document.getElementById('auth-overlay').classList.remove('hidden');
+    }else if(event==='SIGNED_IN'&&session&&session.user&&!_recoveryMode){
       _applySession(session.user);
     }else if(event==='SIGNED_OUT'){
       currentUser=null;
+      _recoveryMode=false;
       showAuthView('login');
       document.getElementById('auth-overlay').classList.remove('hidden');
     }
-    // INITIAL_SESSION and TOKEN_REFRESHED handled elsewhere or ignored
   });
 }
 
@@ -1513,6 +1524,25 @@ function doForgotPassword(){
     if(res.error){document.getElementById('auth-error-forgot').textContent=res.error.message;return;}
     showAuthView('login');
     showAuthError('Link enviado! Verifique seu e-mail.');
+  });
+}
+function doResetPassword(){
+  if(!_sb)return;
+  var pass=document.getElementById('auth-reset-pass').value;
+  var pass2=document.getElementById('auth-reset-pass2').value;
+  var errEl=document.getElementById('auth-error-reset');
+  errEl.textContent='';
+  if(!pass||pass.length<6){errEl.textContent='Senha deve ter ao mínimo 6 caracteres.';return;}
+  if(pass!==pass2){errEl.textContent='As senhas não coincidem.';return;}
+  var btn=document.getElementById('auth-reset-btn');
+  if(btn){btn.disabled=true;btn.textContent='Salvando…';}
+  _sb.auth.updateUser({password:pass}).then(function(res){
+    if(btn){btn.disabled=false;btn.textContent='Salvar nova senha';}
+    if(res.error){errEl.textContent=res.error.message;return;}
+    _recoveryMode=false;
+    window.history.replaceState(null,'',window.location.pathname+window.location.search);
+    _applySession(res.data.user);
+    showToast('Senha alterada com sucesso!');
   });
 }
 function doLogout(){
@@ -4209,6 +4239,17 @@ document.addEventListener('DOMContentLoaded',function(){
       <input class="auth-input" type="email" id="auth-forgot-email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')doForgotPassword()">
       <button class="auth-btn" id="auth-forgot-btn" onclick="doForgotPassword()">Enviar link</button>
       <div class="auth-link"><span onclick="showAuthView('login')">← Voltar para login</span></div>
+    </div>
+
+    <!-- Nova senha (via link de recuperação) -->
+    <div id="auth-reset-view" style="display:none">
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:4px;line-height:1.5">Crie sua nova senha abaixo.</div>
+      <div class="auth-error" id="auth-error-reset"></div>
+      <label class="auth-label">Nova senha</label>
+      <input class="auth-input" type="password" id="auth-reset-pass" placeholder="mínimo 6 caracteres" autocomplete="new-password" onkeydown="if(event.key==='Enter')doResetPassword()">
+      <label class="auth-label">Confirmar nova senha</label>
+      <input class="auth-input" type="password" id="auth-reset-pass2" placeholder="repita a senha" autocomplete="new-password" onkeydown="if(event.key==='Enter')doResetPassword()">
+      <button class="auth-btn" id="auth-reset-btn" onclick="doResetPassword()">Salvar nova senha</button>
     </div>
   </div>
 </div>

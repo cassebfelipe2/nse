@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Redefinição de senha — Phacolog</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F6F2EC;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"
+         style="background:#F6F2EC;padding:48px 20px 64px">
+    <tr><td align="center">
+
+      <!-- Card -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation"
+             style="max-width:480px;background:#FFFFFF;border-radius:16px;overflow:hidden;
+                    box-shadow:0 2px 20px rgba(34,22,17,0.10)">
+
+        <!-- ── Header ── -->
+        <tr>
+          <td style="background:#221611;padding:32px 32px 28px;text-align:center">
+
+            <!-- Eye icon (table-based for email compat) -->
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation"
+                   style="margin:0 auto 14px">
+              <tr><td style="width:52px;height:52px;border:2.5px solid #C85A28;
+                             border-radius:50%;text-align:center;vertical-align:middle">
+                <table cellpadding="0" cellspacing="0" border="0" role="presentation"
+                       style="margin:0 auto">
+                  <tr><td style="width:12px;height:12px;background:#C85A28;
+                                 border-radius:50%;font-size:0px;line-height:0">&nbsp;</td></tr>
+                </table>
+              </td></tr>
+            </table>
+
+            <!-- Wordmark -->
+            <div style="font-family:Georgia,'Times New Roman',Times,serif;
+                        font-size:26px;font-weight:400;color:#FFFFFF;
+                        letter-spacing:-0.02em;line-height:1">
+              Phaco<em>log</em>
+            </div>
+            <div style="font-size:11px;color:#8C7B6E;margin-top:5px;
+                        letter-spacing:0.09em;text-transform:uppercase">
+              Logbook Cirúrgico
+            </div>
+          </td>
+        </tr>
+
+        <!-- ── Body ── -->
+        <tr>
+          <td style="padding:36px 36px 8px">
+            <p style="margin:0 0 6px;font-size:20px;font-weight:700;
+                      color:#221611;line-height:1.2">
+              Redefinição de senha
+            </p>
+            <p style="margin:0 0 28px;font-size:14px;color:#5A4A40;line-height:1.65">
+              Recebemos uma solicitação de redefinição de senha para a sua conta no
+              <strong>Phacolog</strong>. Clique no botão abaixo para criar uma nova senha.
+            </p>
+
+            <!-- CTA button -->
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation"
+                   style="margin-bottom:28px">
+              <tr>
+                <td style="border-radius:10px;background:#C85A28">
+                  <a href="{{ .ConfirmationURL }}"
+                     style="display:inline-block;padding:15px 36px;
+                            font-size:15px;font-weight:700;color:#FFFFFF;
+                            text-decoration:none;letter-spacing:0.01em;
+                            font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif">
+                    Redefinir senha &rarr;
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Fallback link -->
+            <p style="margin:0 0 24px;font-size:12px;color:#8C7B6E;line-height:1.6">
+              Se o botão não funcionar, copie e cole o link abaixo no seu navegador:<br>
+              <a href="{{ .ConfirmationURL }}"
+                 style="color:#C85A28;word-break:break-all;text-decoration:none">
+                {{ .ConfirmationURL }}
+              </a>
+            </p>
+          </td>
+        </tr>
+
+        <!-- ── Security notice ── -->
+        <tr>
+          <td style="padding:0 36px">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+              <tr>
+                <td style="background:#F6F2EC;border-radius:10px;
+                           padding:14px 16px;font-size:12px;
+                           color:#8C7B6E;line-height:1.65">
+                  <strong style="color:#5A4A40">Não solicitou esta redefinição?</strong><br>
+                  Ignore este e-mail com segurança — sua senha permanece a mesma e nenhuma
+                  alteração foi feita na sua conta.<br><br>
+                  Este link expira em <strong style="color:#5A4A40">1 hora</strong> por segurança.
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ── Divider ── -->
+        <tr>
+          <td style="padding:24px 36px 0">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+              <tr><td style="border-top:1px solid #E6DDD0;font-size:0;line-height:0">&nbsp;</td></tr>
+            </table>
+          </td>
+        </tr>
+
+        <!-- ── Footer ── -->
+        <tr>
+          <td style="padding:20px 36px 32px">
+            <p style="margin:0;font-size:11px;color:#8C7B6E;line-height:1.7">
+              <strong style="color:#5A4A40">Phacolog</strong> &mdash;
+              Logbook cirúrgico para residentes de oftalmologia.<br>
+              Dados de pacientes são anonimizados localmente, em conformidade com a LGPD.<br>
+              Este e-mail foi enviado para
+              <a href="mailto:{{ .Email }}"
+                 style="color:#C85A28;text-decoration:none">{{ .Email }}</a>.
+            </p>
+          </td>
+        </tr>
+
+      </table>
+      <!-- /Card -->
+
+    </td></tr>
+  </table>
+
+</body>
+</html>
