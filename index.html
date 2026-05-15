@@ -609,6 +609,65 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .mapa-pdf-icon{width:44px;height:44px;background:var(--bgDeep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--muted)}
 .mapa-pdf-spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── CALCULADORA LIO ── */
+.lio-overlay{position:fixed;inset:0;z-index:700;background:rgba(34,22,17,0.55);display:flex;align-items:flex-end;justify-content:center}
+.lio-overlay.hidden{display:none}
+.lio-card{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;box-shadow:0 -4px 32px rgba(34,22,17,0.18);max-height:88vh;overflow-y:auto}
+.lio-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lio-result-row{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap}
+.lio-chip{flex:1;min-width:52px;text-align:center;padding:11px 4px;border-radius:10px;background:var(--bgDeep)}
+.lio-chip.main{background:var(--accent)}
+.lio-chip-val{font-family:var(--fontDisplay);font-size:1.25rem;color:var(--black);letter-spacing:-0.02em;line-height:1}
+.lio-chip.main .lio-chip-val{color:#fff}
+.lio-chip-lbl{font-family:var(--fontMono);font-size:0.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
+.lio-chip.main .lio-chip-lbl{color:rgba(255,255,255,0.75)}
+.lio-formula-note{font-size:0.7rem;color:var(--muted);margin-top:10px;text-align:center}
+
+/* ── METAS ── */
+.goal-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.goal-label{font-size:0.78rem;font-weight:600;color:var(--black);min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goal-bar-wrap{height:5px;background:var(--bgDeep);border-radius:3px;overflow:hidden;width:80px;flex-shrink:0}
+.goal-bar-fill{height:100%;background:var(--accent);border-radius:3px}
+.goal-pct{font-family:var(--fontMono);font-size:0.6rem;color:var(--muted);white-space:nowrap;width:32px;text-align:right}
+.goal-del{font-size:0.75rem;color:var(--muted);cursor:pointer;flex-shrink:0;padding:2px 4px}
+.goal-overlay{position:fixed;inset:0;z-index:700;background:rgba(34,22,17,0.55);display:flex;align-items:flex-end;justify-content:center}
+.goal-overlay.hidden{display:none}
+.goal-modal-card{background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;box-shadow:0 -4px 32px rgba(34,22,17,0.18)}
+
+/* ── CURVA DE COMPLICAÇÕES ── */
+.compl-curve-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.curve-legend-dot{width:8px;height:8px;border-radius:4px;flex-shrink:0}
+
+/* ── TABELA TÉCNICA × GRAU ── */
+.cross-table{width:100%;border-collapse:collapse;font-size:0.75rem}
+.cross-table th{text-align:center;padding:6px 4px;color:var(--muted);font-family:var(--fontMono);font-size:0.58rem;font-weight:500;border-bottom:1.5px solid var(--border)}
+.cross-table td{text-align:center;padding:7px 4px;border-bottom:1px solid var(--border);color:var(--black)}
+.cross-table td:first-child{text-align:left;font-weight:600;color:var(--black);padding-left:0}
+.cross-compl{color:var(--danger);font-size:0.62rem;display:block}
+.cross-empty{color:var(--muted)}
+
+/* ── APRESENTAÇÃO M&M ── */
+#mm-area{display:none;position:fixed;inset:0;z-index:800;background:#fff;overflow-y:auto;padding:28px 20px 60px}
+.mm-page{max-width:680px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif}
+.mm-header{border-bottom:3px solid #C85A28;padding-bottom:14px;margin-bottom:22px;display:flex;align-items:flex-start;justify-content:space-between}
+.mm-title{font-size:1.3rem;font-weight:700;color:#221611;line-height:1.2}
+.mm-sub{font-size:0.75rem;color:#8C7B6E;margin-top:4px}
+.mm-section-title{font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#C85A28;margin-bottom:8px;margin-top:20px}
+.mm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.mm-field{background:#F6F2EC;border-radius:6px;padding:8px 10px}
+.mm-field-lbl{font-size:0.58rem;color:#8C7B6E;text-transform:uppercase;letter-spacing:0.06em}
+.mm-field-val{font-size:0.82rem;font-weight:600;color:#221611;margin-top:2px}
+.mm-compl-item{background:#FFF0ED;border-left:3px solid #C85A28;padding:7px 12px;border-radius:0 6px 6px 0;margin-bottom:6px;font-size:0.8rem;color:#221611}
+.mm-posop-row{display:flex;gap:8px;margin-bottom:8px}
+.mm-posop-card{flex:1;background:#F6F2EC;border-radius:6px;padding:8px 6px;text-align:center}
+.mm-posop-lbl{font-size:0.58rem;color:#8C7B6E;text-transform:uppercase;letter-spacing:0.06em}
+.mm-posop-val{font-size:0.82rem;font-weight:600;color:#221611;margin-top:2px}
+.mm-mental-row{display:flex;gap:8px;margin-top:6px}
+.mm-mental-card{flex:1;text-align:center;background:#F6F2EC;border-radius:6px;padding:8px}
+.mm-mental-val{font-size:1.5rem;font-family:Georgia,serif;color:#221611}
+.mm-mental-lbl{font-size:0.58rem;color:#8C7B6E;text-transform:uppercase;letter-spacing:0.06em}
+@media print{body>*:not(#mm-area){display:none!important}#mm-area{display:block!important;position:static!important;padding:0!important}.mm-no-print{display:none!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -2763,6 +2822,10 @@ function renderDetail(id){
     <div class="sec-title" style="font-size:0.95rem;margin-bottom:10px">Linha do tempo pós-op</div>
     <div class="card">${tlHtml}${bloqueadoHtml}</div>
     <div style="height:14px"></div>
+    <button class="btn btn-outline" onclick="gerarMM('${id}')" style="margin-bottom:10px">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      Apresentar caso (M&M)
+    </button>
     <button class="btn btn-outline" onclick="openEditCirurgia('${id}')" style="margin-bottom:10px">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
       Editar cirurgia
@@ -3590,6 +3653,94 @@ function renderAnalytics(){
       </div></div>`;
   }
 
+  // Curva de taxa de complicações ao longo do tempo
+  function complicacaoCurve(){
+    const sorted3=[...db].filter(p=>p.dataCirurgia).sort((a,b)=>a.dataCirurgia.localeCompare(b.dataCirurgia));
+    if(sorted3.length<6)return '';
+    const G=Math.min(10,Math.floor(sorted3.length/3));
+    const chunkSz=Math.ceil(sorted3.length/G);
+    const pts=[];
+    for(let i=0;i<G;i++){
+      const chunk=sorted3.slice(i*chunkSz,(i+1)*chunkSz);
+      const cc=chunk.filter(p=>hasCompl(p)).length;
+      pts.push(Math.round(cc/chunk.length*100));
+    }
+    const W=300,H=110,PL=26,PR=8,PT=8,PB=22;
+    const cW=W-PL-PR,cH=H-PT-PB,nn=pts.length;
+    const xS=nn>1?cW/(nn-1):cW;
+    const xF=i=>PL+i*xS;
+    const yF=v=>PT+cH-(Math.min(v,100)/100)*cH;
+    const yLbls=[0,25,50,75,100];
+    let svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;overflow:visible">`;
+    yLbls.forEach(y=>{svg+=`<line x1="${PL}" y1="${yF(y).toFixed(1)}" x2="${W-PR}" y2="${yF(y).toFixed(1)}" stroke="#E6DDD0" stroke-width="1"/><text x="${PL-5}" y="${(yF(y)+3).toFixed(1)}" text-anchor="end" font-family="'JetBrains Mono',monospace" font-size="7" fill="#B7AA9C">${y}</text>`;});
+    pts.forEach((_,i)=>{svg+=`<text x="${xF(i).toFixed(1)}" y="${H-5}" text-anchor="middle" font-family="'JetBrains Mono',monospace" font-size="7" fill="#8A7A6E">G${i+1}</text>`;});
+    const d=pts.map((v,i)=>(i===0?'M':'L')+xF(i).toFixed(1)+' '+yF(v).toFixed(1)).join(' ');
+    svg+=`<path d="${d}" fill="none" stroke="#C85A28" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+    pts.forEach((v,i)=>{svg+=`<circle cx="${xF(i).toFixed(1)}" cy="${yF(v).toFixed(1)}" r="2.5" fill="#C85A28"/>`;});
+    svg+='</svg>';
+    const avgCompl=Math.round(db.filter(p=>hasCompl(p)).length/db.length*100);
+    return `<div style="margin-top:18px"><div class="section-label-row"><span class="section-label">Curva de intercorrências (toda residência)</span></div>
+      <div class="card" style="margin-bottom:0">${svg}
+        <div style="display:flex;justify-content:space-around;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border)">
+          <div style="text-align:center"><div style="font-family:var(--fontDisplay);font-size:1.1rem;color:var(--black)">${pts[0]}%</div><div style="font-size:0.65rem;color:var(--muted)">início</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fontDisplay);font-size:1.1rem;color:var(--accent)">${avgCompl}%</div><div style="font-size:0.65rem;color:var(--muted)">média geral</div></div>
+          <div style="text-align:center"><div style="font-family:var(--fontDisplay);font-size:1.1rem;color:var(--black)">${pts[pts.length-1]}%</div><div style="font-size:0.65rem;color:var(--muted)">mais recente</div></div>
+        </div>
+      </div></div>`;
+  }
+
+  // Tabela comparativa técnica × grau de catarata
+  function techGradeMatrix(){
+    const tecnicas=['Faco','MSICS','Extra'];
+    const graus=['1','2','3','4'];
+    const matrix={};
+    tecnicas.forEach(t=>{matrix[t]={};graus.forEach(g=>{matrix[t][g]={n:0,c:0};});});
+    db.forEach(p=>{
+      const t=p.tecnica;const g=p.catGrau;
+      if(!t||!g||!matrix[t]||!matrix[t][g])return;
+      matrix[t][g].n++;
+      if(hasCompl(p))matrix[t][g].c++;
+    });
+    const hasDados=tecnicas.some(t=>graus.some(g=>matrix[t][g].n>0));
+    if(!hasDados)return '';
+    let rows=tecnicas.map(t=>{
+      const cells=graus.map(g=>{
+        const cell=matrix[t][g];
+        if(cell.n===0)return `<td class="cross-empty">—</td>`;
+        const cr2=Math.round(cell.c/cell.n*100);
+        return `<td><strong>${cell.n}</strong>${cell.c>0?`<span class="cross-compl">${cr2}% IC</span>`:''}</td>`;
+      }).join('');
+      return `<tr><td>${t}</td>${cells}</tr>`;
+    }).join('');
+    return `<div style="margin-top:18px"><div class="section-label-row"><span class="section-label">Técnica × Grau de catarata</span></div>
+      <div class="card" style="margin-bottom:0;overflow-x:auto">
+        <table class="cross-table">
+          <thead><tr><th style="text-align:left">Técnica</th>${graus.map(g=>`<th>Grau ${g}</th>`).join('')}</tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        <div style="font-size:0.65rem;color:var(--muted);margin-top:8px">IC = taxa de intercorrência</div>
+      </div></div>`;
+  }
+
+  // Metas de residência
+  function renderGoalsSection(){
+    var metas=loadGoals();
+    if(!metas.length)return '';
+    var rows=metas.map(function(m){
+      var cnt=0;
+      if(m.tipo==='Todas'){cnt=db.length;}
+      else{cnt=db.filter(function(p){return p.tecnica===m.tipo;}).length;}
+      var pct=Math.min(100,Math.round(cnt/m.meta*100));
+      var prazoStr=m.prazo?(' · até '+m.prazo.slice(0,7)):'';
+      return '<div class="goal-row"><div class="goal-label">'+m.label+'<span style="font-size:0.6rem;color:var(--muted);font-weight:400">'+prazoStr+'</span></div>'+
+        '<div class="goal-bar-wrap"><div class="goal-bar-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="goal-pct">'+cnt+'/'+m.meta+'</div>'+
+        '<div class="goal-del" onclick="deleteGoal(\''+m.id+'\')">×</div></div>';
+    }).join('');
+    return '<div style="margin-top:18px"><div class="section-label-row"><span class="section-label">Metas de residência</span></div>'+
+      '<div class="card" style="margin-bottom:0">'+rows+'<button onclick="openGoalModal()" style="font-size:0.75rem;color:var(--accent);font-weight:600;background:none;border:none;cursor:pointer;padding:4px 0;margin-top:4px">+ Nova meta</button></div></div>';
+  }
+
   const complTagsHtml=Object.entries(complTypes).sort((a,b)=>b[1]-a[1]).map(([t,v])=>`<div class="compl-chip">${t}<span class="compl-chip-count">${v}</span></div>`).join('');
 
   document.getElementById('analytics-content').innerHTML=`
@@ -3628,6 +3779,13 @@ function renderAnalytics(){
     <div class="card" style="margin-bottom:22px"><div style="display:flex;flex-wrap:wrap;gap:6px">${complTagsHtml}</div></div>`:''}
 
     ${mentalLineChart()}
+
+    ${complicacaoCurve()}
+
+    ${techGradeMatrix()}
+
+    ${renderGoalsSection()}
+
     <div style="height:8px"></div>
   </div>`;
 }
@@ -4300,6 +4458,110 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 
+<!-- CALCULADORA LIO -->
+<div class="lio-overlay hidden" id="lio-overlay" onclick="if(event.target===this)closeLIOCalc()">
+  <div class="lio-card">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:1rem;font-weight:700;color:var(--black);margin-bottom:4px">Calculadora de LIO</div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:18px">Fórmula SRK/II · Alvo emétropico ou com refração-alvo</div>
+    <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Biometria</div>
+    <div class="lio-row-2" style="margin-bottom:10px">
+      <div>
+        <label class="auth-label">Comprimento axial (mm)</label>
+        <input class="auth-input" type="number" id="lio-al" placeholder="ex: 23.45" step="0.01" min="18" max="32" oninput="calcLIO()">
+      </div>
+      <div>
+        <label class="auth-label">K1 (D)</label>
+        <input class="auth-input" type="number" id="lio-k1" placeholder="ex: 43.50" step="0.01" min="35" max="55" oninput="calcLIO()">
+      </div>
+    </div>
+    <div class="lio-row-2" style="margin-bottom:10px">
+      <div>
+        <label class="auth-label">K2 (D)</label>
+        <input class="auth-input" type="number" id="lio-k2" placeholder="ex: 44.25" step="0.01" min="35" max="55" oninput="calcLIO()">
+      </div>
+      <div>
+        <label class="auth-label">Refração-alvo (D)</label>
+        <input class="auth-input" type="number" id="lio-target" placeholder="0 = plano" step="0.25" min="-3" max="1" value="0" oninput="calcLIO()">
+      </div>
+    </div>
+    <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Constante A da LIO</div>
+    <div class="lio-row-2" style="margin-bottom:6px">
+      <div>
+        <label class="auth-label">Preset de LIO</label>
+        <select class="auth-input" id="lio-preset" onchange="applyLIOPreset()" style="appearance:auto">
+          <option value="">Manual</option>
+          <option value="119.3">Tecnis ZCB00 (119.3)</option>
+          <option value="119.0">Alcon SN60WF / IQ (119.0)</option>
+          <option value="118.4">Alcon SA60AT (118.4)</option>
+          <option value="119.1">Alcon Clareon (119.1)</option>
+          <option value="118.5">Envista MX60 (118.5)</option>
+          <option value="118.9">Stellaris / Custom (118.9)</option>
+        </select>
+      </div>
+      <div>
+        <label class="auth-label">Constante A</label>
+        <input class="auth-input" type="number" id="lio-a" placeholder="118.0–119.5" step="0.1" min="110" max="125" value="119.0" oninput="calcLIO()">
+      </div>
+    </div>
+    <div class="auth-error" id="lio-error" style="min-height:0;margin-bottom:4px"></div>
+    <div id="lio-result" style="display:none"></div>
+    <div class="lio-formula-note">SRK/II com correção por comprimento axial. Resultado para referência clínica.</div>
+    <button style="width:100%;padding:12px;background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--muted);margin-top:14px" onclick="closeLIOCalc()">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL METAS -->
+<div class="goal-overlay hidden" id="goal-overlay" onclick="if(event.target===this)closeGoalModal()">
+  <div class="goal-modal-card">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:1rem;font-weight:700;color:var(--black);margin-bottom:18px">Nova meta</div>
+    <div class="auth-error" id="goal-error" style="min-height:0;margin-bottom:8px"></div>
+    <label class="auth-label">Descrição</label>
+    <input class="auth-input" type="text" id="goal-label" placeholder="ex: 80 facos no R2">
+    <label class="auth-label">Técnica</label>
+    <select class="auth-input" id="goal-tipo" style="appearance:auto">
+      <option value="Todas">Todas as técnicas</option>
+      <option value="Faco">Faco</option>
+      <option value="MSICS">MSICS</option>
+      <option value="Extra">Extra</option>
+    </select>
+    <div class="lio-row-2">
+      <div>
+        <label class="auth-label">Quantidade</label>
+        <input class="auth-input" type="number" id="goal-meta" placeholder="ex: 80" min="1" max="999">
+      </div>
+      <div>
+        <label class="auth-label">Prazo</label>
+        <input class="auth-input" type="date" id="goal-prazo">
+      </div>
+    </div>
+    <button class="auth-btn" onclick="saveGoal()">Salvar meta</button>
+    <button style="width:100%;padding:12px;background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--muted);margin-top:4px" onclick="closeGoalModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- ÁREA APRESENTAÇÃO M&M -->
+<div id="mm-area">
+  <div class="mm-page">
+    <div class="mm-header">
+      <div>
+        <div class="mm-title" id="mm-title">Caso Clínico</div>
+        <div class="mm-sub" id="mm-sub"></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:Georgia,serif;font-size:1rem;color:#C85A28;font-style:italic">Phacolog</div>
+        <div style="font-size:0.65rem;color:#8C7B6E">Logbook Cirúrgico</div>
+      </div>
+    </div>
+    <div id="mm-body"></div>
+    <div class="mm-no-print" style="margin-top:32px;display:flex;gap:10px">
+      <button onclick="window.print()" style="flex:1;padding:13px;background:#C85A28;color:#fff;border:none;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer">Imprimir / Salvar PDF</button>
+      <button onclick="fecharMM()" style="flex:1;padding:13px;background:var(--bgDeep);color:var(--black);border:none;border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer">Fechar</button>
+    </div>
+  </div>
+</div>
+
 <!-- PUSH PROMPT -->
 <div class="push-prompt-overlay" id="push-prompt-overlay">
   <div class="push-prompt-card">
@@ -4374,6 +4636,20 @@ document.addEventListener('DOMContentLoaded',function(){
       <svg width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2.2" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
     </span>
     Instalar app
+  </button>
+  <!-- Calculadora LIO -->
+  <button onclick="openLIOCalc();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--infoSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--info)" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+    </span>
+    Calculadora de LIO
+  </button>
+  <!-- Metas -->
+  <button onclick="openGoalModal();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--okSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--ok)" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </span>
+    Metas de residência
   </button>
   <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <!-- Análise PDF -->
@@ -4630,6 +4906,175 @@ ${mConf.length>0?`<h2>Avaliação Mental</h2>
     };
   }
   setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CALCULADORA DE LIO (SRK/II)
+// ══════════════════════════════════════════════════════════════════
+function openLIOCalc(){
+  document.getElementById('lio-overlay').classList.remove('hidden');
+  document.getElementById('lio-result').style.display='none';
+  document.getElementById('lio-error').textContent='';
+  if(selectedId){
+    var p=db.find(function(x){return x.id===selectedId;});
+    if(p){
+      if(p.axialLength)document.getElementById('lio-al').value=p.axialLength;
+      if(p.keratoD1)document.getElementById('lio-k1').value=p.keratoD1;
+      if(p.keratoD2)document.getElementById('lio-k2').value=p.keratoD2;
+    }
+  }
+}
+function closeLIOCalc(){
+  document.getElementById('lio-overlay').classList.add('hidden');
+}
+function applyLIOPreset(){
+  var val=document.getElementById('lio-preset').value;
+  if(val)document.getElementById('lio-a').value=val;
+  calcLIO();
+}
+function calcLIO(){
+  var al=parseFloat(document.getElementById('lio-al').value);
+  var k1=parseFloat(document.getElementById('lio-k1').value);
+  var k2=parseFloat(document.getElementById('lio-k2').value);
+  var aConst=parseFloat(document.getElementById('lio-a').value);
+  var target=parseFloat(document.getElementById('lio-target').value)||0;
+  var errEl=document.getElementById('lio-error');
+  var res=document.getElementById('lio-result');
+  if(isNaN(al)||isNaN(k1)||isNaN(k2)||isNaN(aConst)){
+    res.style.display='none';
+    if(!isNaN(al)||!isNaN(k1)||!isNaN(k2))errEl.textContent='Preencha AL, K1, K2 e Constante A.';
+    return;
+  }
+  errEl.textContent='';
+  var k=(k1+k2)/2;
+  // SRK/II axial length correction
+  var corr=0;
+  if(al<20)corr=3;
+  else if(al<21)corr=2;
+  else if(al<22)corr=1;
+  else if(al<24.5)corr=0;
+  else if(al<26)corr=-0.5;
+  else corr=-1;
+  var pEmme=aConst-2.5*(al+corr)-0.9*k;
+  // Adjust for target refraction (−1D target → ~−0.75D IOL)
+  var pTarget=pEmme+target*1.25;
+  var rounded=Math.round(pTarget*2)/2;
+  var opts=[-1,-0.5,0,0.5,1].map(function(d){
+    var v=rounded+d;
+    var isMain=(d===0);
+    var lbl=isMain?'Rec.':d>0?'+'+d:String(d);
+    return '<div class="lio-chip'+(isMain?' main':'')+'"><div class="lio-chip-val">'+v.toFixed(1)+'</div><div class="lio-chip-lbl">'+lbl+'</div></div>';
+  });
+  res.innerHTML='<div class="lio-result-row">'+opts.join('')+'</div>';
+  res.style.display='';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// METAS DE RESIDÊNCIA
+// ══════════════════════════════════════════════════════════════════
+function loadGoals(){
+  try{return JSON.parse(localStorage.getItem('cataracta_metas_v1')||'[]');}catch(e){return [];}
+}
+function saveGoalsLS(arr){
+  localStorage.setItem('cataracta_metas_v1',JSON.stringify(arr));
+}
+function openGoalModal(){
+  document.getElementById('goal-overlay').classList.remove('hidden');
+  document.getElementById('goal-label').value='';
+  document.getElementById('goal-tipo').value='Todas';
+  document.getElementById('goal-meta').value='';
+  document.getElementById('goal-prazo').value='';
+  document.getElementById('goal-error').textContent='';
+}
+function closeGoalModal(){
+  document.getElementById('goal-overlay').classList.add('hidden');
+}
+function saveGoal(){
+  var label=document.getElementById('goal-label').value.trim();
+  var tipo=document.getElementById('goal-tipo').value;
+  var meta=parseInt(document.getElementById('goal-meta').value,10);
+  var prazo=document.getElementById('goal-prazo').value;
+  var errEl=document.getElementById('goal-error');
+  if(!label){errEl.textContent='Informe uma descrição.';return;}
+  if(!meta||meta<1){errEl.textContent='Informe uma quantidade válida.';return;}
+  errEl.textContent='';
+  var arr=loadGoals();
+  arr.push({id:String(Date.now()),label:label,tipo:tipo,meta:meta,prazo:prazo||null});
+  saveGoalsLS(arr);
+  closeGoalModal();
+  if(currentPage==='analise')renderAnalise();
+  showToast('Meta salva!');
+}
+function deleteGoal(id){
+  var arr=loadGoals().filter(function(m){return m.id!==id;});
+  saveGoalsLS(arr);
+  if(currentPage==='analise')renderAnalise();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// APRESENTAÇÃO DE CASO M&M
+// ══════════════════════════════════════════════════════════════════
+function gerarMM(id){
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  var initials=p.nome?p.nome.split(' ').filter(function(w){return w.length>1;}).map(function(w){return w[0]+'.';}).join(''):'Paciente';
+  var complicacoes=(p.intercorrencias||[]).filter(function(c){return c&&c!=='Sem intercorrências';});
+  var hasC=complicacoes.length>0;
+  var complHtml=hasC?complicacoes.map(function(c){return '<div class="mm-compl-item">'+c+'</div>';}).join(''):'<div style="font-size:0.82rem;color:#5A4A40">Sem intercorrências registradas</div>';
+  // posOps timeline
+  var posOpHtml='';
+  var tiposPos=['D1','D7','D30'];
+  tiposPos.forEach(function(tipo){
+    var po=p.posOps&&p.posOps[tipo];
+    if(!po)return;
+    posOpHtml+='<div style="margin-bottom:12px"><div class="mm-section-title">Retorno '+tipo+'</div><div class="mm-posop-row">';
+    if(po.av)posOpHtml+='<div class="mm-posop-card"><div class="mm-posop-lbl">AV</div><div class="mm-posop-val">'+po.av+'</div></div>';
+    if(po.avcc)posOpHtml+='<div class="mm-posop-card"><div class="mm-posop-lbl">AVCC</div><div class="mm-posop-val">'+po.avcc+'</div></div>';
+    if(po.pio)posOpHtml+='<div class="mm-posop-card"><div class="mm-posop-lbl">PIO</div><div class="mm-posop-val">'+po.pio+'</div></div>';
+    posOpHtml+='</div>';
+    if(po.conduta)posOpHtml+='<div style="font-size:0.78rem;color:#5A4A40"><strong>Conduta:</strong> '+po.conduta+'</div>';
+    posOpHtml+='</div>';
+  });
+  // mental
+  var mentalHtml='';
+  if(p.mental){
+    mentalHtml='<div class="mm-mental-row">'+
+      '<div class="mm-mental-card"><div class="mm-mental-val">'+(p.mental.confianca||'—')+'</div><div class="mm-mental-lbl">Confiança</div></div>'+
+      '<div class="mm-mental-card"><div class="mm-mental-val">'+(p.mental.controle||'—')+'</div><div class="mm-mental-lbl">Controle</div></div>'+
+      '<div class="mm-mental-card"><div class="mm-mental-val">'+(p.mental.estresse||'—')+'</div><div class="mm-mental-lbl">Estresse</div></div>'+
+    '</div>';
+    if(p.mental.obs)mentalHtml+='<div style="font-size:0.78rem;color:#5A4A40;margin-top:8px;font-style:italic">'+p.mental.obs+'</div>';
+  }
+  var bio=(p.keratoD1||p.axialLength||p.ac)?
+    '<div class="mm-section-title">Biometria pré-operatória</div><div class="mm-grid">'+
+    (p.axialLength?'<div class="mm-field"><div class="mm-field-lbl">Comprimento axial</div><div class="mm-field-val">'+p.axialLength+' mm</div></div>':'')+
+    (p.keratoD1?'<div class="mm-field"><div class="mm-field-lbl">Ceratometria</div><div class="mm-field-val">'+p.keratoD1+'×'+(p.keratoD2||'—')+'</div></div>':'')+
+    (p.ac?'<div class="mm-field"><div class="mm-field-lbl">Câmara anterior</div><div class="mm-field-val">'+p.ac+' mm</div></div>':'')+
+    '</div>':'';
+
+  document.getElementById('mm-title').textContent='Caso: '+initials;
+  document.getElementById('mm-sub').textContent=(p.dataCirurgia||'')+(p.orientacao?' · '+p.orientacao:'');
+  document.getElementById('mm-body').innerHTML=
+    '<div class="mm-section-title">Dados operatórios</div>'+
+    '<div class="mm-grid">'+
+      '<div class="mm-field"><div class="mm-field-lbl">Técnica</div><div class="mm-field-val">'+(p.tecnica||'—')+'</div></div>'+
+      '<div class="mm-field"><div class="mm-field-lbl">Aparelho</div><div class="mm-field-val">'+(p.aparelho||'—')+'</div></div>'+
+      '<div class="mm-field"><div class="mm-field-lbl">Olho</div><div class="mm-field-val">'+(p.olho||'—')+'</div></div>'+
+      '<div class="mm-field"><div class="mm-field-lbl">Grau catarata</div><div class="mm-field-val">'+(p.catGrau||'—')+'</div></div>'+
+      '<div class="mm-field"><div class="mm-field-lbl">Anestesia</div><div class="mm-field-val">'+(p.anestesia||'—')+'</div></div>'+
+      '<div class="mm-field"><div class="mm-field-lbl">LIO implantada</div><div class="mm-field-val">'+(p.lioModelo||'—')+(p.lioPoder?' ('+p.lioPoder+'D)':'')+'</div></div>'+
+    '</div>'+
+    bio+
+    '<div class="mm-section-title">Intercorrências intraoperatórias</div>'+
+    complHtml+
+    (p.obsIntra?'<div style="font-size:0.78rem;color:#5A4A40;margin-top:8px;font-style:italic">'+p.obsIntra+'</div>':'')+
+    (posOpHtml?'<div class="mm-section-title">Seguimento pós-operatório</div>'+posOpHtml:'')+
+    (mentalHtml?'<div class="mm-section-title">Autopercepção cirúrgica</div>'+mentalHtml:'');
+
+  document.getElementById('mm-area').style.display='block';
+}
+function fecharMM(){
+  document.getElementById('mm-area').style.display='none';
 }
 
 function toggleFabMenu(){
