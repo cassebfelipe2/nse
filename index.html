@@ -1411,10 +1411,33 @@ function showSignup(){showAuthView('signup');}
 function showAuthError(msg){var el=document.getElementById('auth-error');if(el)el.textContent=msg||'';}
 function showAuthErrorSu(msg){var el=document.getElementById('auth-error-su');if(el)el.textContent=msg||'';}
 
+function _applySession(user){
+  var incomingId=user.id;
+  var storedUid=localStorage.getItem('cataracta_user_id');
+  if(storedUid!==incomingId){
+    db=[];filaDB=[];
+    ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
+     'pac_cleanup_done','last_sync_time','cataracta_medico'].forEach(function(k){localStorage.removeItem(k);});
+  }
+  currentUser=user;
+  localStorage.setItem('cataracta_user_id',incomingId);
+  var meta=currentUser.user_metadata||{};
+  var nome=meta.name||meta.full_name||currentUser.email||'Residente';
+  localStorage.setItem('cataracta_medico',nome);
+  nomeUsuario=nome;
+  atualizarNomeHeader();
+  document.getElementById('auth-overlay').classList.add('hidden');
+  loadDB();
+  cleanupPacEntries();
+  var didMigrate=localStorage.getItem('sb_migration_done');
+  if(!didMigrate){migrateLocalToSupabase();}else{syncDown();}
+  renderHome();updateFilaBadge();
+  setTimeout(checkPushPrompt,1200);
+}
+
 function initSupabase(){
   if(typeof supabase==='undefined'||typeof supabase.createClient==='undefined'){
     console.warn('Supabase SDK não carregou; modo offline.');
-    // No offline mode: skip loading state, go straight to showing app without auth
     document.getElementById('auth-overlay').classList.add('hidden');
     return;
   }
@@ -1422,52 +1445,26 @@ function initSupabase(){
     auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}
   });
 
-  // Fallback: if Supabase doesn't respond in 2.5s, show login form
-  var _authFallback=setTimeout(function(){
-    if(!currentUser){showAuthView('login');}
-  },2500);
-
-  _sb.auth.onAuthStateChange(function(event,session){
-    // TOKEN_REFRESHED fires silently while logged in — ignore it
-    if(event==='TOKEN_REFRESHED')return;
-
-    if(session&&session.user){
-      clearTimeout(_authFallback);
-
-      var incomingId=session.user.id;
-      var storedUid=localStorage.getItem('cataracta_user_id');
-
-      // Different user than what's cached → wipe local data to prevent bleed
-      if(storedUid!==incomingId){
-        db=[];filaDB=[];
-        ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
-         'pac_cleanup_done','last_sync_time','cataracta_medico'].forEach(function(k){localStorage.removeItem(k);});
-      }
-
-      currentUser=session.user;
-      localStorage.setItem('cataracta_user_id',incomingId);
-
-      var meta=currentUser.user_metadata||{};
-      var nome=meta.name||meta.full_name||currentUser.email||'Residente';
-      localStorage.setItem('cataracta_medico',nome);
-      nomeUsuario=nome;
-      atualizarNomeHeader();
-      document.getElementById('auth-overlay').classList.add('hidden');
-
-      loadDB();
-      cleanupPacEntries();
-      var didMigrate=localStorage.getItem('sb_migration_done');
-      if(!didMigrate){migrateLocalToSupabase();}
-      else{syncDown();}
-      renderHome();updateFilaBadge();
-      setTimeout(checkPushPrompt,1200);
-
+  // Step 1: check for stored session immediately — this is what prevents
+  // the login flash on page refresh. onAuthStateChange alone fires too late.
+  _sb.auth.getSession().then(function(res){
+    if(res.data&&res.data.session&&res.data.session.user){
+      _applySession(res.data.session.user);
     } else {
-      clearTimeout(_authFallback);
+      showAuthView('login');
+    }
+  });
+
+  // Step 2: react to subsequent auth events (login, logout, password reset)
+  _sb.auth.onAuthStateChange(function(event,session){
+    if(event==='SIGNED_IN'&&session&&session.user){
+      _applySession(session.user);
+    }else if(event==='SIGNED_OUT'){
       currentUser=null;
       showAuthView('login');
       document.getElementById('auth-overlay').classList.remove('hidden');
     }
+    // INITIAL_SESSION and TOKEN_REFRESHED handled elsewhere or ignored
   });
 }
 
