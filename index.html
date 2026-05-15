@@ -1393,29 +1393,67 @@ function atualizarNomeHeader(){
 }
 
 // ── SUPABASE AUTH ────────────────────────────────────────────────
+// ── AUTH VIEWS ───────────────────────────────────────────────────
+function showAuthView(view){
+  var views=['loading','login','signup','forgot'];
+  views.forEach(function(v){
+    var el=document.getElementById('auth-'+v+'-view');
+    if(el)el.style.display=(v===view?'block':'none');
+  });
+  if(view==='login'){var e=document.getElementById('auth-error');if(e)e.textContent='';}
+  if(view==='signup'){var e=document.getElementById('auth-error-su');if(e)e.textContent='';}
+  if(view==='forgot'){var e=document.getElementById('auth-error-forgot');if(e)e.textContent='';}
+}
+// legacy aliases kept for existing onclick references
+function showLogin(){showAuthView('login');}
+function showSignup(){showAuthView('signup');}
+
+function showAuthError(msg){var el=document.getElementById('auth-error');if(el)el.textContent=msg||'';}
+function showAuthErrorSu(msg){var el=document.getElementById('auth-error-su');if(el)el.textContent=msg||'';}
+
 function initSupabase(){
   if(typeof supabase==='undefined'||typeof supabase.createClient==='undefined'){
     console.warn('Supabase SDK não carregou; modo offline.');
+    // No offline mode: skip loading state, go straight to showing app without auth
+    document.getElementById('auth-overlay').classList.add('hidden');
     return;
   }
-  _sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  _sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+    auth:{autoRefreshToken:true,persistSession:true,detectSessionInUrl:true}
+  });
+
+  // Fallback: if Supabase doesn't respond in 2.5s, show login form
+  var _authFallback=setTimeout(function(){
+    if(!currentUser){showAuthView('login');}
+  },2500);
+
   _sb.auth.onAuthStateChange(function(event,session){
+    // TOKEN_REFRESHED fires silently while logged in — ignore it
+    if(event==='TOKEN_REFRESHED')return;
+
     if(session&&session.user){
-      currentUser=session.user;
-      // Se o usuário trocou, apaga cache do anterior para não vazar dados
+      clearTimeout(_authFallback);
+
+      var incomingId=session.user.id;
       var storedUid=localStorage.getItem('cataracta_user_id');
-      if(storedUid&&storedUid!==currentUser.id){
+
+      // Different user than what's cached → wipe local data to prevent bleed
+      if(storedUid!==incomingId){
+        db=[];filaDB=[];
         ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
          'pac_cleanup_done','last_sync_time','cataracta_medico'].forEach(function(k){localStorage.removeItem(k);});
-        db=[];filaDB=[];
       }
-      localStorage.setItem('cataracta_user_id',currentUser.id);
+
+      currentUser=session.user;
+      localStorage.setItem('cataracta_user_id',incomingId);
+
       var meta=currentUser.user_metadata||{};
       var nome=meta.name||meta.full_name||currentUser.email||'Residente';
       localStorage.setItem('cataracta_medico',nome);
       nomeUsuario=nome;
       atualizarNomeHeader();
       document.getElementById('auth-overlay').classList.add('hidden');
+
       loadDB();
       cleanupPacEntries();
       var didMigrate=localStorage.getItem('sb_migration_done');
@@ -1423,50 +1461,61 @@ function initSupabase(){
       else{syncDown();}
       renderHome();updateFilaBadge();
       setTimeout(checkPushPrompt,1200);
+
     } else {
+      clearTimeout(_authFallback);
       currentUser=null;
+      showAuthView('login');
       document.getElementById('auth-overlay').classList.remove('hidden');
     }
   });
 }
 
-function showAuthError(msg){var el=document.getElementById('auth-error');if(el)el.textContent=msg||'';}
-function showAuthErrorSu(msg){var el=document.getElementById('auth-error-su');if(el)el.textContent=msg||'';}
-function showLogin(){
-  document.getElementById('auth-login-view').style.display='block';
-  document.getElementById('auth-signup-view').style.display='none';
-  showAuthError('');
-}
-function showSignup(){
-  document.getElementById('auth-login-view').style.display='none';
-  document.getElementById('auth-signup-view').style.display='block';
-  showAuthErrorSu('');
-}
 function doLogin(){
   if(!_sb){showAuthError('Carregando… tente novamente em instantes.');return;}
   var email=document.getElementById('auth-email').value.trim();
   var pass=document.getElementById('auth-pass').value;
   if(!email||!pass){showAuthError('Preencha e-mail e senha.');return;}
   showAuthError('');
-  var btn=document.querySelector('#auth-login-view .auth-btn');
+  var btn=document.getElementById('auth-login-btn');
   if(btn){btn.disabled=true;btn.textContent='Entrando…';}
   _sb.auth.signInWithPassword({email:email,password:pass}).then(function(res){
     if(btn){btn.disabled=false;btn.textContent='Entrar';}
-    if(res.error){showAuthError('Senha ou e-mail incorretos. Tente novamente.');}
+    if(res.error){showAuthError('E-mail ou senha incorretos.');}
   });
 }
 function doSignup(){
   if(!_sb)return;
   var name=document.getElementById('auth-name').value.trim();
+  var hospital=document.getElementById('auth-hospital').value.trim();
+  var anoRes=document.getElementById('auth-ano-res').value;
   var email=document.getElementById('auth-email-su').value.trim();
   var pass=document.getElementById('auth-pass-su').value;
-  if(!name||!email||!pass){showAuthErrorSu('Preencha todos os campos.');return;}
+  if(!name||!email||!pass){showAuthErrorSu('Preencha pelo menos nome, e-mail e senha.');return;}
   if(pass.length<6){showAuthErrorSu('Senha deve ter ao menos 6 caracteres.');return;}
   showAuthErrorSu('');
-  _sb.auth.signUp({email:email,password:pass,options:{data:{name:name}}}).then(function(res){
+  var btn=document.getElementById('auth-signup-btn');
+  if(btn){btn.disabled=true;btn.textContent='Criando conta…';}
+  _sb.auth.signUp({email:email,password:pass,options:{data:{name:name,hospital:hospital,ano_residencia:anoRes}}}).then(function(res){
+    if(btn){btn.disabled=false;btn.textContent='Criar conta';}
     if(res.error){showAuthErrorSu(res.error.message||'Erro ao criar conta.');return;}
-    if(res.data&&res.data.session){return;}
-    showLogin();showAuthError('Verifique seu e-mail para confirmar a conta.');
+    if(res.data&&res.data.session){return;}  // auto-confirmed, onAuthStateChange will handle
+    showAuthView('login');
+    showAuthError('Conta criada! Verifique seu e-mail para confirmar antes de entrar.');
+  });
+}
+function doForgotPassword(){
+  if(!_sb)return;
+  var email=document.getElementById('auth-forgot-email').value.trim();
+  if(!email){document.getElementById('auth-error-forgot').textContent='Informe o e-mail.';return;}
+  document.getElementById('auth-error-forgot').textContent='';
+  var btn=document.getElementById('auth-forgot-btn');
+  if(btn){btn.disabled=true;btn.textContent='Enviando…';}
+  _sb.auth.resetPasswordForEmail(email,{redirectTo:'https://cassebfelipe2.github.io/nse/'}).then(function(res){
+    if(btn){btn.disabled=false;btn.textContent='Enviar link';}
+    if(res.error){document.getElementById('auth-error-forgot').textContent=res.error.message;return;}
+    showAuthView('login');
+    showAuthError('Link enviado! Verifique seu e-mail.');
   });
 }
 function doLogout(){
@@ -1477,7 +1526,55 @@ function doLogout(){
     ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
      'pac_cleanup_done','last_sync_time','cataracta_medico','cataracta_user_id'].forEach(function(k){localStorage.removeItem(k);});
     var el=document.getElementById('sync-status');if(el)el.innerHTML='';
+    showAuthView('login');
     document.getElementById('auth-overlay').classList.remove('hidden');
+  });
+}
+function doChangePassword(){
+  if(!_sb||!currentUser)return;
+  var email=currentUser.email;
+  if(!confirm('Enviar link de redefinição para '+email+'?'))return;
+  _sb.auth.resetPasswordForEmail(email,{redirectTo:'https://cassebfelipe2.github.io/nse/'}).then(function(res){
+    if(res.error){showToast('Erro: '+res.error.message);return;}
+    showToast('Link enviado para '+email);
+  });
+}
+
+// ── PERFIL ───────────────────────────────────────────────────────
+function openProfile(){
+  if(!currentUser)return;
+  var meta=currentUser.user_metadata||{};
+  document.getElementById('profile-name').value=meta.name||meta.full_name||'';
+  document.getElementById('profile-hospital').value=meta.hospital||'';
+  document.getElementById('profile-email').value=currentUser.email||'';
+  var sel=document.getElementById('profile-ano-res');
+  if(sel)sel.value=meta.ano_residencia||'';
+  document.getElementById('profile-error').textContent='';
+  var modal=document.getElementById('profile-modal');
+  if(modal)modal.style.display='flex';
+  document.body.classList.add('no-scroll');
+}
+function closeProfile(){
+  var modal=document.getElementById('profile-modal');
+  if(modal)modal.style.display='none';
+  document.body.classList.remove('no-scroll');
+}
+function saveProfile(){
+  if(!_sb||!currentUser)return;
+  var name=document.getElementById('profile-name').value.trim();
+  var hospital=document.getElementById('profile-hospital').value.trim();
+  var anoRes=document.getElementById('profile-ano-res').value;
+  if(!name){document.getElementById('profile-error').textContent='Nome é obrigatório.';return;}
+  var btn=document.getElementById('profile-save-btn');
+  if(btn){btn.disabled=true;btn.textContent='Salvando…';}
+  _sb.auth.updateUser({data:{name:name,hospital:hospital,ano_residencia:anoRes}}).then(function(res){
+    if(btn){btn.disabled=false;btn.textContent='Salvar alterações';}
+    if(res.error){document.getElementById('profile-error').textContent=res.error.message;return;}
+    nomeUsuario=name;
+    localStorage.setItem('cataracta_medico',name);
+    atualizarNomeHeader();
+    closeProfile();
+    showToast('✓ Perfil atualizado');
   });
 }
 
@@ -4061,27 +4158,90 @@ document.addEventListener('DOMContentLoaded',function(){
     </div>
     <div style="text-align:center;margin-bottom:4px"><span class="auth-title"><span>Phaco</span><span class="italic">log</span></span></div>
     <div class="auth-sub">Logbook cirúrgico do residente</div>
-    <div id="auth-login-view">
+
+    <!-- Carregando sessão -->
+    <div id="auth-loading-view" style="text-align:center;padding:28px 0 8px">
+      <div style="width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px"></div>
+      <div style="font-size:0.8rem;color:var(--muted)">Verificando sessão…</div>
+    </div>
+
+    <!-- Login -->
+    <div id="auth-login-view" style="display:none">
       <div class="auth-error" id="auth-error"></div>
       <label class="auth-label">E-mail</label>
-      <input class="auth-input" type="email" id="auth-email" placeholder="seu@email.com" autocomplete="email">
+      <input class="auth-input" type="email" id="auth-email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()">
       <label class="auth-label">Senha</label>
-      <input class="auth-input" type="password" id="auth-pass" placeholder="••••••" autocomplete="current-password">
-      <button class="auth-btn" onclick="doLogin()">Entrar</button>
-      <div class="auth-link">Não tem conta? <span onclick="showSignup()">Criar conta</span></div>
+      <input class="auth-input" type="password" id="auth-pass" placeholder="••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="auth-btn" id="auth-login-btn" onclick="doLogin()">Entrar</button>
+      <div class="auth-link" style="display:flex;justify-content:space-between">
+        <span onclick="showAuthView('signup')">Criar conta</span>
+        <span onclick="showAuthView('forgot')">Esqueci a senha</span>
+      </div>
     </div>
+
+    <!-- Cadastro -->
     <div id="auth-signup-view" style="display:none">
       <div class="auth-error" id="auth-error-su"></div>
-      <label class="auth-label">Nome</label>
+      <label class="auth-label">Nome completo</label>
       <input class="auth-input" type="text" id="auth-name" placeholder="Dr. Seu Nome" autocomplete="name">
+      <label class="auth-label">Hospital / Instituição</label>
+      <input class="auth-input" type="text" id="auth-hospital" placeholder="Hospital das Clínicas — USP" autocomplete="organization">
+      <label class="auth-label">Ano de residência</label>
+      <select class="auth-input" id="auth-ano-res" style="appearance:auto">
+        <option value="">Selecione…</option>
+        <option value="R1">R1</option>
+        <option value="R2">R2</option>
+        <option value="R3">R3</option>
+        <option value="Fellow">Fellow / Pós-residência</option>
+        <option value="Staff">Staff / Preceptor</option>
+      </select>
       <label class="auth-label">E-mail</label>
       <input class="auth-input" type="email" id="auth-email-su" placeholder="seu@email.com" autocomplete="email">
       <label class="auth-label">Senha</label>
       <input class="auth-input" type="password" id="auth-pass-su" placeholder="mín. 6 caracteres" autocomplete="new-password">
-      <div class="auth-terms">Ao criar conta você concorda com o armazenamento seguro dos seus dados de logbook cirúrgico. Dados de pacientes são anonimizados (LGPD).</div>
-      <button class="auth-btn" onclick="doSignup()">Criar conta</button>
-      <div class="auth-link">Já tem conta? <span onclick="showLogin()">Entrar</span></div>
+      <div class="auth-terms">Dados de pacientes são anonimizados localmente antes de qualquer envio (LGPD).</div>
+      <button class="auth-btn" id="auth-signup-btn" onclick="doSignup()">Criar conta</button>
+      <div class="auth-link"><span onclick="showAuthView('login')">← Voltar para login</span></div>
     </div>
+
+    <!-- Recuperar senha -->
+    <div id="auth-forgot-view" style="display:none">
+      <div class="auth-error" id="auth-error-forgot"></div>
+      <div style="font-size:0.82rem;color:var(--muted);margin-bottom:14px;line-height:1.5">Informe seu e-mail e enviaremos um link para redefinir a senha.</div>
+      <label class="auth-label">E-mail</label>
+      <input class="auth-input" type="email" id="auth-forgot-email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')doForgotPassword()">
+      <button class="auth-btn" id="auth-forgot-btn" onclick="doForgotPassword()">Enviar link</button>
+      <div class="auth-link"><span onclick="showAuthView('login')">← Voltar para login</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PERFIL -->
+<div id="profile-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(34,22,17,0.55);align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeProfile()">
+  <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;box-shadow:0 -4px 32px rgba(34,22,17,0.18)">
+    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:1rem;font-weight:700;color:var(--black);margin-bottom:18px">Minha conta</div>
+    <div class="auth-error" id="profile-error" style="margin-bottom:8px"></div>
+    <label class="auth-label">Nome</label>
+    <input class="auth-input" type="text" id="profile-name" placeholder="Dr. Seu Nome">
+    <label class="auth-label">Hospital / Instituição</label>
+    <input class="auth-input" type="text" id="profile-hospital" placeholder="Hospital das Clínicas — USP">
+    <label class="auth-label">Ano de residência</label>
+    <select class="auth-input" id="profile-ano-res" style="appearance:auto">
+      <option value="">—</option>
+      <option value="R1">R1</option>
+      <option value="R2">R2</option>
+      <option value="R3">R3</option>
+      <option value="Fellow">Fellow / Pós-residência</option>
+      <option value="Staff">Staff / Preceptor</option>
+    </select>
+    <label class="auth-label" style="margin-top:8px">E-mail (não editável)</label>
+    <input class="auth-input" type="email" id="profile-email" disabled style="opacity:0.5">
+    <div style="margin-top:6px;margin-bottom:16px">
+      <span style="font-size:0.75rem;color:var(--muted);cursor:pointer;text-decoration:underline" onclick="doChangePassword()">Alterar senha…</span>
+    </div>
+    <button class="auth-btn" id="profile-save-btn" onclick="saveProfile()">Salvar alterações</button>
+    <button style="width:100%;padding:12px;background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--muted);margin-top:6px" onclick="closeProfile()">Cancelar</button>
   </div>
 </div>
 
@@ -4189,6 +4349,13 @@ document.addEventListener('DOMContentLoaded',function(){
       <svg width="16" height="16" fill="none" stroke="var(--warn)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     </span>
     Ativar notificações
+  </button>
+  <!-- Minha conta -->
+  <button onclick="openProfile();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--bgDeep);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </span>
+    Minha conta
   </button>
   <div style="height:1px;background:var(--border);margin:4px 0"></div>
   <!-- Sair -->
