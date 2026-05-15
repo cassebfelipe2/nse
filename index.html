@@ -627,7 +627,7 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .mapa-pdf-icon{width:44px;height:44px;background:var(--bgDeep);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:var(--muted)}
 .mapa-pdf-spinner{width:20px;height:20px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-#sb-spacer,#sb-extras{display:none}
+@media(max-width:899px){#sb-spacer,#sb-extras{display:none}}
 
 /* ── CALCULADORA LIO ── */
 .lio-overlay{position:fixed;inset:0;z-index:700;background:rgba(34,22,17,0.55);display:flex;align-items:flex-end;justify-content:center}
