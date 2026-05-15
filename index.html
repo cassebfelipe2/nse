@@ -1402,6 +1402,14 @@ function initSupabase(){
   _sb.auth.onAuthStateChange(function(event,session){
     if(session&&session.user){
       currentUser=session.user;
+      // Se o usuário trocou, apaga cache do anterior para não vazar dados
+      var storedUid=localStorage.getItem('cataracta_user_id');
+      if(storedUid&&storedUid!==currentUser.id){
+        ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
+         'pac_cleanup_done','last_sync_time','cataracta_medico'].forEach(function(k){localStorage.removeItem(k);});
+        db=[];filaDB=[];
+      }
+      localStorage.setItem('cataracta_user_id',currentUser.id);
       var meta=currentUser.user_metadata||{};
       var nome=meta.name||meta.full_name||currentUser.email||'Residente';
       localStorage.setItem('cataracta_medico',nome);
@@ -1466,6 +1474,9 @@ function doLogout(){
   if(!confirm('Sair da conta?'))return;
   _sb.auth.signOut().then(function(){
     currentUser=null;db=[];filaDB=[];
+    ['cataractadb_res_v1','cataractafila_res_v1','sb_migration_done',
+     'pac_cleanup_done','last_sync_time','cataracta_medico','cataracta_user_id'].forEach(function(k){localStorage.removeItem(k);});
+    var el=document.getElementById('sync-status');if(el)el.innerHTML='';
     document.getElementById('auth-overlay').classList.remove('hidden');
   });
 }
