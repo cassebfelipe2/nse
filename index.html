@@ -374,6 +374,11 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .auth-link span{color:var(--accent);text-decoration:underline}
 .auth-error{font-size:0.75rem;color:var(--danger);text-align:center;margin-bottom:10px;min-height:18px}
 .auth-terms{font-size:0.63rem;color:var(--muted);margin-bottom:14px;line-height:1.6}
+.auth-google-btn{width:100%;padding:13px;background:var(--card);color:var(--black);border:1.5px solid var(--border);border-radius:10px;font-family:var(--fontUI);font-size:0.9rem;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;transition:border-color 0.15s,box-shadow 0.15s}
+.auth-google-btn:hover{border-color:#4285F4;box-shadow:0 0 0 3px rgba(66,133,244,0.12)}
+.auth-google-btn:active{background:var(--bg)}
+.auth-divider{display:flex;align-items:center;gap:12px;margin-bottom:16px;color:var(--muted);font-size:0.72rem;font-family:var(--fontMono);letter-spacing:0.06em}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
 
 /* HOME — GREETING BAND */
 .home-band{background:var(--bg);padding:18px 20px 20px;border-bottom:1px solid var(--border);margin-bottom:0}
@@ -1642,6 +1647,20 @@ function initSupabase(){
       showAuthView('login');
       document.getElementById('auth-overlay').classList.remove('hidden');
     }
+  });
+}
+
+function doLoginGoogle(){
+  if(!_sb){showAuthError('Carregando… tente novamente em instantes.');return;}
+  var btn=document.getElementById('auth-google-btn');
+  if(btn){btn.disabled=true;btn.style.opacity='0.6';}
+  var redirectTo=window.location.origin+window.location.pathname;
+  _sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:redirectTo,queryParams:{access_type:'offline',prompt:'consent'}}}).then(function(res){
+    if(res.error){
+      if(btn){btn.disabled=false;btn.style.opacity='';}
+      showAuthError(res.error.message);
+    }
+    // on success, Supabase redirects the page — no further action needed here
   });
 }
 
@@ -4460,6 +4479,11 @@ document.addEventListener('DOMContentLoaded',function(){
     <!-- Login -->
     <div id="auth-login-view" style="display:none">
       <div class="auth-error" id="auth-error"></div>
+      <button class="auth-google-btn" id="auth-google-btn" onclick="doLoginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.5 20-21 0-1.4-.2-2.7-.5-4z"/><path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.6 19.3 14 24 14c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3c-7.6 0-14.2 4.5-17.7 11.7z"/><path fill="#FBBC05" d="M24 45c5.5 0 10.5-1.9 14.4-5.1l-6.6-5.4C29.7 36.3 27 37 24 37c-6 0-10.6-3.1-11.8-7.5L5.2 35c3.5 7.2 10.2 10 18.8 10z"/><path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-.6 2.5-2.1 4.7-4.2 6l6.6 5.4C41.6 36.5 45 30.7 45 24c0-1.4-.2-2.7-.5-4z"/></svg>
+        Continuar com Google
+      </button>
+      <div class="auth-divider">ou</div>
       <label class="auth-label">E-mail</label>
       <input class="auth-input" type="email" id="auth-email" placeholder="seu@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()">
       <label class="auth-label">Senha</label>
@@ -4474,6 +4498,11 @@ document.addEventListener('DOMContentLoaded',function(){
     <!-- Cadastro -->
     <div id="auth-signup-view" style="display:none">
       <div class="auth-error" id="auth-error-su"></div>
+      <button class="auth-google-btn" onclick="doLoginGoogle()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M44.5 20H24v8.5h11.8C34.7 33.9 30.1 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 20-7.5 20-21 0-1.4-.2-2.7-.5-4z"/><path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.6 19.3 14 24 14c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3c-7.6 0-14.2 4.5-17.7 11.7z"/><path fill="#FBBC05" d="M24 45c5.5 0 10.5-1.9 14.4-5.1l-6.6-5.4C29.7 36.3 27 37 24 37c-6 0-10.6-3.1-11.8-7.5L5.2 35c3.5 7.2 10.2 10 18.8 10z"/><path fill="#EA4335" d="M44.5 20H24v8.5h11.8c-.6 2.5-2.1 4.7-4.2 6l6.6 5.4C41.6 36.5 45 30.7 45 24c0-1.4-.2-2.7-.5-4z"/></svg>
+        Cadastrar com Google
+      </button>
+      <div class="auth-divider">ou preencha os dados</div>
       <label class="auth-label">Nome completo</label>
       <input class="auth-input" type="text" id="auth-name" placeholder="Dr. Seu Nome" autocomplete="name">
       <label class="auth-label">Hospital / Instituição</label>
