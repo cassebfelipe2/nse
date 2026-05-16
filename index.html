@@ -1960,7 +1960,7 @@ function syncDown(){
               proximoRetorno:f.proximo_retorno||''};
           }
         });
-        db.push({id:s.local_id||s.id,nome:s.initials?('['+s.initials+']'):'[Pac.]',
+        db.push({id:s.local_id||s.id,nome:s.initials?s.initials:'[Pac.]',
           prontuario:'',telefone:'',idade:s.patient_age!=null?String(s.patient_age):'',
           convenio:s.convenio||'',dataCirurgia:s.surgery_date||'',olho:s.eye||'',
           tecnica:s.technique||'',aparelho:s.equipment||'',cirurgiao:s.surgeon_name||'',
