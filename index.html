@@ -1551,6 +1551,7 @@ var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 var _sb=null;
 var currentUser=null;
 var _recoveryMode=false;
+var PAYWALL_ENABLED=false; // alterar para true ao ativar monetização
 var _isPro=false;
 var _paywallPlan='annual';
 var FREE_SURGERY_LIMIT=30;
@@ -1684,6 +1685,7 @@ function updateProUI(){
 }
 
 function showPaywall(ctx){
+  if(!PAYWALL_ENABLED){return;}
   var labels={
     limite:'Você atingiu o limite de '+FREE_SURGERY_LIMIT+' cirurgias do plano gratuito',
     analise:'Analytics disponível apenas no plano Pro',
