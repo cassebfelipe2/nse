@@ -667,14 +667,8 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 
   /* Profile (inline style override needed for align-items + inner card) */
   #profile-modal{align-items:center !important}
-  #profile-modal > div{
-    border-radius:18px !important;
-    box-shadow:0 12px 48px rgba(34,22,17,0.20) !important;
-    padding:32px 28px 32px !important;
-    max-width:480px !important
-  }
+  .profile-dialog{border-radius:18px;box-shadow:0 12px 48px rgba(34,22,17,0.20)}
   /* Hide drag handles on all inline-styled cards */
-  #profile-modal > div > div:first-child,
   .lio-card > div:first-child,
   .goal-modal-card > div:first-child{display:none !important}
 }
@@ -818,6 +812,54 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .fpd-footer-btn{font-size:0.72rem;font-weight:600;background:none;border:none;
   cursor:pointer;padding:7px 10px;border-radius:8px;transition:background 0.15s}
 .fpd-footer-btn:hover{background:var(--bgDeep)}
+
+/* ── PERFIL RICO ─────────────────────────────────────────────── */
+.profile-dialog{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;padding:0 0 40px;box-shadow:0 -4px 32px rgba(34,22,17,0.18)}
+.profile-dlg-header{display:flex;align-items:center;gap:14px;padding:22px 22px 18px;
+  border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:2}
+.profile-avatar-lg{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;
+  font-family:var(--fontDisplay);font-size:1.3rem;font-weight:600;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;letter-spacing:-0.02em}
+.profile-dlg-name{font-family:var(--fontDisplay);font-size:1.1rem;font-weight:500;color:var(--black);
+  letter-spacing:-0.01em;line-height:1.2}
+.profile-dlg-role{font-size:0.72rem;color:var(--muted);margin-top:3px;line-height:1.3}
+.profile-dlg-close{margin-left:auto;width:32px;height:32px;border-radius:50%;border:none;
+  background:var(--bgDeep);color:var(--muted);cursor:pointer;font-size:1.1rem;display:flex;
+  align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s}
+.profile-dlg-close:hover{background:var(--border);color:var(--black)}
+.profile-dlg-body{padding:20px 22px 0}
+.prof-section-lbl{font-family:var(--fontMono);font-size:0.58rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);
+  border-bottom:1px solid var(--border);padding-bottom:6px;margin:20px 0 12px}
+.prof-section-lbl:first-of-type{margin-top:4px}
+.prof-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prof-chips-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.prof-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);font-size:0.72rem;
+  font-weight:600;color:var(--muted);cursor:pointer;transition:all 0.15s;background:var(--card);
+  white-space:nowrap}
+.prof-chip.selected{border-color:var(--accent);color:var(--accent);background:var(--amberSoft)}
+.prof-char-count{font-size:0.65rem;color:var(--muted);text-align:right;margin-top:3px}
+.prof-stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.prof-stat-card{background:var(--bgDeep);border-radius:10px;padding:12px 8px;text-align:center}
+.prof-stat-val{font-family:var(--fontDisplay);font-size:1.5rem;font-weight:500;color:var(--black);line-height:1}
+.prof-stat-lbl{font-family:var(--fontMono);font-size:0.55rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.07em;margin-top:3px}
+.prof-action-row{display:flex;gap:8px;margin-top:6px}
+.prof-action-btn{flex:1;padding:8px 0;border-radius:10px;border:1.5px solid var(--border);
+  background:none;cursor:pointer;font-size:0.75rem;font-weight:600;color:var(--muted);transition:all 0.15s}
+.prof-action-btn:hover{border-color:var(--black);color:var(--black)}
+.prof-action-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+@media(min-width:900px){
+  .profile-dialog{border-radius:18px;max-width:640px;max-height:86vh}
+  .profile-dlg-body{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+  .profile-dlg-body .prof-section-lbl{grid-column:1/-1}
+  .profile-dlg-body .prof-row-2{grid-column:1/-1}
+  .profile-dlg-body .prof-full{grid-column:1/-1}
+  .profile-dlg-body .prof-stats-row{grid-column:1/-1}
+  .profile-dlg-body .prof-action-row{grid-column:1/-1}
+  .profile-dlg-body .prof-save-area{grid-column:1/-1}
+}
 
 /* ── LAUDO OPERATÓRIO ─────────────────────────────────────────── */
 .laudo-overlay{position:fixed;inset:0;background:rgba(34,22,17,0.6);z-index:900;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s}
@@ -2022,14 +2064,80 @@ function doChangePassword(){
 }
 
 // ── PERFIL ───────────────────────────────────────────────────────
+var PROF_SUBESP=['Catarata/Refração','Córnea','Retina','Glaucoma','Plástica ocular','Estrabismo','Neuroftalmologia','Órbita','Baixa Visão'];
+
+function getAvatarInitials(name){
+  if(!name)return'R';
+  var clean=name.replace(/^(Dr\.|Dra\.)\s*/i,'');
+  var parts=clean.split(' ').filter(function(w){return w.length>0;});
+  if(!parts.length)return'R';
+  if(parts.length===1)return parts[0].charAt(0).toUpperCase();
+  return(parts[0].charAt(0)+parts[parts.length-1].charAt(0)).toUpperCase();
+}
+
+function toggleProfChip(el){
+  el.classList.toggle('selected');
+}
+
+function getProfSubesp(){
+  var chips=document.querySelectorAll('#prof-subesp-chips .prof-chip.selected');
+  var arr=[];
+  for(var i=0;i<chips.length;i++)arr.push(chips[i].getAttribute('data-val'));
+  return arr;
+}
+
 function openProfile(){
   if(!currentUser)return;
   var meta=currentUser.user_metadata||{};
-  document.getElementById('profile-name').value=meta.name||meta.full_name||'';
-  document.getElementById('profile-hospital').value=meta.hospital||'';
-  document.getElementById('profile-email').value=currentUser.email||'';
-  var sel=document.getElementById('profile-ano-res');
-  if(sel)sel.value=meta.ano_residencia||'';
+  var name=meta.name||meta.full_name||'';
+  // Fields
+  var setV=function(id,v){var el=document.getElementById(id);if(el)el.value=v||'';};
+  setV('profile-name',name);
+  setV('profile-titulo',meta.titulo||'Dr.');
+  setV('profile-crm',meta.crm||'');
+  setV('profile-crm-uf',meta.crm_uf||'');
+  setV('profile-email',currentUser.email||'');
+  setV('profile-tel',meta.telefone||'');
+  setV('profile-hospital',meta.hospital||'');
+  setV('profile-universidade',meta.universidade||'');
+  setV('profile-preceptor',meta.preceptor||'');
+  setV('profile-ano-inicio',meta.ano_inicio||'');
+  setV('profile-ano-res',meta.ano_residencia||'');
+  setV('profile-aparelho',meta.aparelho_principal||'');
+  setV('profile-meta-cx',meta.meta_cirurgias||'');
+  setV('profile-bio',meta.bio||'');
+  document.getElementById('prof-bio-count').textContent=(meta.bio||'').length+'/280';
+  // Chips
+  var savedSubesp=meta.subespecialidades||[];
+  var chips=document.querySelectorAll('#prof-subesp-chips .prof-chip');
+  for(var i=0;i<chips.length;i++){
+    chips[i].classList.toggle('selected',savedSubesp.indexOf(chips[i].getAttribute('data-val'))>=0);
+  }
+  // Avatar
+  var initials=getAvatarInitials(name);
+  var av=document.getElementById('prof-avatar');
+  if(av)av.textContent=initials;
+  // Header text
+  var fullNome=(meta.titulo?meta.titulo+' ':'')+name;
+  var el=document.getElementById('prof-dlg-name');
+  if(el)el.textContent=fullNome||'Minha conta';
+  var roleEl=document.getElementById('prof-dlg-role');
+  if(roleEl){
+    var parts=[];
+    if(meta.ano_residencia)parts.push(meta.ano_residencia);
+    if(meta.hospital)parts.push(meta.hospital);
+    roleEl.textContent=parts.join(' · ')||'Preencha seu perfil';
+  }
+  // Stats
+  var totalCx=db.length;
+  var compl=db.filter(function(p){return p.intercorrencias&&p.intercorrencias.some(function(x){return x&&x!=='Sem intercorrências';});}).length;
+  var complRate=totalCx>0?((compl/totalCx)*100).toFixed(1)+'%':'—';
+  var metaCx=parseInt(meta.meta_cirurgias||0,10);
+  var progPct=metaCx>0?Math.round((totalCx/metaCx)*100)+'%':'—';
+  var setTxt=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
+  setTxt('prof-stat-cx',totalCx);
+  setTxt('prof-stat-compl',complRate);
+  setTxt('prof-stat-prog',progPct);
   document.getElementById('profile-error').textContent='';
   var modal=document.getElementById('profile-modal');
   if(modal)modal.style.display='flex';
@@ -2043,16 +2151,35 @@ function closeProfile(){
 function saveProfile(){
   if(!_sb||!currentUser)return;
   var name=document.getElementById('profile-name').value.trim();
-  var hospital=document.getElementById('profile-hospital').value.trim();
-  var anoRes=document.getElementById('profile-ano-res').value;
   if(!name){document.getElementById('profile-error').textContent='Nome é obrigatório.';return;}
+  var titulo=document.getElementById('profile-titulo').value;
+  var hospital=(document.getElementById('profile-hospital').value||'').trim();
+  var anoRes=(document.getElementById('profile-ano-res').value||'');
+  var crm=(document.getElementById('profile-crm').value||'').trim();
+  var crmUf=(document.getElementById('profile-crm-uf').value||'');
+  var tel=(document.getElementById('profile-tel').value||'').trim();
+  var universidade=(document.getElementById('profile-universidade').value||'').trim();
+  var preceptor=(document.getElementById('profile-preceptor').value||'').trim();
+  var anoInicio=(document.getElementById('profile-ano-inicio').value||'');
+  var aparelho=(document.getElementById('profile-aparelho').value||'');
+  var metaCx=(document.getElementById('profile-meta-cx').value||'');
+  var bio=(document.getElementById('profile-bio').value||'').trim();
+  var subesp=getProfSubesp();
   var btn=document.getElementById('profile-save-btn');
   if(btn){btn.disabled=true;btn.textContent='Salvando…';}
-  _sb.auth.updateUser({data:{name:name,hospital:hospital,ano_residencia:anoRes}}).then(function(res){
+  _sb.auth.updateUser({data:{
+    name:name,titulo:titulo,
+    hospital:hospital,universidade:universidade,preceptor:preceptor,
+    ano_residencia:anoRes,ano_inicio:anoInicio,
+    crm:crm,crm_uf:crmUf,telefone:tel,
+    aparelho_principal:aparelho,meta_cirurgias:metaCx,
+    subespecialidades:subesp,bio:bio
+  }}).then(function(res){
     if(btn){btn.disabled=false;btn.textContent='Salvar alterações';}
     if(res.error){document.getElementById('profile-error').textContent=res.error.message;return;}
-    nomeUsuario=name;
-    localStorage.setItem('cataracta_medico',name);
+    var nomeCompleto=(titulo?titulo+' ':'')+name;
+    nomeUsuario=nomeCompleto;
+    localStorage.setItem('cataracta_medico',nomeCompleto);
     atualizarNomeHeader();
     closeProfile();
     showToast('✓ Perfil atualizado');
@@ -4856,31 +4983,166 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <!-- MODAL PERFIL -->
 <div id="profile-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(34,22,17,0.55);align-items:flex-end;justify-content:center" onclick="if(event.target===this)closeProfile()">
-  <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-width:480px;box-shadow:0 -4px 32px rgba(34,22,17,0.18)">
-    <div style="width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px"></div>
-    <div style="font-size:1rem;font-weight:700;color:var(--black);margin-bottom:18px">Minha conta</div>
-    <div class="auth-error" id="profile-error" style="margin-bottom:8px"></div>
-    <label class="auth-label">Nome</label>
-    <input class="auth-input" type="text" id="profile-name" placeholder="Dr. Seu Nome">
-    <label class="auth-label">Hospital / Instituição</label>
-    <input class="auth-input" type="text" id="profile-hospital" placeholder="Hospital das Clínicas — USP">
-    <label class="auth-label">Ano de residência</label>
-    <select class="auth-input" id="profile-ano-res" style="appearance:auto">
-      <option value="">—</option>
-      <option value="R1">R1</option>
-      <option value="R2">R2</option>
-      <option value="R3">R3</option>
-      <option value="Fellow">Fellow / Pós-residência</option>
-      <option value="Staff">Staff / Preceptor</option>
-    </select>
-    <label class="auth-label" style="margin-top:8px">E-mail (não editável)</label>
-    <input class="auth-input" type="email" id="profile-email" disabled style="opacity:0.5">
-    <div style="margin-top:6px;margin-bottom:16px">
-      <span style="font-size:0.75rem;color:var(--muted);cursor:pointer;text-decoration:underline" onclick="doChangePassword()">Alterar senha…</span>
+  <div class="profile-dialog">
+
+    <!-- Cabeçalho com avatar -->
+    <div class="profile-dlg-header">
+      <div class="profile-avatar-lg" id="prof-avatar">R</div>
+      <div>
+        <div class="profile-dlg-name" id="prof-dlg-name">Minha conta</div>
+        <div class="profile-dlg-role" id="prof-dlg-role">&nbsp;</div>
+      </div>
+      <button class="profile-dlg-close" onclick="closeProfile()">×</button>
     </div>
-    <button class="auth-btn" id="profile-save-btn" onclick="saveProfile()">Salvar alterações</button>
-    <button style="width:100%;padding:12px;background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--muted);margin-top:6px" onclick="closeProfile()">Cancelar</button>
-  </div>
+
+    <div class="profile-dlg-body">
+      <div class="auth-error prof-full" id="profile-error" style="margin:8px 0 0"></div>
+
+      <!-- ── Estatísticas rápidas ── -->
+      <div class="prof-stats-row">
+        <div class="prof-stat-card"><div class="prof-stat-val" id="prof-stat-cx">0</div><div class="prof-stat-lbl">Cirurgias</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-val" id="prof-stat-compl">—</div><div class="prof-stat-lbl">Taxa compl.</div></div>
+        <div class="prof-stat-card"><div class="prof-stat-val" id="prof-stat-prog">—</div><div class="prof-stat-lbl">Meta prog.</div></div>
+      </div>
+
+      <!-- ── Identificação ── -->
+      <div class="prof-section-lbl">Identificação profissional</div>
+
+      <div class="field">
+        <label class="auth-label">Título</label>
+        <select class="auth-input" id="profile-titulo" style="appearance:auto">
+          <option value="Dr.">Dr.</option>
+          <option value="Dra.">Dra.</option>
+          <option value="">Sem título</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="auth-label">Nome completo *</label>
+        <input class="auth-input" type="text" id="profile-name" placeholder="Seu nome completo">
+      </div>
+
+      <div class="prof-row-2">
+        <div class="field">
+          <label class="auth-label">CRM</label>
+          <input class="auth-input" type="text" id="profile-crm" placeholder="123456">
+        </div>
+        <div class="field">
+          <label class="auth-label">UF CRM</label>
+          <select class="auth-input" id="profile-crm-uf" style="appearance:auto">
+            <option value="">—</option>
+            <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+            <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+            <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+            <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+            <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+            <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+            <option>SP</option><option>SE</option><option>TO</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field prof-full">
+        <label class="auth-label">E-mail</label>
+        <input class="auth-input" type="email" id="profile-email" disabled style="opacity:0.5">
+      </div>
+      <div class="field">
+        <label class="auth-label">Telefone / WhatsApp</label>
+        <input class="auth-input" type="tel" id="profile-tel" placeholder="(11) 99999-9999">
+      </div>
+
+      <!-- ── Formação ── -->
+      <div class="prof-section-lbl">Formação e vínculo</div>
+
+      <div class="field">
+        <label class="auth-label">Serviço / Hospital</label>
+        <input class="auth-input" type="text" id="profile-hospital" placeholder="Ex: Hospital das Clínicas — USP">
+      </div>
+      <div class="field">
+        <label class="auth-label">Universidade</label>
+        <input class="auth-input" type="text" id="profile-universidade" placeholder="Ex: Faculdade de Medicina da USP">
+      </div>
+      <div class="field prof-full">
+        <label class="auth-label">Preceptor / Orientador principal</label>
+        <input class="auth-input" type="text" id="profile-preceptor" placeholder="Ex: Prof. Dr. João Silva">
+      </div>
+
+      <div class="prof-row-2">
+        <div class="field">
+          <label class="auth-label">Início da residência</label>
+          <input class="auth-input" type="number" id="profile-ano-inicio" placeholder="2023" min="2000" max="2035">
+        </div>
+        <div class="field">
+          <label class="auth-label">Ano atual</label>
+          <select class="auth-input" id="profile-ano-res" style="appearance:auto">
+            <option value="">—</option>
+            <option value="R1">R1</option>
+            <option value="R2">R2</option>
+            <option value="R3">R3</option>
+            <option value="Fellow">Fellow / Pós-residência</option>
+            <option value="Staff">Staff / Preceptor</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── Perfil técnico ── -->
+      <div class="prof-section-lbl">Perfil técnico</div>
+
+      <div class="field">
+        <label class="auth-label">Aparelho principal</label>
+        <select class="auth-input" id="profile-aparelho" style="appearance:auto">
+          <option value="">—</option>
+          <option>Intuitiv</option>
+          <option>Signature</option>
+          <option>Faros</option>
+          <option>Centurion</option>
+          <option>Stellaris</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="auth-label">Meta de cirurgias no programa</label>
+        <input class="auth-input" type="number" id="profile-meta-cx" placeholder="300" min="1" max="9999">
+      </div>
+
+      <div class="field prof-full">
+        <label class="auth-label">Área de interesse</label>
+        <div class="prof-chips-wrap" id="prof-subesp-chips">
+          <span class="prof-chip" data-val="Catarata/Refração" onclick="toggleProfChip(this)">Catarata / Refração</span>
+          <span class="prof-chip" data-val="Córnea" onclick="toggleProfChip(this)">Córnea</span>
+          <span class="prof-chip" data-val="Retina" onclick="toggleProfChip(this)">Retina</span>
+          <span class="prof-chip" data-val="Glaucoma" onclick="toggleProfChip(this)">Glaucoma</span>
+          <span class="prof-chip" data-val="Plástica ocular" onclick="toggleProfChip(this)">Plástica ocular</span>
+          <span class="prof-chip" data-val="Estrabismo" onclick="toggleProfChip(this)">Estrabismo</span>
+          <span class="prof-chip" data-val="Neuroftalmologia" onclick="toggleProfChip(this)">Neuroftalmologia</span>
+          <span class="prof-chip" data-val="Órbita" onclick="toggleProfChip(this)">Órbita</span>
+          <span class="prof-chip" data-val="Baixa Visão" onclick="toggleProfChip(this)">Baixa Visão</span>
+        </div>
+      </div>
+
+      <!-- ── Bio ── -->
+      <div class="prof-section-lbl">Sobre você</div>
+
+      <div class="field prof-full">
+        <label class="auth-label">Apresentação breve <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+        <textarea class="auth-input" id="profile-bio" rows="3" placeholder="Ex: Residente R2 com interesse em catarata complexa e cirurgia de córnea…" maxlength="280" style="resize:none" oninput="document.getElementById('prof-bio-count').textContent=this.value.length+'/280'"></textarea>
+        <div class="prof-char-count" id="prof-bio-count">0/280</div>
+      </div>
+
+      <!-- ── Segurança ── -->
+      <div class="prof-section-lbl">Segurança</div>
+      <div class="prof-action-row">
+        <button class="prof-action-btn" onclick="doChangePassword()">Alterar senha</button>
+        <button class="prof-action-btn danger" onclick="doLogout();closeProfile()">Sair da conta</button>
+      </div>
+
+      <!-- ── Ações principais ── -->
+      <div class="prof-save-area" style="margin-top:20px">
+        <button class="auth-btn" id="profile-save-btn" onclick="saveProfile()">Salvar alterações</button>
+        <button style="width:100%;padding:11px;background:none;border:none;cursor:pointer;font-size:0.82rem;color:var(--muted);margin-top:6px" onclick="closeProfile()">Cancelar</button>
+      </div>
+    </div><!-- /profile-dlg-body -->
+
+  </div><!-- /profile-dialog -->
 </div>
 
 <!-- BANNER: ADICIONAR À TELA INICIAL -->
