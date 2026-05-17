@@ -763,6 +763,89 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 .fpd-footer-btn{font-size:0.72rem;font-weight:600;background:none;border:none;
   cursor:pointer;padding:7px 10px;border-radius:8px;transition:background 0.15s}
 .fpd-footer-btn:hover{background:var(--bgDeep)}
+
+/* ── LAUDO OPERATÓRIO ─────────────────────────────────────────── */
+.laudo-overlay{position:fixed;inset:0;background:rgba(34,22,17,0.6);z-index:900;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.laudo-overlay.open{opacity:1;pointer-events:auto}
+.laudo-sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;padding:20px 20px 40px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(.4,0,.2,1)}
+.laudo-overlay.open .laudo-sheet{transform:translateY(0)}
+.laudo-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px}
+.laudo-title{font-family:var(--fontDisplay);font-size:1.25rem;font-weight:500;color:var(--black);margin-bottom:4px}
+.laudo-sub{font-size:0.72rem;color:var(--muted);margin-bottom:16px}
+.laudo-body{font-size:0.82rem;line-height:1.65;color:var(--black);white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border);margin-bottom:14px;font-family:var(--fontUI)}
+.laudo-copy-btn{width:100%;padding:13px;border-radius:10px;background:var(--black);color:#fff;border:none;cursor:pointer;font-family:var(--fontMono);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase}
+
+/* ── CBO REPORT ───────────────────────────────────────────────── */
+.cbo-overlay{position:fixed;inset:0;background:rgba(34,22,17,0.6);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;padding:20px}
+.cbo-overlay.open{opacity:1;pointer-events:auto}
+.cbo-sheet{background:#fff;border-radius:12px;width:100%;max-width:440px;max-height:88vh;overflow-y:auto;padding:28px 24px 32px;font-family:var(--fontUI)}
+.cbo-header-inst{font-size:0.75rem;font-weight:700;color:var(--black);text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--black);padding-bottom:6px;margin-bottom:14px}
+.cbo-title{font-family:var(--fontDisplay);font-size:1.3rem;font-weight:600;color:var(--black);margin-bottom:2px}
+.cbo-meta{font-size:0.72rem;color:var(--muted);margin-bottom:18px}
+.cbo-section{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:4px;margin:14px 0 8px}
+.cbo-row{display:flex;justify-content:space-between;font-size:0.82rem;padding:4px 0;border-bottom:1px dotted var(--line)}
+.cbo-row-lbl{color:var(--mid)}
+.cbo-row-val{font-weight:600;color:var(--black)}
+.cbo-print-btn{width:100%;padding:12px;border-radius:10px;background:var(--black);color:#fff;border:none;cursor:pointer;font-family:var(--fontMono);font-size:0.72rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-top:18px}
+.cbo-close-btn{width:100%;padding:10px;border-radius:10px;background:none;border:1.5px solid var(--border);color:var(--mid);cursor:pointer;font-size:0.8rem;margin-top:8px}
+
+/* ── PADRÕES PESSOAIS / INSIGHTS ─────────────────────────────── */
+.insight-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);padding:14px 16px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.insight-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.1rem}
+.insight-icon.ok{background:var(--okSoft)}
+.insight-icon.warn{background:var(--warnSoft)}
+.insight-icon.info{background:var(--infoSoft)}
+.insight-body{flex:1;min-width:0}
+.insight-label{font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:3px}
+.insight-text{font-size:0.82rem;color:var(--black);line-height:1.5}
+
+/* ── BENCHMARK ───────────────────────────────────────────────── */
+.bench-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bench-bar-wrap{flex:1;height:6px;background:var(--bgDeep);border-radius:3px;overflow:hidden}
+.bench-bar-fill{height:100%;border-radius:3px;background:var(--accent);transition:width 0.5s}
+.bench-bar-fill.ok{background:var(--ok)}
+.bench-bar-fill.warn{background:var(--warn)}
+.bench-label{font-size:0.68rem;color:var(--muted);width:110px;flex-shrink:0;line-height:1.3}
+.bench-val{font-size:0.75rem;font-weight:700;color:var(--black);width:44px;text-align:right;flex-shrink:0}
+
+/* ── VOICE BUTTON ────────────────────────────────────────────── */
+.voice-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--border);border-radius:20px;padding:5px 10px;cursor:pointer;font-size:0.65rem;font-weight:600;color:var(--muted);transition:all 0.2s;vertical-align:middle}
+.voice-btn.listening{border-color:var(--accent);color:var(--accent);background:var(--amberSoft);animation:voicePulse 1s ease-in-out infinite}
+@keyframes voicePulse{0%,100%{box-shadow:0 0 0 0 rgba(200,90,40,0.3)}50%{box-shadow:0 0 0 6px rgba(200,90,40,0)}}
+.voice-btn svg{width:12px;height:12px}
+
+/* ── PRESENTATION MODE ───────────────────────────────────────── */
+.pres-overlay{position:fixed;inset:0;background:#0F0A07;z-index:1000;display:none;flex-direction:column;color:#F6F2EC}
+.pres-overlay.open{display:flex}
+.pres-header{padding:18px 20px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08)}
+.pres-close-btn{background:rgba(255,255,255,0.08);border:none;color:#F6F2EC;border-radius:8px;padding:7px 14px;cursor:pointer;font-size:0.72rem;font-family:var(--fontMono);font-weight:600;letter-spacing:0.05em}
+.pres-counter{font-family:var(--fontMono);font-size:0.65rem;color:rgba(246,242,236,0.45);letter-spacing:0.1em}
+.pres-body{flex:1;overflow-y:auto;padding:24px 20px}
+.pres-patient{font-family:var(--fontDisplay);font-size:2rem;font-weight:400;color:#F6F2EC;margin-bottom:4px;letter-spacing:-0.02em}
+.pres-date{font-size:0.8rem;color:rgba(246,242,236,0.5);margin-bottom:20px}
+.pres-section{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:rgba(246,242,236,0.35);margin:18px 0 8px}
+.pres-chip{display:inline-block;background:rgba(255,255,255,0.08);border-radius:6px;padding:5px 10px;font-size:0.78rem;color:#F6F2EC;margin:3px 3px 3px 0}
+.pres-chip.danger{background:rgba(168,58,42,0.4);color:#FFC9C0}
+.pres-chip.ok{background:rgba(62,124,89,0.3);color:#B6DFC8}
+.pres-stat{display:flex;gap:12px;margin-bottom:14px}
+.pres-stat-card{flex:1;background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;text-align:center}
+.pres-stat-val{font-family:var(--fontDisplay);font-size:1.8rem;color:#F6F2EC}
+.pres-stat-lbl{font-size:0.58rem;color:rgba(246,242,236,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-top:3px}
+.pres-footer{padding:14px 20px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:10px}
+.pres-nav-btn{flex:1;padding:13px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.05);color:#F6F2EC;cursor:pointer;font-family:var(--fontMono);font-size:0.72rem;font-weight:600;letter-spacing:0.05em;transition:background 0.2s}
+.pres-nav-btn:hover{background:rgba(255,255,255,0.12)}
+.pres-nav-btn:disabled{opacity:0.3;cursor:not-allowed}
+
+/* ── M&M PROTOCOLO ───────────────────────────────────────────── */
+.mmproto-overlay{position:fixed;inset:0;background:rgba(34,22,17,0.6);z-index:900;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.mmproto-overlay.open{opacity:1;pointer-events:auto}
+.mmproto-sheet{background:var(--card);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:20px 20px 40px;transform:translateY(100%);transition:transform 0.3s cubic-bezier(.4,0,.2,1)}
+.mmproto-overlay.open .mmproto-sheet{transform:translateY(0)}
+
+/* ── CASO RARO ───────────────────────────────────────────────── */
+.caso-raro-badge{display:inline-flex;align-items:center;gap:4px;background:#2D1B6B;color:#C8B4FF;border-radius:6px;padding:3px 8px;font-size:0.62rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.caso-raro-filter-btn{display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;cursor:pointer;font-size:0.7rem;font-weight:600;color:var(--muted);transition:all 0.2s}
+.caso-raro-filter-btn.active{border-color:#7C4DFF;color:#7C4DFF;background:rgba(124,77,255,0.07)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
@@ -882,12 +965,18 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
     <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
     <input type="text" id="searchInput" placeholder="Buscar por nome…" oninput="renderPatients()">
   </div>
-  <div class="filter-tabs">
-    <div class="filter-tab active" onclick="setFilter('all',this)">Todos</div>
-    <div class="filter-tab" onclick="setFilter('Faros',this)">Faros</div>
-    <div class="filter-tab" onclick="setFilter('Intuitiv',this)">Intuitiv</div>
-    <div class="filter-tab" onclick="setFilter('Signature',this)">Signature</div>
-    <div class="filter-tab" onclick="setFilter('compl',this)">⚠ Compl.</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    <div class="filter-tabs" style="margin-bottom:0;flex:1;min-width:0">
+      <div class="filter-tab active" onclick="setFilter('all',this)">Todos</div>
+      <div class="filter-tab" onclick="setFilter('Faros',this)">Faros</div>
+      <div class="filter-tab" onclick="setFilter('Intuitiv',this)">Intuitiv</div>
+      <div class="filter-tab" onclick="setFilter('Signature',this)">Signature</div>
+      <div class="filter-tab" onclick="setFilter('compl',this)">⚠ Compl.</div>
+    </div>
+    <button id="caso-raro-filter-btn" class="caso-raro-filter-btn" onclick="toggleCasoRaroFilter()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Raros
+    </button>
   </div>
   <div id="patient-list"></div>
 </div>
@@ -981,7 +1070,7 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
         <div id="interc-selected-tags" style="display:flex;flex-wrap:wrap;gap:5px"></div>
       </div>
     </div>
-    <div class="field"><label>Observações intraop.</label><textarea id="f-obs-intra" placeholder="Notas adicionais…"></textarea></div>
+    <div class="field"><label>Observações intraop. <span id="voice-btn-intra"></span></label><textarea id="f-obs-intra" placeholder="Notas adicionais…"></textarea></div>
   </div>
   <div class="form-section">
     <div class="form-section-title">Mental</div>
@@ -1018,7 +1107,14 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
         <span style="font-size:0.65rem;color:var(--muted);align-self:center;margin-left:4px">1=baixo · 5=alto</span>
       </div>
     </div>
-    <div class="field"><label>Observações mentais</label><textarea id="f-mental-obs" placeholder="Como foi a cirurgia do ponto de vista técnico e emocional…"></textarea></div>
+    <div class="field"><label>Observações mentais <span id="voice-btn-mental"></span></label><textarea id="f-mental-obs" placeholder="Como foi a cirurgia do ponto de vista técnico e emocional…"></textarea></div>
+  </div>
+  <div class="form-section">
+    <div class="form-section-title">Classificação especial</div>
+    <div class="field" style="flex-direction:row;align-items:center;gap:10px;padding:10px 0">
+      <input type="checkbox" id="f-caso-raro" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0">
+      <label for="f-caso-raro" style="font-size:0.82rem;cursor:pointer;margin:0">Marcar como <strong>caso raro</strong> (biblioteca de casos raros)</label>
+    </div>
   </div>
   <button class="btn btn-primary" onclick="salvarCirurgia()">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -1273,6 +1369,14 @@ Retorne APENAS o JSON puro, sem texto antes ou depois, sem markdown, sem explica
     <button class="sb-action" onclick="syncNow()">
       <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
       Sincronizar
+    </button>
+    <button class="sb-action" onclick="abrirCBO()">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Relatório CBO
+    </button>
+    <button class="sb-action" onclick="abrirApresentacao(null)">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Apresentação
     </button>
     <div class="sb-divider"></div>
     <span class="sb-section-lbl">Exportar</span>
@@ -2292,6 +2396,11 @@ function initIntercSteps(){
   const semBtn=document.getElementById('step-sem-btn');
   if(semBtn)semBtn.classList.add('selected');
   updateIntercPreview();
+  // inject voice buttons
+  const vbIntra=document.getElementById('voice-btn-intra');
+  if(vbIntra)vbIntra.innerHTML=voiceBtnHtml('f-obs-intra');
+  const vbMental=document.getElementById('voice-btn-mental');
+  if(vbMental)vbMental.innerHTML=voiceBtnHtml('f-mental-obs');
 }
 
 function toggleStep(stepId){
@@ -2935,7 +3044,8 @@ function renderPatients(){
   let filtered=db.filter(p=>{
     const mQ=!q||p.nome.toLowerCase().includes(q)||(p.prontuario||'').includes(q);
     const mF=activeFilter==='all'||(activeFilter==='compl'&&hasCompl(p))||p.aparelho===activeFilter;
-    return mQ&&mF;
+    const mR=!_casoRaroFilter||p.casoRaro;
+    return mQ&&mF&&mR;
   });
   document.getElementById('patient-count-sub').textContent=`${filtered.length} de ${db.length} cirurgias registradas`;
   if(filtered.length===0){list.innerHTML='<div class="empty"><div class="empty-icon">○</div><div class="empty-txt">Nenhum paciente encontrado</div></div>';return;}
@@ -2944,9 +3054,10 @@ function renderPatients(){
     const cb=hasCompl(p)?`<span style="font-size:0.68rem;font-weight:900;color:#000">!</span>`:'';
     const hasInd=filaDB.some(f=>f.patId===p.id&&!f.done);
     const indIcon=hasInd?`<span style="font-size:0.68rem;font-weight:900;color:#555;margin-left:4px">◎</span>`:'';
+    const raroBadge=p.casoRaro?`<span style="font-size:0.58rem;font-weight:700;color:#7C4DFF;margin-left:4px">★</span>`:'';
     return `<div class="patient-list-item" onclick="showDetail('${p.id}')">
       <div class="patient-avatar">${initials}</div>
-      <div class="patient-info"><div class="patient-name">${p.nome}</div><div class="patient-meta">${p.idade?p.idade+'a · ':''}${p.olho} · ${p.tecnica} · ${p.aparelho}${p.orientacao?' · '+p.orientacao:''}</div></div>
+      <div class="patient-info"><div class="patient-name">${p.nome}${raroBadge}</div><div class="patient-meta">${p.idade?p.idade+'a · ':''}${p.olho} · ${p.tecnica} · ${p.aparelho}${p.orientacao?' · '+p.orientacao:''}</div></div>
       <div style="padding-left:8px;display:flex;gap:2px">${cb}${indIcon}</div>
     </div>`;
   }).join('');
@@ -2974,7 +3085,7 @@ function renderDetail(id){
     const obsH=done
       ?`<div class="tl-obs"><b>Córnea:</b> ${done.cornea||done.obs||'—'} · <b>CA:</b> ${done.ca||'—'}<br><b>AVSC:</b> ${done.av||'—'} · <b>AVCC:</b> ${done.avcc||'—'} · <b>PIO:</b> ${done.pio?done.pio+' mmHg':'—'}${done.obs&&done.obs!==done.cornea?`<br>${done.obs}`:''}${done.conduta?`<br><span style="font-size:0.7rem;color:var(--muted)">Conduta: ${done.conduta}</span>`:''}${done.proximoRetorno?`<div style="margin-top:6px;display:flex;align-items:center;gap:6px"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span style="font-size:0.7rem;font-weight:700;color:var(--black)">Próximo retorno: ${fmtDate(done.proximoRetorno)}</span><span style="font-size:0.65rem;color:var(--muted)">(${diffDays(done.proximoRetorno,hoje())>0?'em '+diffDays(done.proximoRetorno,hoje())+'d':diffDays(done.proximoRetorno,hoje())===0?'hoje':'atrasado'})</span></div>`:''}</div>
         <button class="tl-add-btn" style="background:#444;margin-top:6px" onclick="openPosOp('${id}','${tipo}')">✏ Editar</button>`
-      :`<div class="tl-obs-empty">${diff<0?'Retorno não realizado — registre abaixo':'Não registrado'}</div><button class="tl-add-btn" onclick="openPosOp('${id}','${tipo}')">+ Registrar ${tipo}</button>`;
+      :`<div class="tl-obs-empty">${diff<0?'Retorno não realizado — registre abaixo':'Não registrado'}</div><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:6px"><button class="tl-add-btn" onclick="openPosOp('${id}','${tipo}')">+ Registrar ${tipo}</button>${p.telefone?`<button class="tl-add-btn" style="background:transparent;border:1.5px solid #25D366;color:#25D366" onclick="enviarWhatsApp('${id}','${tipo}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:3px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp</button>`:''}</div>`;
     return `<div class="tl-item"><div class="tl-dot ${dotCls}">${done?'✓':tipo==='D1'?'1':tipo==='D7'?'7':'30'}</div><div class="tl-content"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span class="tl-title">${tInfo[tipo].label}</span>${sb}</div><div class="tl-date">${exp?fmtDate(exp):'—'}</div>${obsH}</div></div>`;
   }).join('');
   const bloqueadoHtml=!d1done&&p.dataCirurgia?`<div style="font-size:0.72rem;color:var(--muted);font-style:italic;padding:10px 0 4px">D7 e D30 serão liberados após o registro do D1.</div>`:'';
@@ -3056,9 +3167,25 @@ function renderDetail(id){
     <div class="sec-title" style="font-size:0.95rem;margin-bottom:10px">Linha do tempo pós-op</div>
     <div class="card">${tlHtml}${bloqueadoHtml}</div>
     <div style="height:14px"></div>
+    ${p.casoRaro?`<div style="margin-bottom:12px"><span class="caso-raro-badge">★ Caso Raro</span></div>`:''}
+    ${p.mmProtocolo&&p.mmProtocolo.aprendizado?`<div class="card" style="margin-bottom:14px;border-left:3px solid var(--accent)"><div class="form-section-title" style="margin-bottom:6px">Protocolo M&amp;M</div><div style="font-size:0.78rem;color:var(--mid);line-height:1.5"><strong>Causa raiz:</strong> ${p.mmProtocolo.causa||'—'}<br><strong>Prevenção:</strong> ${p.mmProtocolo.preventiva||'—'}<br><strong>Aprendizado:</strong> ${p.mmProtocolo.aprendizado}</div></div>`:''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+      <button class="btn btn-outline" onclick="abrirLaudo('${id}')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Laudo
+      </button>
+      <button class="btn btn-outline" onclick="abrirMMProto('${id}')">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        M&amp;M Proto
+      </button>
+    </div>
     <button class="btn btn-outline" onclick="gerarMM('${id}')" style="margin-bottom:10px">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      Apresentar caso (M&M)
+      Apresentar caso (M&amp;M)
+    </button>
+    <button class="btn btn-outline" onclick="toggleCasoRaro('${id}')" style="margin-bottom:10px">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      ${p.casoRaro?'Remover da biblioteca':'Marcar como caso raro'}
     </button>
     <button class="btn btn-outline" onclick="openEditCirurgia('${id}')" style="margin-bottom:10px">
       <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -3600,10 +3727,12 @@ function salvarCirurgia(){
       estresse:parseInt((document.querySelector('input[name="m-stress"]:checked')||{value:'3'}).value),
       obs:document.getElementById('f-mental-obs').value.trim()
     },
+    casoRaro:!!(document.getElementById('f-caso-raro')&&document.getElementById('f-caso-raro').checked),
     cirurgiao:getNomeCompleto(),posOps:{}};
   db.push(p);save();syncOneSurgery(p);
   checkMilestoneCelebration(db.length);
   ['f-nome','f-idade','f-pront','f-tel','f-lio-modelo','f-lio-poder','f-obs-intra','f-orient','f-cat','f-obspreop','f-mental-obs'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  var fcr=document.getElementById('f-caso-raro');if(fcr)fcr.checked=false;
   initIntercSteps();
   document.getElementById('mc3').checked=true;
   document.getElementById('mct3').checked=true;
@@ -4020,6 +4149,16 @@ function renderAnalytics(){
     ${techGradeMatrix()}
 
     ${renderGoalsSection()}
+
+    <!-- Alerta de desvio de performance -->
+    ${buildDesvioHtml(db)}
+
+    <!-- Padrões pessoais / Insights -->
+    <div class="section-label-row"><span class="section-label">Padrões pessoais</span></div>
+    ${buildInsightsHtml(filtered)}
+
+    <!-- Benchmark anônimo -->
+    ${buildBenchmarkHtml(db)}
 
     <div style="height:8px"></div>
   </div>`;
@@ -4904,6 +5043,20 @@ document.addEventListener('DOMContentLoaded',function(){
     </span>
     Análise em PDF
   </button>
+  <!-- Relatório CBO -->
+  <button onclick="abrirCBO();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--infoSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--info)" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    </span>
+    Relatório CBO/CFM
+  </button>
+  <!-- Apresentação -->
+  <button onclick="abrirApresentacao(null);closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
+    <span style="width:32px;height:32px;border-radius:50%;background:var(--bgDeep);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    </span>
+    Modo apresentação
+  </button>
   <!-- Notificações -->
   <button onclick="registrarPush();closeFabMenu()" style="display:flex;align-items:center;gap:12px;width:100%;padding:13px 18px;background:none;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;color:var(--black);text-align:left">
     <span style="width:32px;height:32px;border-radius:50%;background:var(--warnSoft);display:flex;align-items:center;justify-content:center;flex-shrink:0">
@@ -5031,6 +5184,29 @@ document.addEventListener('DOMContentLoaded',function(){
       </button>
     </div>
 
+    <!-- Grupo: Relatórios -->
+    <div class="fpd-section-lbl">Relatórios</div>
+    <div class="fpd-grid">
+      <button class="fpd-tile" onclick="abrirCBO();closeFabMenu()">
+        <div class="fpd-tile-icon" style="background:var(--infoSoft)">
+          <svg width="17" height="17" fill="none" stroke="var(--info)" stroke-width="2.2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        </div>
+        <div class="fpd-tile-lbl">Relatório CBO</div>
+      </button>
+      <button class="fpd-tile" onclick="abrirApresentacao(null);closeFabMenu()">
+        <div class="fpd-tile-icon" style="background:var(--bgDeep)">
+          <svg width="17" height="17" fill="none" stroke="var(--muted)" stroke-width="2.2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="fpd-tile-lbl">Apresentação</div>
+      </button>
+      <button class="fpd-tile" onclick="abrirApresentacao('raro');closeFabMenu()">
+        <div class="fpd-tile-icon" style="background:rgba(124,77,255,0.1)">
+          <svg width="17" height="17" fill="none" stroke="#7C4DFF" stroke-width="2.2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="fpd-tile-lbl">Casos raros</div>
+      </button>
+    </div>
+
     <!-- Grupo: Exportar -->
     <div class="fpd-section-lbl">Exportar</div>
     <div class="fpd-grid">
@@ -5084,6 +5260,73 @@ document.addEventListener('DOMContentLoaded',function(){
 <button id="fab-btn" onclick="toggleFabMenu()" style="position:fixed;bottom:80px;right:16px;z-index:500;width:52px;height:52px;border-radius:50%;background:#C85A28;color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(200,90,40,0.4);display:flex;align-items:center;justify-content:center;transition:transform 0.2s">
   <svg id="fab-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
+
+<!-- ══ LAUDO OPERATÓRIO ══ -->
+<div class="laudo-overlay" id="laudo-overlay" onclick="if(event.target===this)fecharLaudo()">
+  <div class="laudo-sheet">
+    <div class="laudo-handle"></div>
+    <div class="laudo-title">Laudo Operatório</div>
+    <div class="laudo-sub" id="laudo-sub">Cirurgia de Catarata</div>
+    <div class="laudo-body" id="laudo-body"></div>
+    <button class="laudo-copy-btn" onclick="copiarLaudo()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:6px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copiar laudo
+    </button>
+    <button onclick="fecharLaudo()" style="width:100%;padding:10px;border-radius:10px;background:none;border:1.5px solid var(--border);color:var(--mid);cursor:pointer;font-size:0.8rem;margin-top:8px">Fechar</button>
+  </div>
+</div>
+
+<!-- ══ RELATÓRIO CBO/CFM ══ -->
+<div class="cbo-overlay" id="cbo-overlay" onclick="if(event.target===this)fecharCBO()">
+  <div class="cbo-sheet" id="cbo-sheet">
+    <div class="cbo-header-inst" id="cbo-inst">Programa de Residência Médica em Oftalmologia</div>
+    <div class="cbo-title">Relatório Cirúrgico</div>
+    <div class="cbo-meta" id="cbo-meta"></div>
+    <div id="cbo-body"></div>
+    <button class="cbo-print-btn" onclick="imprimirCBO()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" style="vertical-align:middle;margin-right:6px"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+      Imprimir / Exportar PDF
+    </button>
+    <button class="cbo-close-btn" onclick="fecharCBO()">Fechar</button>
+  </div>
+</div>
+
+<!-- ══ MODO APRESENTAÇÃO ══ -->
+<div class="pres-overlay" id="pres-overlay">
+  <div class="pres-header">
+    <span class="pres-counter" id="pres-counter">1 / 1</span>
+    <button class="pres-close-btn" onclick="fecharApresentacao()">Fechar</button>
+  </div>
+  <div class="pres-body" id="pres-body"></div>
+  <div class="pres-footer">
+    <button class="pres-nav-btn" id="pres-prev" onclick="presNav(-1)">← Anterior</button>
+    <button class="pres-nav-btn" id="pres-next" onclick="presNav(1)">Próximo →</button>
+  </div>
+</div>
+
+<!-- ══ M&M PROTOCOLO ESTRUTURADO ══ -->
+<div class="mmproto-overlay" id="mmproto-overlay" onclick="if(event.target===this)fecharMMProto()">
+  <div class="mmproto-sheet">
+    <div class="laudo-handle"></div>
+    <div class="laudo-title" style="margin-bottom:2px">Protocolo M&amp;M</div>
+    <div class="laudo-sub" id="mmproto-sub">Análise estruturada de caso</div>
+    <div class="field" style="margin-bottom:12px">
+      <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Causa raiz da intercorrência</label>
+      <textarea id="mmproto-causa" rows="3" placeholder="O que levou à complicação? (ex: capsulotrexe muito periférica por midríase insuficiente)"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:12px">
+      <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Medida preventiva para próxima vez</label>
+      <textarea id="mmproto-preventiva" rows="3" placeholder="O que você fará diferente? (ex: solicitar colírios midriáticos com 2h de antecedência)"></textarea>
+    </div>
+    <div class="field" style="margin-bottom:16px">
+      <label style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)">Aprendizado principal</label>
+      <textarea id="mmproto-aprendizado" rows="3" placeholder="Em uma frase: o que este caso te ensinou?"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="salvarMMProto()" style="width:100%;margin-bottom:10px">Salvar protocolo</button>
+    <button onclick="fecharMMProto()" style="width:100%;padding:10px;border-radius:10px;background:none;border:1.5px solid var(--border);color:var(--mid);cursor:pointer;font-size:0.8rem">Cancelar</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
 
 <!-- MODAL RESET -->
 <div class="modal-overlay" id="reset-modal">
@@ -5970,6 +6213,472 @@ function confirmarImportacao(){
   document.getElementById('importar-preview-area').style.display='none';
   goPage('home');
   showToast(n+' cirurgia'+(n!==1?'s':'')+' importada'+(n!==1?'s':'')+'!');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 1 — GERADOR DE LAUDO OPERATÓRIO
+// ══════════════════════════════════════════════════════════════════
+var _laudoCurrentId=null;
+function abrirLaudo(id){
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  _laudoCurrentId=id;
+  var d=p.dataCirurgia?fmtDate(p.dataCirurgia):'_____/_____/_______';
+  var nome=p.nome||'(paciente)';
+  var idade=p.idade?p.idade+' anos':'____';
+  var olho=p.olho==='OD'?'olho direito':p.olho==='OE'?'olho esquerdo':'ambos os olhos';
+  var tecnica=p.tecnica||'facoemulsificação';
+  var aparelho=p.aparelho||'—';
+  var anest=p.anestesia||'bloqueio peribulbar';
+  var lio=p.lioModelo||'—';
+  var poder=p.lioPoder?p.lioPoder+'D':'—';
+  var tipo=p.lioTipo||'monofocal';
+  var mat=p.lioMat||'—';
+  var compl=(p.intercorrencias||[]).filter(function(c){return c&&c!=='Sem intercorrências';});
+  var complText=compl.length?compl.join('; '):'sem intercorrências relevantes';
+  var cirurgiao=p.cirurgiao||getNomeCompleto()||'Residente';
+  var laudo=
+'LAUDO OPERATÓRIO\n'+
+'Cirurgia de Catarata — '+tecnica+'\n\n'+
+'Data: '+d+'\n'+
+'Paciente: '+nome+', '+idade+'\n'+
+'Olho operado: '+olho.charAt(0).toUpperCase()+olho.slice(1)+
+(p.convenio?'\nConvênio: '+p.convenio:'')+'\n\n'+
+'TÉCNICA CIRÚRGICA\n'+
+'Procedimento: Facoemulsificação com implante de lente intraocular (LIO)\n'+
+'Técnica: '+tecnica+'\n'+
+'Equipamento: '+aparelho+'\n'+
+'Anestesia: '+anest+'\n'+
+(p.catGrau?'Classificação da catarata: '+p.catGrau+'\n':'')+
+(p.obsPreOp?'Obs. pré-operatórias: '+p.obsPreOp+'\n':'')+
+'\nLIO IMPLANTADA\n'+
+'Modelo: '+lio+'\n'+
+'Poder: '+poder+'\n'+
+'Tipo: '+tipo+'\n'+
+'Material: '+mat+'\n\n'+
+'INTERCORRÊNCIAS\n'+
+complText.charAt(0).toUpperCase()+complText.slice(1)+'.\n'+
+(p.obsIntra?'\nObservações adicionais: '+p.obsIntra+'\n':'')+
+'\nEVOLUÇÃO PÓS-OPERATÓRIA\n';
+  if(p.posOps){
+    ['D1','D7','D30'].forEach(function(t){
+      var po=p.posOps[t];
+      if(po){
+        laudo+=t+': AV='+( po.av||'—')+' / AVCC='+(po.avcc||'—')+' / PIO='+(po.pio?po.pio+'mmHg':'—');
+        if(po.conduta)laudo+=' — '+po.conduta;
+        laudo+='\n';
+      }
+    });
+  }else{laudo+='Pós-operatório pendente de registro.\n';}
+  laudo+='\nCirurgião responsável: '+cirurgiao;
+  document.getElementById('laudo-sub').textContent=nome+' · '+d;
+  document.getElementById('laudo-body').textContent=laudo;
+  document.getElementById('laudo-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function fecharLaudo(){
+  document.getElementById('laudo-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+function copiarLaudo(){
+  var txt=document.getElementById('laudo-body').textContent;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){showToast('Laudo copiado!');});
+  }else{
+    var ta=document.createElement('textarea');
+    ta.value=txt;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    showToast('Laudo copiado!');
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 2 — RELATÓRIO CBO/CFM
+// ══════════════════════════════════════════════════════════════════
+function abrirCBO(){
+  var now=new Date();
+  var mes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][now.getMonth()];
+  var nome=getNomeCompleto()||'Residente';
+  var total=db.length;
+  var tecCount={};
+  var aparCount={};
+  var complexCount=0;
+  var complicacoes=0;
+  for(var i=0;i<db.length;i++){
+    var ci=db[i];
+    var t=ci.tecnica||'Não informado';
+    tecCount[t]=(tecCount[t]||0)+1;
+    var ap=ci.aparelho||'Não informado';
+    aparCount[ap]=(aparCount[ap]||0)+1;
+    if(ci.catGrau&&(/branca|total|madura|n4|n5/i).test(ci.catGrau))complexCount++;
+    if(ci.intercorrencias&&ci.intercorrencias.some(function(x){return x&&x!=='Sem intercorrências';}))complicacoes++;
+  }
+  var complRate=total>0?((complicacoes/total)*100).toFixed(1):0;
+  var complexRate=total>0?((complexCount/total)*100).toFixed(1):0;
+
+  // Técnica breakdown rows
+  var tecRows='';
+  var tecKeys=Object.keys(tecCount);
+  for(var k=0;k<tecKeys.length;k++){
+    var tk=tecKeys[k];
+    tecRows+='<div class="cbo-row"><span class="cbo-row-lbl">'+tk+'</span><span class="cbo-row-val">'+tecCount[tk]+' ('+((tecCount[tk]/total)*100).toFixed(0)+'%)</span></div>';
+  }
+  // Aparelho breakdown
+  var aparRows='';
+  var aparKeys=Object.keys(aparCount);
+  for(var k=0;k<aparKeys.length;k++){
+    var ak=aparKeys[k];
+    aparRows+='<div class="cbo-row"><span class="cbo-row-lbl">'+ak+'</span><span class="cbo-row-val">'+aparCount[ak]+'</span></div>';
+  }
+
+  document.getElementById('cbo-meta').textContent=nome+' · Gerado em '+mes+'/'+now.getFullYear();
+  document.getElementById('cbo-body').innerHTML=
+    '<div class="cbo-section">Produção cirúrgica</div>'+
+    '<div class="cbo-row"><span class="cbo-row-lbl">Total de cirurgias</span><span class="cbo-row-val">'+total+'</span></div>'+
+    '<div class="cbo-row"><span class="cbo-row-lbl">Cataratas complexas</span><span class="cbo-row-val">'+complexCount+' ('+complexRate+'%)</span></div>'+
+    '<div class="cbo-row"><span class="cbo-row-lbl">Taxa de intercorrências</span><span class="cbo-row-val">'+complicacoes+' ('+complRate+'%)</span></div>'+
+    '<div class="cbo-section">Por técnica</div>'+tecRows+
+    '<div class="cbo-section">Por aparelho</div>'+aparRows+
+    '<div class="cbo-section">Conformidade com metas</div>'+
+    '<div class="cbo-row"><span class="cbo-row-lbl">Meta mínima CBO (R1)</span><span class="cbo-row-val">100 cx</span></div>'+
+    '<div class="cbo-row"><span class="cbo-row-lbl">Progresso</span><span class="cbo-row-val" style="color:'+(total>=100?'var(--ok)':'var(--warn)')+'">'+Math.min(100,Math.round((total/100)*100))+'%</span></div>'+
+    '<p style="font-size:0.68rem;color:var(--muted);margin-top:14px;line-height:1.5">Este relatório foi gerado automaticamente pelo Phacolog a partir dos registros do residente. Certificação sujeita à validação da preceptoria.</p>';
+  document.getElementById('cbo-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function fecharCBO(){
+  document.getElementById('cbo-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+function imprimirCBO(){
+  var sheet=document.getElementById('cbo-sheet');
+  var orig=document.body.innerHTML;
+  var printHtml='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório CBO</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#000;max-width:600px;margin:0 auto}.cbo-header-inst{font-weight:700;text-transform:uppercase;font-size:11px;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:14px}.cbo-title{font-size:20px;font-weight:700;margin-bottom:4px}.cbo-meta{font-size:11px;color:#666;margin-bottom:18px}.cbo-section{font-size:10px;font-weight:700;text-transform:uppercase;color:#666;border-bottom:1px solid #ccc;padding-bottom:3px;margin:12px 0 6px}.cbo-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;border-bottom:1px dotted #ddd}.cbo-row-val{font-weight:700}</style></head><body>'+sheet.innerHTML+'</body></html>';
+  var w=window.open('','_blank');
+  if(w){w.document.write(printHtml);w.document.close();w.focus();w.print();}
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 3+4+5 — PADRÕES, DESVIO, BENCHMARK
+// ══════════════════════════════════════════════════════════════════
+// Benchmark literature references (Brazilian / international)
+var BENCH_REF={
+  complicacoes:{val:5,label:'Taxa complicações (%)',unit:'%',direction:'lower'},
+  ruptCap:{val:1.5,label:'Ruptura de cápsula (%)',unit:'%',direction:'lower'},
+  conversao:{val:2,label:'Conversão p/ ECCE (%)',unit:'%',direction:'lower'},
+  perdaVitreo:{val:1,label:'Perda de vítreo (%)',unit:'%',direction:'lower'},
+  hm:{val:1,label:'Hifema (%)',unit:'%',direction:'lower'}
+};
+
+function calcInsights(data){
+  if(!data||data.length<3)return null;
+  var total=data.length;
+  // complication rate
+  var nCompl=data.filter(function(p){return p.intercorrencias&&p.intercorrencias.some(function(x){return x&&x!=='Sem intercorrências';});}).length;
+  var rateCompl=(nCompl/total*100);
+  // technique frequency
+  var tecCount={};
+  for(var i=0;i<data.length;i++){var t=data[i].tecnica;if(t)tecCount[t]=(tecCount[t]||0)+1;}
+  var bestTec='—';var bestTecN=0;
+  var tecKeys=Object.keys(tecCount);
+  for(var k=0;k<tecKeys.length;k++){if(tecCount[tecKeys[k]]>bestTecN){bestTecN=tecCount[tecKeys[k]];bestTec=tecKeys[k];}}
+  // aparelho preference
+  var apCount={};
+  for(var i=0;i<data.length;i++){var ap=data[i].aparelho;if(ap)apCount[ap]=(apCount[ap]||0)+1;}
+  var bestAp='—';var bestApN=0;
+  var apKeys=Object.keys(apCount);
+  for(var k=0;k<apKeys.length;k++){if(apCount[apKeys[k]]>bestApN){bestApN=apCount[apKeys[k]];bestAp=apKeys[k];}}
+  // mental average
+  var confSum=0;var ctrlSum=0;var stressSum=0;var mentalN=0;
+  for(var i=0;i<data.length;i++){var m=data[i].mental;if(m&&m.confianca){confSum+=Number(m.confianca);ctrlSum+=Number(m.controle);stressSum+=Number(m.estresse);mentalN++;}}
+  var avgConf=mentalN?confSum/mentalN:0;
+  var avgCtrl=mentalN?ctrlSum/mentalN:0;
+  var avgStress=mentalN?stressSum/mentalN:0;
+  // D1 completion rate
+  var d1rate=data.filter(function(p){return p.posOps&&p.posOps.D1;}).length/total*100;
+  return{total:total,nCompl:nCompl,rateCompl:rateCompl,bestTec:bestTec,bestTecN:bestTecN,bestAp:bestAp,bestApN:bestApN,avgConf:avgConf,avgCtrl:avgCtrl,avgStress:avgStress,mentalN:mentalN,d1rate:d1rate};
+}
+
+function buildInsightsHtml(data){
+  var ins=calcInsights(data);
+  if(!ins)return '<div style="font-size:0.82rem;color:var(--muted);text-align:center;padding:20px 0">Registre ao menos 3 cirurgias para ver padrões pessoais.</div>';
+  var cards='';
+  // Técnica predominante
+  var tecPct=Math.round(ins.bestTecN/ins.total*100);
+  cards+='<div class="insight-card"><div class="insight-icon info">🔪</div><div class="insight-body"><div class="insight-label">Técnica predominante</div><div class="insight-text"><strong>'+ins.bestTec+'</strong> em '+tecPct+'% das cirurgias ('+ins.bestTecN+'/'+ins.total+')</div></div></div>';
+  // Aparelho
+  cards+='<div class="insight-card"><div class="insight-icon info">⚙️</div><div class="insight-body"><div class="insight-label">Aparelho preferido</div><div class="insight-text"><strong>'+ins.bestAp+'</strong> ('+ins.bestApN+' cx)</div></div></div>';
+  // Taxa de complicações
+  var complIcon=ins.rateCompl<=5?'ok':'warn';
+  var complMsg=ins.rateCompl<=5?'Dentro da referência bibliográfica (≤5%)':'Acima da referência. Revise técnica ou seleção de casos.';
+  cards+='<div class="insight-card"><div class="insight-icon '+complIcon+'">'+( ins.rateCompl<=5?'✅':'⚠️')+'</div><div class="insight-body"><div class="insight-label">Taxa de intercorrências</div><div class="insight-text"><strong>'+ins.rateCompl.toFixed(1)+'%</strong> ('+ins.nCompl+' em '+ins.total+') — '+complMsg+'</div></div></div>';
+  // Mental
+  if(ins.mentalN>=3){
+    var mentalMsg='Confiança média '+ins.avgConf.toFixed(1)+'/5 · Controle '+ins.avgCtrl.toFixed(1)+'/5 · Estresse '+ins.avgStress.toFixed(1)+'/5';
+    var mIcon=ins.avgConf>=3.5&&ins.avgCtrl>=3.5?'ok':'warn';
+    cards+='<div class="insight-card"><div class="insight-icon '+mIcon+'">🧠</div><div class="insight-body"><div class="insight-label">Autopercepção cirúrgica</div><div class="insight-text">'+mentalMsg+'</div></div></div>';
+  }
+  // D1 follow-up
+  var d1Icon=ins.d1rate>=80?'ok':'warn';
+  cards+='<div class="insight-card"><div class="insight-icon '+d1Icon+'">📋</div><div class="insight-body"><div class="insight-label">Retorno D1 registrado</div><div class="insight-text"><strong>'+ins.d1rate.toFixed(0)+'%</strong> dos casos com acompanhamento D1</div></div></div>';
+  return cards;
+}
+
+function buildDesvioHtml(data){
+  if(!data||data.length<10)return '';
+  var recent=data.slice(0,10);
+  var hist=data.slice(10);
+  if(!hist.length)return '';
+  function getRate(arr){
+    return arr.filter(function(p){return p.intercorrencias&&p.intercorrencias.some(function(x){return x&&x!=='Sem intercorrências';});}).length/arr.length*100;
+  }
+  var rR=getRate(recent);
+  var rH=getRate(hist);
+  var delta=rR-rH;
+  if(Math.abs(delta)<1)return '';
+  var isWorse=delta>0;
+  var color=isWorse?'var(--dangerSoft)':'var(--okSoft)';
+  var txtColor=isWorse?'var(--danger)':'var(--ok)';
+  var icon=isWorse?'⚠️':'✅';
+  var msg=isWorse
+    ?'Nas últimas 10 cirurgias, sua taxa de intercorrências ('+rR.toFixed(1)+'%) está '+Math.abs(delta).toFixed(1)+'% acima do seu histórico ('+rH.toFixed(1)+'%). Considere rever a seleção de casos ou buscar orientação.'
+    :'Nas últimas 10 cirurgias, sua taxa de intercorrências ('+rR.toFixed(1)+'%) está '+Math.abs(delta).toFixed(1)+'% abaixo do seu histórico ('+rH.toFixed(1)+'%). Boa evolução!';
+  return '<div style="background:'+color+';border-radius:var(--r);padding:14px 16px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start">'+
+    '<span style="font-size:1.3rem">'+icon+'</span>'+
+    '<div><div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:'+txtColor+';margin-bottom:4px">Alerta de desvio de performance</div>'+
+    '<div style="font-size:0.82rem;color:var(--black);line-height:1.5">'+msg+'</div></div></div>';
+}
+
+function buildBenchmarkHtml(data){
+  if(!data||data.length<5)return '';
+  var total=data.length;
+  function countCompl(type){
+    return data.filter(function(p){return p.intercorrencias&&p.intercorrencias.some(function(x){return x&&new RegExp(type,'i').test(x);});}).length;
+  }
+  var stats={
+    complicacoes:{user:(data.filter(function(p){return p.intercorrencias&&p.intercorrencias.some(function(x){return x&&x!=='Sem intercorrências';});}).length/total*100),ref:5},
+    ruptCap:{user:(countCompl('cápsula|capsula|cap')/total*100),ref:1.5},
+    perdaVitreo:{user:(countCompl('vítreo|vitreo')/total*100),ref:1},
+    hm:{user:(countCompl('hifema')/total*100),ref:1}
+  };
+  var rows='';
+  var keys=Object.keys(stats);
+  for(var k=0;k<keys.length;k++){
+    var key=keys[k];
+    var s=stats[key];
+    var ref=BENCH_REF[key];
+    var pct=Math.min(100,Math.round(s.user/Math.max(s.ref*2,0.1)*100));
+    var fillCls=s.user<=s.ref?'ok':'warn';
+    var lbl=ref?ref.label:key;
+    rows+='<div class="bench-row">'+
+      '<span class="bench-label">'+lbl+'</span>'+
+      '<div class="bench-bar-wrap"><div class="bench-bar-fill '+fillCls+'" style="width:'+pct+'%"></div></div>'+
+      '<span class="bench-val">'+s.user.toFixed(1)+'%<span style="font-size:0.6rem;font-weight:400;color:var(--muted)"> vs '+s.ref+'%</span></span>'+
+    '</div>';
+  }
+  return '<div class="card" style="margin-bottom:12px">'+
+    '<div class="form-section-title" style="margin-bottom:4px">Benchmark anônimo</div>'+
+    '<div style="font-size:0.7rem;color:var(--muted);margin-bottom:12px">Comparação com referências da literatura (CBO/ASCRS)</div>'+
+    rows+'</div>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 6 — LEMBRETE POR WHATSAPP
+// ══════════════════════════════════════════════════════════════════
+function enviarWhatsApp(id,tipo){
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  if(!p.telefone){showToast('Telefone não cadastrado neste paciente.');return;}
+  var tel=p.telefone.replace(/\D/g,'');
+  if(tel.length<10){showToast('Telefone inválido.');return;}
+  // Ensure country code
+  if(tel.length===10||tel.length===11)tel='55'+tel;
+  var nome=p.nome&&p.nome!=='[Pac.]'?p.nome.split(' ')[0]:'paciente';
+  var tipoLabel=tipo==='D1'?'1º dia':tipo==='D7'?'7º dia':'30º dia';
+  var d='';
+  if(p.dataCirurgia){
+    var exp=tipo==='D1'?addD1(p.dataCirurgia):tipo==='D7'?addDaysSkipWeekend(p.dataCirurgia,7):addDaysSkipWeekend(p.dataCirurgia,30);
+    if(exp)d=' para o dia '+fmtDate(exp);
+  }
+  var msg='Olá '+nome+'! Lembramos que seu retorno pós-operatório de '+tipoLabel+' está agendado'+d+'. Em caso de dúvidas, entre em contato com o nosso serviço. Phacolog — Residência de Oftalmologia.';
+  var url='https://wa.me/'+tel+'?text='+encodeURIComponent(msg);
+  window.open(url,'_blank','noopener');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 7 — RECONHECIMENTO DE VOZ
+// ══════════════════════════════════════════════════════════════════
+var _voiceActive=false;
+var _voiceRecognition=null;
+var _voiceTargetId=null;
+function iniciarVoz(inputId,btnEl){
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){
+    showToast('Reconhecimento de voz não suportado neste dispositivo.');return;
+  }
+  if(_voiceActive){pararVoz();return;}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  var r=new SR();
+  r.lang='pt-BR';r.interimResults=false;r.maxAlternatives=1;
+  r.onstart=function(){_voiceActive=true;if(btnEl)btnEl.classList.add('listening');};
+  r.onresult=function(e){
+    var transcript=e.results[0][0].transcript;
+    var el=document.getElementById(inputId);
+    if(el){
+      var cur=el.value;
+      el.value=cur+(cur&&!cur.endsWith(' ')?' ':'')+transcript;
+    }
+  };
+  r.onerror=function(){pararVoz();showToast('Erro no reconhecimento de voz.');};
+  r.onend=function(){pararVoz();};
+  _voiceRecognition=r;_voiceTargetId=inputId;
+  try{r.start();}catch(e){pararVoz();}
+}
+function pararVoz(){
+  _voiceActive=false;
+  if(_voiceRecognition){try{_voiceRecognition.stop();}catch(e){}}
+  _voiceRecognition=null;
+  // remove all listening classes
+  var btns=document.querySelectorAll('.voice-btn');
+  for(var i=0;i<btns.length;i++)btns[i].classList.remove('listening');
+}
+
+function voiceBtnHtml(inputId){
+  return '<button type="button" class="voice-btn" onclick="iniciarVoz(\''+inputId+'\',this)" title="Ditado por voz">'+
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>'+
+    'Voz</button>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 8 — MODO APRESENTAÇÃO
+// ══════════════════════════════════════════════════════════════════
+var _presItems=[];
+var _presIdx=0;
+function abrirApresentacao(filtro){
+  // filtro: null = todos, 'compl' = com complicações, 'raro' = casos raros
+  _presItems=db.filter(function(p){
+    if(filtro==='compl')return hasCompl(p);
+    if(filtro==='raro')return p.casoRaro;
+    return true;
+  }).slice().reverse(); // newest first
+  if(!_presItems.length){showToast('Nenhum caso disponível para apresentação.');return;}
+  _presIdx=0;
+  renderPresSlide();
+  document.getElementById('pres-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function fecharApresentacao(){
+  document.getElementById('pres-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+function presNav(dir){
+  _presIdx+=dir;
+  if(_presIdx<0)_presIdx=0;
+  if(_presIdx>=_presItems.length)_presIdx=_presItems.length-1;
+  renderPresSlide();
+}
+function renderPresSlide(){
+  var p=_presItems[_presIdx];
+  var total=_presItems.length;
+  document.getElementById('pres-counter').textContent=(_presIdx+1)+' / '+total;
+  document.getElementById('pres-prev').disabled=_presIdx===0;
+  document.getElementById('pres-next').disabled=_presIdx===total-1;
+  var compl=(p.intercorrencias||[]).filter(function(x){return x&&x!=='Sem intercorrências';});
+  var chips=compl.map(function(c){return '<span class="pres-chip danger">'+c+'</span>';}).join('');
+  if(!compl.length)chips='<span class="pres-chip ok">Sem intercorrências</span>';
+  var posHtml='';
+  if(p.posOps){
+    ['D1','D7','D30'].forEach(function(t){
+      var po=p.posOps[t];
+      if(!po)return;
+      posHtml+='<div style="margin-bottom:10px"><div class="pres-section" style="margin-top:0">'+t+'</div>'+
+        '<div style="display:flex;gap:8px">'+
+        '<div class="pres-stat-card"><div class="pres-stat-val">'+(po.av||'—')+'</div><div class="pres-stat-lbl">AV sc</div></div>'+
+        '<div class="pres-stat-card"><div class="pres-stat-val">'+(po.avcc||'—')+'</div><div class="pres-stat-lbl">AV cc</div></div>'+
+        '<div class="pres-stat-card"><div class="pres-stat-val">'+(po.pio||'—')+'</div><div class="pres-stat-lbl">PIO</div></div>'+
+        '</div></div>';
+    });
+  }
+  var mentalHtml='';
+  if(p.mental&&p.mental.confianca){
+    mentalHtml='<div class="pres-section">Autopercepção</div>'+
+      '<div style="display:flex;gap:8px">'+
+      '<div class="pres-stat-card"><div class="pres-stat-val">'+(p.mental.confianca||'—')+'</div><div class="pres-stat-lbl">Confiança</div></div>'+
+      '<div class="pres-stat-card"><div class="pres-stat-val">'+(p.mental.controle||'—')+'</div><div class="pres-stat-lbl">Controle</div></div>'+
+      '<div class="pres-stat-card"><div class="pres-stat-val">'+(p.mental.estresse||'—')+'</div><div class="pres-stat-lbl">Estresse</div></div>'+
+      '</div>'+
+      (p.mental.obs?'<div style="font-size:0.78rem;color:rgba(246,242,236,0.6);margin-top:10px;font-style:italic">'+p.mental.obs+'</div>':'');
+  }
+  var initials=p.nome&&p.nome!=='[Pac.]'?p.nome.split(' ').filter(function(w){return w.length>1;}).map(function(w){return w[0]+'.';}).join(''):'Pac.';
+  document.getElementById('pres-body').innerHTML=
+    '<div class="pres-patient">'+initials+'</div>'+
+    '<div class="pres-date">'+(p.dataCirurgia?fmtDate(p.dataCirurgia):'')+' · '+(p.olho||'')+' · '+(p.tecnica||'')+(p.catGrau?' · '+p.catGrau:'')+
+    (p.casoRaro?'&nbsp;<span class="caso-raro-badge">★ Caso raro</span>':'')+
+    '</div>'+
+    '<div class="pres-section">LIO implantada</div>'+
+    '<div style="font-size:0.9rem;color:#F6F2EC">'+(p.lioModelo||'—')+(p.lioPoder?' · '+p.lioPoder+'D':'')+' · '+(p.lioTipo||'—')+'</div>'+
+    '<div class="pres-section">Intercorrências</div>'+
+    chips+
+    (p.obsIntra?'<div style="font-size:0.78rem;color:rgba(246,242,236,0.55);margin-top:10px;font-style:italic">'+p.obsIntra+'</div>':'')+
+    (posHtml?'<div class="pres-section">Pós-operatório</div>'+posHtml:'')+
+    mentalHtml;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 9 — PROTOCOLO M&M ESTRUTURADO
+// ══════════════════════════════════════════════════════════════════
+var _mmprotoCurrentId=null;
+function abrirMMProto(id){
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  _mmprotoCurrentId=id;
+  var proto=p.mmProtocolo||{};
+  document.getElementById('mmproto-sub').textContent='Caso: '+(p.nome&&p.nome!=='[Pac.]'?p.nome:(p.dataCirurgia||''));
+  document.getElementById('mmproto-causa').value=proto.causa||'';
+  document.getElementById('mmproto-preventiva').value=proto.preventiva||'';
+  document.getElementById('mmproto-aprendizado').value=proto.aprendizado||'';
+  document.getElementById('mmproto-overlay').classList.add('open');
+  document.body.classList.add('no-scroll');
+}
+function fecharMMProto(){
+  document.getElementById('mmproto-overlay').classList.remove('open');
+  document.body.classList.remove('no-scroll');
+}
+function salvarMMProto(){
+  var id=_mmprotoCurrentId;
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  p.mmProtocolo={
+    causa:document.getElementById('mmproto-causa').value.trim(),
+    preventiva:document.getElementById('mmproto-preventiva').value.trim(),
+    aprendizado:document.getElementById('mmproto-aprendizado').value.trim(),
+    updatedAt:new Date().toISOString()
+  };
+  save();
+  if(_sb&&currentUser)syncOneSurgery(p);
+  fecharMMProto();
+  showToast('Protocolo M&M salvo!');
+  if(currentPage==='detail')renderDetail(id);
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FEATURE 10 — BIBLIOTECA DE CASOS RAROS
+// ══════════════════════════════════════════════════════════════════
+var _casoRaroFilter=false;
+function toggleCasoRaro(id){
+  var p=db.find(function(x){return x.id===id;});
+  if(!p)return;
+  p.casoRaro=!p.casoRaro;
+  save();
+  if(_sb&&currentUser)syncOneSurgery(p);
+  showToast(p.casoRaro?'Marcado como caso raro':'Marcação de caso raro removida');
+  if(currentPage==='detail')renderDetail(id);
+  if(currentPage==='home')renderHome();
+}
+function toggleCasoRaroFilter(){
+  _casoRaroFilter=!_casoRaroFilter;
+  var btn=document.getElementById('caso-raro-filter-btn');
+  if(btn)btn.classList.toggle('active',_casoRaroFilter);
+  renderHome();
 }
 
 function fecharResetModal(){
