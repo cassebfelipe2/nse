@@ -1789,7 +1789,7 @@ function updateProUI(){
 }
 
 function showPaywall(ctx){
-  if(!PAYWALL_ENABLED){return;}
+  if(!PAYWALL_ENABLED){return false;}
   var labels={
     limite:'Você atingiu o limite de '+FREE_SURGERY_LIMIT+' cirurgias do plano gratuito',
     analise:'Analytics disponível apenas no plano Pro',
@@ -1802,6 +1802,7 @@ function showPaywall(ctx){
   var el=document.getElementById('paywall-ctx-label');
   if(el)el.textContent=(ctx&&labels[ctx])||'Recurso exclusivo para assinantes Pro';
   document.getElementById('paywall-overlay').classList.remove('hidden');
+  return true;
 }
 
 function closePaywall(){
@@ -2234,7 +2235,7 @@ function urlBase64ToUint8Array(base64String){
   return outputArray;
 }
 function registrarPush(){
-  if(!_isPro){showPaywall('push');return;}
+  if(!_isPro&&showPaywall('push'))return;
   if(!('serviceWorker' in navigator)||!('PushManager' in window)){
     showToast('Seu navegador não suporta notificações push.');return;
   }
@@ -2567,7 +2568,7 @@ function goPage(p){
   prevPage=currentPage;currentPage=p;
   if(p==='home')renderHome();
   if(p==='pacientes')renderPatients();
-  if(p==='analise'){if(!_isPro){showPaywall('analise');return;}renderAnalytics();}
+  if(p==='analise'){if(!_isPro&&showPaywall('analise'))return;renderAnalytics();}
   if(p==='fila')renderFila();
   if(p==='nova')initIntercSteps();
   if(p==='atrasos')renderAtrasos();
@@ -3698,7 +3699,7 @@ function salvarPosOp(){
 
 // ── NOVA CIRURGIA ────────────────────────────────────────────────
 function salvarCirurgia(){
-  if(!_isPro&&db.length>=FREE_SURGERY_LIMIT){showPaywall('limite');return;}
+  if(!_isPro&&db.length>=FREE_SURGERY_LIMIT&&showPaywall('limite'))return;
   const nome=document.getElementById('f-nome').value.trim();
   if(!nome){alert('Preencha o nome do paciente.');return;}
   const interc=getIntercValues();
@@ -5394,7 +5395,7 @@ function mentalChartSVGExport(data){
 }
 
 function exportarAnalise(){
-  if(!_isPro){showPaywall('export');return;}
+  if(!_isPro&&showPaywall('export'))return;
   if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
 
   // Coleta os mesmos dados do renderAnalytics
@@ -5547,7 +5548,7 @@ ${mConf.length>0?`<h2>Avaliação Mental</h2>
 // CALCULADORA DE LIO (SRK/II)
 // ══════════════════════════════════════════════════════════════════
 function openLIOCalc(){
-  if(!_isPro){showPaywall('lio');return;}
+  if(!_isPro&&showPaywall('lio'))return;
   document.getElementById('lio-overlay').classList.remove('hidden');
   document.getElementById('lio-result').style.display='none';
   document.getElementById('lio-error').textContent='';
@@ -5615,7 +5616,7 @@ function saveGoalsLS(arr){
   localStorage.setItem('cataracta_metas_v1',JSON.stringify(arr));
 }
 function openGoalModal(){
-  if(!_isPro){showPaywall('metas');return;}
+  if(!_isPro&&showPaywall('metas'))return;
   document.getElementById('goal-overlay').classList.remove('hidden');
   document.getElementById('goal-label').value='';
   document.getElementById('goal-tipo').value='Todas';
@@ -5652,10 +5653,11 @@ function deleteGoal(id){
 // APRESENTAÇÃO DE CASO M&M
 // ══════════════════════════════════════════════════════════════════
 function gerarMM(id){
-  if(!_isPro){showPaywall('mm');return;}
+  if(!_isPro&&showPaywall('mm'))return;
   var p=db.find(function(x){return x.id===id;});
   if(!p)return;
-  var initials=p.nome?p.nome.split(' ').filter(function(w){return w.length>1;}).map(function(w){return w[0]+'.';}).join(''):'Paciente';
+  var _mmNome=(p.nome||'').replace(/^\[|\]$/g,'');
+  var initials=!_mmNome||_mmNome==='Pac.'?'Paciente':/^[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][.][A-ZÁÀÂÃÉÊÍÓÔÕÚÇ]/i.test(_mmNome)?_mmNome:(function(){var ws=_mmNome.split(' ').filter(function(w){return w.length>1;});return ws.length?ws.map(function(w){return w[0]+'.';}).join(''):_mmNome.charAt(0)+'.';})();
   var complicacoes=(p.intercorrencias||[]).filter(function(c){return c&&c!=='Sem intercorrências';});
   var hasC=complicacoes.length>0;
   var complHtml=hasC?complicacoes.map(function(c){return '<div class="mm-compl-item">'+c+'</div>';}).join(''):'<div style="font-size:0.82rem;color:#5A4A40">Sem intercorrências registradas</div>';
@@ -6019,7 +6021,7 @@ function initDiary(){
 }
 
 function exportarExcel(){
-  if(!_isPro){showPaywall('export');return;}
+  if(!_isPro&&showPaywall('export'))return;
   if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
   // Gera CSV com BOM para Excel abrir corretamente com acentos
   const bom='\uFEFF';
@@ -6608,7 +6610,12 @@ function renderPresSlide(){
       '</div>'+
       (p.mental.obs?'<div style="font-size:0.78rem;color:rgba(246,242,236,0.6);margin-top:10px;font-style:italic">'+p.mental.obs+'</div>':'');
   }
-  var initials=p.nome&&p.nome!=='[Pac.]'?p.nome.split(' ').filter(function(w){return w.length>1;}).map(function(w){return w[0]+'.';}).join(''):'Pac.';
+  var _rawNome=p.nome&&p.nome!=='[Pac.]'?p.nome:'Pac.';
+  var _cleanNome=_rawNome.replace(/^\[|\]$/g,''); // strip surrounding brackets [R.S.T.] → R.S.T.
+  var initials;
+  if(_cleanNome==='Pac.'){initials='Pac.';}
+  else if(/^[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][.][A-ZÁÀÂÃÉÊÍÓÔÕÚÇ]/i.test(_cleanNome)){initials=_cleanNome;} // already initials
+  else{var _ws=_cleanNome.split(' ').filter(function(w){return w.length>1;});initials=_ws.length?_ws.map(function(w){return w[0]+'.';}).join(''):_cleanNome.charAt(0)+'.';}
   document.getElementById('pres-body').innerHTML=
     '<div class="pres-patient">'+initials+'</div>'+
     '<div class="pres-date">'+(p.dataCirurgia?fmtDate(p.dataCirurgia):'')+' · '+(p.olho||'')+' · '+(p.tecnica||'')+(p.catGrau?' · '+p.catGrau:'')+
