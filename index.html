@@ -820,7 +820,12 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--card);z-index:2}
 .profile-avatar-lg{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;
   font-family:var(--fontDisplay);font-size:1.3rem;font-weight:600;display:flex;align-items:center;
-  justify-content:center;flex-shrink:0;letter-spacing:-0.02em}
+  justify-content:center;flex-shrink:0;letter-spacing:-0.02em;position:relative;overflow:visible;cursor:pointer}
+.prof-avatar-wrap{position:relative;width:52px;height:52px;flex-shrink:0;cursor:pointer}
+.prof-avatar-photo{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;border-radius:50%;object-fit:cover;display:none}
+.prof-avatar-overlay{position:absolute;top:0;right:0;bottom:0;left:0;border-radius:50%;background:rgba(34,22,17,0.45);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.18s;pointer-events:none}
+.prof-avatar-wrap:hover .prof-avatar-overlay{opacity:1}
 .profile-dlg-name{font-family:var(--fontDisplay);font-size:1.1rem;font-weight:500;color:var(--black);
   letter-spacing:-0.01em;line-height:1.2}
 .profile-dlg-role{font-size:0.72rem;color:var(--muted);margin-top:3px;line-height:1.3}
@@ -2086,6 +2091,50 @@ function getProfSubesp(){
   return arr;
 }
 
+function updateAvatarEl(photoUrl,initials){
+  var span=document.getElementById('prof-avatar-initials');
+  var img=document.getElementById('prof-avatar-photo');
+  if(!span||!img)return;
+  if(photoUrl){
+    img.src=photoUrl;
+    img.style.display='block';
+    span.style.display='none';
+  }else{
+    img.style.display='none';
+    img.src='';
+    span.style.display='';
+    span.textContent=initials||'R';
+  }
+}
+
+function handleAvatarUpload(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  if(file.size>2*1024*1024){showToast('Imagem muito grande (máx 2 MB)');return;}
+  // Preview imediato
+  var reader=new FileReader();
+  reader.onload=function(e){updateAvatarEl(e.target.result,null);};
+  reader.readAsDataURL(file);
+  if(!_sb||!currentUser){showToast('Faça login para enviar a foto');return;}
+  var ext=file.name.split('.').pop()||'jpg';
+  var path=currentUser.id+'/avatar.'+ext;
+  _sb.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type}).then(function(res){
+    if(res.error){showToast('Erro ao enviar foto');console.error(res.error);return;}
+    var pubRes=_sb.storage.from('avatars').getPublicUrl(path);
+    var url=pubRes.data&&pubRes.data.publicUrl?pubRes.data.publicUrl:null;
+    if(!url){showToast('Erro ao obter URL da foto');return;}
+    // Cache-bust
+    var finalUrl=url+'?t='+Date.now();
+    _sb.auth.updateUser({data:{custom_avatar_url:finalUrl}}).then(function(r){
+      if(r.error){showToast('Foto enviada, mas erro ao salvar URL');return;}
+      if(r.data&&r.data.user)currentUser=r.data.user;
+      updateAvatarEl(finalUrl,null);
+      showToast('✓ Foto atualizada');
+    });
+  });
+  input.value='';
+}
+
 function openProfile(){
   if(!currentUser)return;
   var meta=currentUser.user_metadata||{};
@@ -2115,8 +2164,8 @@ function openProfile(){
   }
   // Avatar
   var initials=getAvatarInitials(name);
-  var av=document.getElementById('prof-avatar');
-  if(av)av.textContent=initials;
+  var avatarUrl=meta.custom_avatar_url||meta.avatar_url||meta.picture||null;
+  updateAvatarEl(avatarUrl,initials);
   // Header text
   var fullNome=(meta.titulo?meta.titulo+' ':'')+name;
   var el=document.getElementById('prof-dlg-name');
@@ -4987,7 +5036,16 @@ document.addEventListener('DOMContentLoaded',function(){
 
     <!-- Cabeçalho com avatar -->
     <div class="profile-dlg-header">
-      <div class="profile-avatar-lg" id="prof-avatar">R</div>
+      <label class="prof-avatar-wrap" for="prof-photo-input" title="Alterar foto">
+        <div class="profile-avatar-lg" id="prof-avatar">
+          <span id="prof-avatar-initials">R</span>
+          <img id="prof-avatar-photo" class="prof-avatar-photo" alt="foto de perfil" onerror="this.style.display='none';var s=document.getElementById('prof-avatar-initials');if(s)s.style.display=''">
+        </div>
+        <div class="prof-avatar-overlay">
+          <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2.2" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <input type="file" id="prof-photo-input" accept="image/*" style="display:none" onchange="handleAvatarUpload(this)">
+      </label>
       <div>
         <div class="profile-dlg-name" id="prof-dlg-name">Minha conta</div>
         <div class="profile-dlg-role" id="prof-dlg-role">&nbsp;</div>
