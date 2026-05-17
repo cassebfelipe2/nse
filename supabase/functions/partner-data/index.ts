@@ -181,66 +181,25 @@ Deno.serve(async (req: Request) => {
     monthly_map: monthMap,
   };
 
-  // ── 2. Partner surgeries (filtered) ─────────────────────────────────────
+  // ── 2. Partner surgeries with embedded followups + complications ──────────
+  // Using PostgREST relationship join avoids a separate .in(ids) query that
+  // can exceed URL length limits when there are many surgeries (e.g. Ofta = all).
   let surgQ = sb.from("surgeries").select(
     "id, surgery_date, eye, technique, equipment, cat_grade, " +
     "lio_model, lio_power, lio_type, lio_material, " +
     "surgeon_name, supervisor, anesthesia, has_complication, " +
-    "mental_confidence, mental_control, mental_stress"
+    "mental_confidence, mental_control, mental_stress, " +
+    "complications(name), " +
+    "followups(type, completed_at, visual_acuity, avcc, pio, refraction, conduta)"
   ).order("surgery_date", { ascending: false });
 
   if (cfg.equipmentFilter) surgQ = surgQ.in("equipment", cfg.equipmentFilter);
 
   const { data: surgeries, error: surgErr } = await surgQ;
   if (surgErr) {
-    console.error("surgeries:", surgErr.message);
+    console.error("surgeries query error:", surgErr.message);
     return resp({ error: "Erro ao buscar cirurgias." }, 500);
   }
-  if (!surgeries || surgeries.length === 0) {
-    return resp({
-      partner: cfg,
-      platform_metrics: platformMetrics,
-      surgeries: [],
-      generated_at: new Date().toISOString(),
-    });
-  }
-
-  const ids = surgeries.map((s: { id: string }) => s.id);
-
-  // ── 3. Complications + followups ─────────────────────────────────────────
-  const [{ data: complications }, { data: followups }] = await Promise.all([
-    sb.from("complications").select("surgery_id, name").in("surgery_id", ids),
-    sb.from("followups")
-      .select("surgery_id, type, completed_at, visual_acuity, avcc, pio, refraction, conduta")
-      .in("surgery_id", ids),
-  ]);
-
-  const complMap: Record<string, { name: string }[]> = {};
-  for (const c of complications ?? []) {
-    const cc = c as { surgery_id: string; name: string };
-    if (!complMap[cc.surgery_id]) complMap[cc.surgery_id] = [];
-    complMap[cc.surgery_id].push({ name: cc.name });
-  }
-
-  const followMap: Record<string, object[]> = {};
-  for (const f of followups ?? []) {
-    const ff = f as {
-      surgery_id: string; type: string; completed_at: string | null;
-      visual_acuity: string | null; avcc: string | null; pio: number | null;
-      refraction: string | null; conduta: string | null;
-    };
-    if (!followMap[ff.surgery_id]) followMap[ff.surgery_id] = [];
-    followMap[ff.surgery_id].push({
-      type: ff.type, completed_at: ff.completed_at,
-      visual_acuity: ff.visual_acuity, avcc: ff.avcc,
-      pio: ff.pio, refraction: ff.refraction, conduta: ff.conduta,
-    });
-  }
-
-  const enriched = surgeries.map((s: Record<string, unknown>) => {
-    const sid = s.id as string;
-    return { ...s, complications: complMap[sid] ?? [], followups: followMap[sid] ?? [] };
-  });
 
   return resp({
     partner: {
@@ -253,7 +212,7 @@ Deno.serve(async (req: Request) => {
       highlights: cfg.highlights,
     },
     platform_metrics: platformMetrics,
-    surgeries: enriched,
+    surgeries: surgeries ?? [],
     generated_at: new Date().toISOString(),
   });
 });

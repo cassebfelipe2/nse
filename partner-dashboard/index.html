@@ -220,6 +220,41 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 /* Dark mode — hd-mark recebe cor do texto */
 .dark .hd-mark { background: var(--accent); }
 
+/* ── PERIOD FILTER ──────────────────────────────────────────────────────── */
+.period-bar { display:flex; gap:5px; margin-bottom:12px; overflow-x:auto; padding-bottom:3px; }
+.period-btn { padding:5px 14px; border-radius:20px; border:1.5px solid var(--border); font-size:0.65rem; font-weight:700; cursor:pointer; background:var(--card); color:var(--muted); white-space:nowrap; flex-shrink:0; text-transform:uppercase; letter-spacing:0.4px; font-family:inherit; transition:all 0.14s; }
+.period-btn.active { background:var(--partner); color:#fff; border-color:var(--partner); }
+
+/* ── TREND ───────────────────────────────────────────────────────────────── */
+.trend-card { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:11px; }
+.trend-item { background:var(--card); border-radius:var(--r); border:1px solid var(--border); padding:11px 10px; text-align:center; }
+.trend-num { font-family:Georgia,serif; font-size:1.6rem; color:var(--text); line-height:1; }
+.trend-lbl { font-size:0.58rem; color:var(--muted); font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-top:3px; }
+.trend-chg { font-size:0.63rem; font-weight:700; margin-top:4px; }
+.up { color:#1A7A3A; } .dn { color:#B30000; } .eq { color:var(--muted); }
+
+/* ── LEADERBOARD ─────────────────────────────────────────────────────────── */
+.lb-table { width:100%; border-collapse:collapse; font-size:0.72rem; }
+.lb-table th { text-align:left; padding:6px 5px; font-size:0.59rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; border-bottom:2px solid var(--border); font-weight:700; white-space:nowrap; }
+.lb-table th:not(:first-child) { text-align:center; }
+.lb-table td { padding:8px 5px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.lb-table td:not(:first-child) { text-align:center; }
+.lb-table tr:last-child td { border-bottom:none; }
+.lb-name { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; max-width:160px; }
+.lb-rank { font-family:Georgia,serif; font-size:1rem; color:var(--partner); min-width:22px; display:inline-block; }
+
+/* ── ACTION BUTTONS ─────────────────────────────────────────────────────── */
+.action-btn { padding:6px 13px; border-radius:6px; border:1.5px solid var(--border); background:var(--card); color:var(--muted); font-size:0.64rem; font-weight:700; cursor:pointer; font-family:inherit; letter-spacing:0.4px; text-transform:uppercase; transition:all 0.14s; display:inline-flex; align-items:center; gap:5px; }
+.action-btn:hover { border-color:var(--text); color:var(--text); }
+.action-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+/* ── COMPLICATION PILL ──────────────────────────────────────────────────── */
+.compl-pill { display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:20px; background:#FFF2F2; border:1px solid #FFB8B8; font-size:0.67rem; color:#B30000; font-weight:600; margin:3px 3px 0 0; }
+
+/* ── TOAST ───────────────────────────────────────────────────────────────── */
+.toast-msg { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:var(--black); color:#fff; padding:10px 20px; border-radius:8px; font-size:0.78rem; z-index:9999; opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; }
+.toast-msg.show { opacity:1; }
+
 /* ── DESKTOP (≥ 900px) ──────────────────────────────────────────────────── */
 @media (min-width:900px){
   body { max-width:100%; margin:0; }
@@ -323,6 +358,10 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
         <svg id="theme-icon-moon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg id="theme-icon-sun" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
+      <button class="action-btn" id="refresh-btn" onclick="refreshData()" title="Recarregar dados">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Atualizar
+      </button>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
   </div>
@@ -345,6 +384,17 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
       <div class="kpi-card"><div class="kpi-num" id="pm-month">—</div><div class="kpi-lbl">Este mês</div></div>
     </div>
 
+    <!-- Period filter -->
+    <div class="period-bar" id="period-bar">
+      <button class="period-btn" onclick="setPeriod('30d',this)">30 dias</button>
+      <button class="period-btn" onclick="setPeriod('90d',this)">90 dias</button>
+      <button class="period-btn" onclick="setPeriod('6m',this)">6 meses</button>
+      <button class="period-btn" onclick="setPeriod('1a',this)">1 ano</button>
+      <button class="period-btn active" onclick="setPeriod('all',this)">Tudo</button>
+    </div>
+    <!-- Trend vs período anterior -->
+    <div id="partner-trend"></div>
+
     <!-- Partner spotlight + monthly chart (side-by-side on desktop) -->
     <div class="home-cols">
       <div id="partner-spotlight"></div>
@@ -362,9 +412,15 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
 
   <!-- PAGE: CIRURGIAS -->
   <div class="page" id="page-surgeries">
-    <div style="margin:12px 0 12px">
-      <div class="sec-title">Cirurgias</div>
-      <div class="sec-sub" id="surg-sub">0 registros</div>
+    <div style="margin:12px 0 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+      <div>
+        <div class="sec-title">Cirurgias</div>
+        <div class="sec-sub" id="surg-sub">0 registros</div>
+      </div>
+      <button class="action-btn" onclick="exportCSV()" style="flex-shrink:0;margin-top:4px">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar CSV
+      </button>
     </div>
     <div class="search-wrap">
       <svg class="search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -428,11 +484,14 @@ body { font-family: -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-seri
   </div>
 </div>
 
+<div class="toast-msg" id="toast"></div>
+
 <script>
 var EDGE = 'https://lvvlapgsrljvjenneobf.supabase.co/functions/v1/partner-data';
 var partner = null, pm = null, surgeries = [];
 var surgFilter = 'all', prevPage = 'home', curPage = 'home';
 var analyticsReady = false;
+var datePeriod = 'all';
 
 var MON  = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 var MONL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
@@ -459,6 +518,168 @@ function initTheme() {
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', '#140D08');
   }
+}
+
+/* ── TOAST ────────────────────────────────────────────────────────── */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2600);
+}
+
+/* ── PERIOD FILTER ────────────────────────────────────────────────── */
+function getFiltered() {
+  if (datePeriod === 'all') return surgeries;
+  var cutoff = new Date();
+  if (datePeriod === '30d') cutoff.setDate(cutoff.getDate() - 30);
+  else if (datePeriod === '90d') cutoff.setDate(cutoff.getDate() - 90);
+  else if (datePeriod === '6m')  cutoff.setMonth(cutoff.getMonth() - 6);
+  else if (datePeriod === '1a')  cutoff.setFullYear(cutoff.getFullYear() - 1);
+  var cut = cutoff.toISOString().split('T')[0];
+  return surgeries.filter(function(s) { return s.surgery_date && s.surgery_date >= cut; });
+}
+function getPrevious() {
+  if (datePeriod === 'all') return null;
+  var end = new Date(), start = new Date(), prevEnd = new Date();
+  if (datePeriod === '30d') { start.setDate(end.getDate() - 60); prevEnd.setDate(end.getDate() - 30); }
+  else if (datePeriod === '90d') { start.setDate(end.getDate() - 180); prevEnd.setDate(end.getDate() - 90); }
+  else if (datePeriod === '6m') { start.setMonth(end.getMonth() - 12); prevEnd.setMonth(end.getMonth() - 6); }
+  else if (datePeriod === '1a') { start.setFullYear(end.getFullYear() - 2); prevEnd.setFullYear(end.getFullYear() - 1); }
+  var s = start.toISOString().split('T')[0], e = prevEnd.toISOString().split('T')[0];
+  return surgeries.filter(function(x) { return x.surgery_date && x.surgery_date >= s && x.surgery_date < e; });
+}
+function setPeriod(p, el) {
+  datePeriod = p;
+  document.querySelectorAll('.period-btn').forEach(function(b) { b.classList.remove('active'); });
+  el.classList.add('active');
+  analyticsReady = false;
+  renderHome();
+  if (document.getElementById('page-surgeries').classList.contains('active')) renderSurgeries();
+  if (document.getElementById('page-analytics').classList.contains('active')) renderAnalytics();
+}
+
+/* ── TREND ────────────────────────────────────────────────────────── */
+function renderTrend() {
+  var el = document.getElementById('partner-trend');
+  if (!el) return;
+  var curr = getFiltered(), prev = getPrevious();
+  if (!prev || datePeriod === 'all') { el.innerHTML = ''; return; }
+  var currN = curr.length, prevN = prev.length;
+  var currC = curr.filter(function(s) { return s.has_complication; }).length;
+  var prevC = prev.filter(function(s) { return s.has_complication; }).length;
+  var currD30 = curr.filter(function(s) { return hasFU(s,'D30'); }).length;
+  var prevD30 = prev.filter(function(s) { return hasFU(s,'D30'); }).length;
+  el.innerHTML = '<div class="trend-card">' +
+    trendItem('Cirurgias', currN, prevN) +
+    trendItem('Intercorrências', currC, prevC) +
+    trendItem('Retornos D30', currD30, prevD30) +
+    '</div>';
+}
+function trendItem(lbl, curr, prev) {
+  var pct = prev === 0 ? (curr > 0 ? 100 : 0) : Math.round((curr - prev) / prev * 100);
+  var cls = pct > 0 ? 'up' : (pct < 0 ? 'dn' : 'eq');
+  var arrow = pct > 0 ? '↑' : (pct < 0 ? '↓' : '→');
+  return '<div class="trend-item">' +
+    '<div class="trend-num">' + curr + '</div>' +
+    '<div class="trend-lbl">' + esc(lbl) + '</div>' +
+    '<div class="trend-chg ' + cls + '">' + arrow + ' ' + (pct >= 0 ? '+' : '') + pct + '% vs anterior</div>' +
+    '</div>';
+}
+
+/* ── LEADERBOARD ──────────────────────────────────────────────────── */
+function renderLeaderboard(data) {
+  var surgMap = {};
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i];
+    var key = s.surgeon_name || 'Não identificado';
+    if (!surgMap[key]) surgMap[key] = { count:0, compl:0, d30:0, conf:0, confN:0 };
+    surgMap[key].count++;
+    if (s.has_complication) surgMap[key].compl++;
+    if (hasFU(s,'D30')) surgMap[key].d30++;
+    if (s.mental_confidence) { surgMap[key].conf += parseFloat(s.mental_confidence); surgMap[key].confN++; }
+  }
+  var arr = [];
+  for (var k in surgMap) arr.push({ name:k, v:surgMap[k] });
+  arr.sort(function(a,b) { return b.v.count - a.v.count; });
+  var html = '<div class="card partner-card"><div class="sec-hd partner">Desempenho por residente</div>';
+  if (!arr.length) return html + '<div class="empty"><div class="empty-txt">Nenhum dado</div></div></div>';
+  html += '<div style="overflow-x:auto"><table class="lb-table"><thead><tr>' +
+    '<th>#</th><th>Residente</th><th>Cx</th><th>Compl.</th><th>D30</th><th>Conf.</th>' +
+    '</tr></thead><tbody>';
+  for (var i = 0; i < Math.min(arr.length, 12); i++) {
+    var r = arr[i].v, nm = arr[i].name;
+    var complPct = r.count > 0 ? Math.round(r.compl/r.count*100) : 0;
+    var d30Pct   = r.count > 0 ? Math.round(r.d30/r.count*100)   : 0;
+    var avgConf  = r.confN > 0 ? (r.conf/r.confN).toFixed(1) : '—';
+    var complColor = complPct > 10 ? '#B30000' : 'var(--muted)';
+    var d30Color   = d30Pct  > 50 ? '#1A7A3A' : 'var(--muted)';
+    html += '<tr>' +
+      '<td><span class="lb-rank">' + (i+1) + '</span></td>' +
+      '<td><span class="lb-name" title="' + esc(nm) + '">' + esc(nm) + '</span></td>' +
+      '<td style="font-weight:700;color:var(--partner)">' + r.count + '</td>' +
+      '<td style="color:' + complColor + '">' + r.compl + ' <span style="font-size:0.6rem">(' + complPct + '%)</span></td>' +
+      '<td style="color:' + d30Color + '">' + d30Pct + '%</td>' +
+      '<td>' + avgConf + '</td>' +
+      '</tr>';
+  }
+  html += '</tbody></table></div></div>';
+  return html;
+}
+
+/* ── EXPORT CSV ───────────────────────────────────────────────────── */
+function exportCSV() {
+  var data = getFiltered();
+  if (!data.length) { showToast('Nenhum dado para exportar'); return; }
+  var headers = ['Data','Técnica','Olho','Aparelho','Grau Cat.','LIO','Poder (D)',
+    'Tipo LIO','Material LIO','Cirurgião','Supervisor','Anestesia','Intercorrência','D1','D7','D30'];
+  var rows = [headers];
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i];
+    rows.push([
+      s.surgery_date||'', s.technique||'', s.eye||'', s.equipment||'',
+      s.cat_grade||'', s.lio_model||'', s.lio_power||'', s.lio_type||'', s.lio_material||'',
+      s.surgeon_name||'', s.supervisor||'', s.anesthesia||'',
+      s.has_complication ? 'Sim' : 'Não',
+      hasFU(s,'D1') ? 'Sim' : 'Não',
+      hasFU(s,'D7') ? 'Sim' : 'Não',
+      hasFU(s,'D30') ? 'Sim' : 'Não'
+    ]);
+  }
+  var csv = rows.map(function(r) {
+    return r.map(function(c) { return '"' + String(c||'').replace(/"/g,'""') + '"'; }).join(',');
+  }).join('\n');
+  var blob = new Blob(['﻿'+csv], { type:'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'phacolog_' + (partner.shortName||'partner') + '_' + new Date().toISOString().split('T')[0] + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✓ CSV exportado (' + data.length + ' cirurgias)');
+}
+
+/* ── REFRESH ──────────────────────────────────────────────────────── */
+function refreshData() {
+  var tok = sessionStorage.getItem('pd_tok');
+  if (!tok) return;
+  var btn = document.getElementById('refresh-btn');
+  if (btn) btn.disabled = true;
+  fetch(EDGE, { headers: { 'Authorization': 'Bearer ' + tok } })
+    .then(function(r) { return r.json().then(function(d) { return { ok:r.ok, d:d }; }); })
+    .then(function(r) {
+      if (!r.ok) { showToast('Erro ao atualizar'); return; }
+      partner   = r.d.partner;
+      pm        = r.d.platform_metrics;
+      surgeries = r.d.surgeries || [];
+      sessionStorage.setItem('pd_par', JSON.stringify(partner));
+      sessionStorage.setItem('pd_pm',  JSON.stringify(pm));
+      sessionStorage.setItem('pd_sur', JSON.stringify(surgeries));
+      analyticsReady = false;
+      renderAll();
+      showToast('✓ Dados atualizados');
+    })
+    .catch(function() { showToast('Erro de conexão'); })
+    .finally(function() { if (btn) btn.disabled = false; });
 }
 
 /* ── INIT ─────────────────────────────────────────────────────────── */
@@ -563,29 +784,34 @@ function renderHome() {
   }
   renderBarChart('chart-monthly', months);
 
-  // Partner spotlight
+  // Trend vs previous period
+  renderTrend();
+
+  // Partner spotlight (uses filtered data)
   if (partner.type === 'equipment')   document.getElementById('partner-spotlight').innerHTML = spotlightJJ();
   else if (partner.type === 'pharma') document.getElementById('partner-spotlight').innerHTML = spotlightOfta();
   else                                document.getElementById('partner-spotlight').innerHTML = spotlightGeneric();
 
-  // Recent list
+  // Recent list (filtered)
+  var fdata = getFiltered();
   document.getElementById('recent-hd').textContent = 'Últimas cirurgias · ' + (partner.filterLabel || partner.name);
   var html = '';
-  for (var i = 0; i < Math.min(surgeries.length, 5); i++) html += surgItemHtml(surgeries[i]);
+  for (var i = 0; i < Math.min(fdata.length, 5); i++) html += surgItemHtml(fdata[i]);
   document.getElementById('list-recent').innerHTML =
-    html || '<div class="empty"><div class="empty-txt">Nenhuma cirurgia registrada</div></div>';
+    html || '<div class="empty"><div class="empty-txt">Nenhuma cirurgia no período selecionado</div></div>';
 }
 
 /* ── SPOTLIGHT PER PARTNER TYPE ───────────────────────────────────── */
 function spotlightJJ() {
   var hi = partner.highlights || {};
   var lioPrefix = hi.lio_prefix || '';
-  var n = surgeries.length;
+  var data = getFiltered();
+  var n = data.length;
   var mkt = pm.total_surgeries > 0 ? Math.round(n / pm.total_surgeries * 100) : 0;
   var nLio = 0;
   var equip = {};
-  for (var i = 0; i < surgeries.length; i++) {
-    var s = surgeries[i];
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i];
     var eq = s.equipment || 'Outro';
     equip[eq] = (equip[eq] || 0) + 1;
     if (lioPrefix && s.lio_model && s.lio_model.indexOf(lioPrefix) === 0) nLio++;
@@ -611,37 +837,48 @@ function spotlightJJ() {
 }
 
 function spotlightOfta() {
-  var n = surgeries.length;
+  var data = getFiltered();
+  var n = data.length;
   var fuC = {D1:0,D7:0,D30:0}, fuT = {D1:0,D7:0,D30:0};
-  for (var i = 0; i < surgeries.length; i++) {
-    var fups = surgeries[i].followups || [];
+  for (var i = 0; i < data.length; i++) {
+    var fups = data[i].followups || [];
     for (var j = 0; j < fups.length; j++) {
       var f = fups[j], tp = f.type;
-      if (fuT[tp] !== undefined) { fuT[tp]++; if (f.conduta && f.conduta.trim()) fuC[tp]++; }
+      if (tp === 'D1' || tp === 'D7' || tp === 'D30') {
+        fuT[tp]++;
+        if (f.conduta && f.conduta.trim()) fuC[tp]++;
+      }
     }
   }
+  var totalFU = fuT.D1 + fuT.D7 + fuT.D30;
   var html = '<div class="hbox partner-bg">' +
     '<div class="hb-title">' + esc(partner.name) + '</div>' +
-    '<div class="hb-sub">Condutas pós-operatórias registradas na plataforma</div>' +
+    '<div class="hb-sub">Retornos e condutas pós-operatórias registradas</div>' +
     '<div class="hb-kpis">' +
       '<div class="hb-kpi"><div class="hb-num">' + n + '</div><div class="hb-lbl">Cirurgias</div></div>' +
-      '<div class="hb-kpi"><div class="hb-num">' + fuC.D1 + '</div><div class="hb-lbl">Condutas D1</div></div>' +
-      '<div class="hb-kpi"><div class="hb-num">' + fuC.D30 + '</div><div class="hb-lbl">Condutas D30</div></div>' +
+      '<div class="hb-kpi"><div class="hb-num">' + fuT.D1 + '</div><div class="hb-lbl">Retornos D1</div></div>' +
+      '<div class="hb-kpi"><div class="hb-num">' + fuT.D30 + '</div><div class="hb-lbl">Retornos D30</div></div>' +
     '</div></div>';
   html += '<div class="card partner-card"><div class="sec-hd partner">Taxa de retorno pós-operatório</div>';
-  var types = ['D1','D7','D30'];
-  for (var ti = 0; ti < types.length; ti++) {
-    var tp = types[ti], rate = n > 0 ? Math.round(fuT[tp]/n*100) : 0;
-    html += '<div class="bar-row"><div class="bar-lbl">' + tp + '</div>' +
-      '<div class="bar-track"><div class="bar-fill p" style="width:' + rate + '%"></div></div>' +
-      '<div class="bar-val">' + fuT[tp] + '</div><div class="bar-pct">' + rate + '%</div></div>';
+  if (n === 0) {
+    html += '<div class="empty"><div class="empty-txt">Nenhuma cirurgia no período</div></div>';
+  } else if (totalFU === 0) {
+    html += '<div style="font-size:0.78rem;color:var(--muted);font-style:italic;padding:4px 0">Nenhum retorno registrado ainda. Os dados aparecem quando os residentes completam o pós-operatório no app.</div>';
+  } else {
+    var types = ['D1','D7','D30'];
+    for (var ti = 0; ti < types.length; ti++) {
+      var tp2 = types[ti], rate = n > 0 ? Math.round(fuT[tp2]/n*100) : 0;
+      html += '<div class="bar-row"><div class="bar-lbl">' + tp2 + '</div>' +
+        '<div class="bar-track"><div class="bar-fill p" style="width:' + rate + '%"></div></div>' +
+        '<div class="bar-val">' + fuT[tp2] + '</div><div class="bar-pct">' + rate + '%</div></div>';
+    }
   }
   html += '</div>';
   return html;
 }
 
 function spotlightGeneric() {
-  var n = surgeries.length;
+  var data = getFiltered(), n = data.length;
   return '<div class="card partner-card"><div class="sec-hd partner">' + esc(partner.name) + '</div>' +
     '<div class="kpi2"><div class="kpi-card hi-p"><div class="kpi-num">' + n + '</div><div class="kpi-lbl">Cirurgias</div></div>' +
     '<div class="kpi-card"><div class="kpi-num">' + pm.total_surgeries + '</div><div class="kpi-lbl">Total plataforma</div></div></div></div>';
@@ -656,16 +893,18 @@ function setSurgFilter(f, el) {
 }
 function renderSurgeries() {
   var q = (document.getElementById('surg-search').value || '').toLowerCase();
+  var base = getFiltered();
   var filt = [];
-  for (var i = 0; i < surgeries.length; i++) {
-    var s = surgeries[i];
+  for (var i = 0; i < base.length; i++) {
+    var s = base[i];
     var mQ = !q || (s.surgeon_name||'').toLowerCase().indexOf(q) >= 0 || (s.supervisor||'').toLowerCase().indexOf(q) >= 0;
     var hasC = s.complications && s.complications.length > 0;
     var hasD30 = hasFU(s,'D30');
     var mF = surgFilter === 'all' || (surgFilter === 'compl' && hasC) || (surgFilter === 'd30' && hasD30) || (surgFilter === 'no-d30' && !hasD30);
     if (mQ && mF) filt.push(s);
   }
-  document.getElementById('surg-sub').textContent = filt.length + ' de ' + surgeries.length + ' · ' + (partner.filterLabel || '');
+  var periodLabel = datePeriod === 'all' ? '' : ' · ' + document.querySelector('.period-btn.active').textContent;
+  document.getElementById('surg-sub').textContent = filt.length + ' de ' + base.length + periodLabel + ' · ' + (partner.filterLabel || '');
   var html = '';
   for (var i = 0; i < filt.length; i++) html += surgItemHtml(filt[i]);
   document.getElementById('list-surgeries').innerHTML =
@@ -691,21 +930,23 @@ function surgItemHtml(s) {
 /* ── ANALYTICS ────────────────────────────────────────────────────── */
 function renderAnalytics() {
   if (analyticsReady) return; analyticsReady = true;
-  renderBarChart('chart-tech-all',  buildMap(surgeries,'technique'), 8);
-  renderBarChart('chart-equip-all', buildMap(surgeries,'equipment'), 10);
-  renderBarChart('chart-lio-all',   buildMap(surgeries,'lio_model'), 10);
-  if (partner.type === 'equipment')   renderAnalyticsJJ();
-  else if (partner.type === 'pharma') renderAnalyticsOfta();
+  var data = getFiltered();
+  renderBarChart('chart-tech-all',  buildMap(data,'technique'), 8);
+  renderBarChart('chart-equip-all', buildMap(data,'equipment'), 10);
+  renderBarChart('chart-lio-all',   buildMap(data,'lio_model'), 10);
+  if (partner.type === 'equipment')   renderAnalyticsJJ(data);
+  else if (partner.type === 'pharma') renderAnalyticsOfta(data);
   else document.getElementById('partner-analytics').innerHTML =
-    '<div class="card partner-card"><div class="sec-hd partner">Técnicas</div>' + renderBarHtml(buildMap(surgeries,'technique'), true) + '</div>';
+    '<div class="card partner-card"><div class="sec-hd partner">Técnicas</div>' + renderBarHtml(buildMap(data,'technique'), true) + '</div>' +
+    renderLeaderboard(data);
 }
 
-function renderAnalyticsJJ() {
+function renderAnalyticsJJ(data) {
   var hi = partner.highlights || {}, lioPrefix = hi.lio_prefix || '';
-  var n = surgeries.length, mkt = pm.total_surgeries > 0 ? Math.round(n/pm.total_surgeries*100) : 0;
+  var n = data.length, mkt = pm.total_surgeries > 0 ? Math.round(n/pm.total_surgeries*100) : 0;
   var lioMap = {}, eqCompl = {}, eqTotal = {}, eqConf = {}, eqConfN = {};
-  for (var i = 0; i < surgeries.length; i++) {
-    var s = surgeries[i], eq = s.equipment || 'Outro';
+  for (var i = 0; i < data.length; i++) {
+    var s = data[i], eq = s.equipment || 'Outro';
     eqTotal[eq] = (eqTotal[eq] || 0) + 1;
     if (s.complications && s.complications.length > 0) eqCompl[eq] = (eqCompl[eq]||0)+1;
     if (s.mental_confidence) { eqConf[eq] = (eqConf[eq]||0)+parseFloat(s.mental_confidence); eqConfN[eq] = (eqConfN[eq]||0)+1; }
@@ -738,14 +979,15 @@ function renderAnalyticsJJ() {
       '</div></div>';
   }
   html += '</div>';
+  html += renderLeaderboard(data);
   document.getElementById('partner-analytics').innerHTML = html;
 }
 
-function renderAnalyticsOfta() {
+function renderAnalyticsOfta(data) {
   var condutas = {D1:{},D7:{},D30:{}}, fuCount = {D1:0,D7:0,D30:0}, fuCondC = {D1:0,D7:0,D30:0};
-  var n = surgeries.length;
-  for (var i = 0; i < surgeries.length; i++) {
-    var fups = surgeries[i].followups || [];
+  var n = data.length;
+  for (var i = 0; i < data.length; i++) {
+    var fups = data[i].followups || [];
     for (var j = 0; j < fups.length; j++) {
       var f = fups[j], tp = f.type;
       if (!fuCount[tp] && fuCount[tp] !== 0) continue;
@@ -778,8 +1020,8 @@ function renderAnalyticsOfta() {
   }
   // D30 visual outcomes
   var avList = [], pioList = [];
-  for (var i = 0; i < surgeries.length; i++) {
-    var fu30 = getFU(surgeries[i],'D30');
+  for (var i = 0; i < data.length; i++) {
+    var fu30 = getFU(data[i],'D30');
     if (fu30) { if (fu30.visual_acuity) avList.push(fu30.visual_acuity); if (fu30.pio) pioList.push(parseFloat(fu30.pio)); }
   }
   html += '<div class="card partner-card"><div class="sec-hd partner">Resultados visuais D30</div>';
@@ -792,6 +1034,7 @@ function renderAnalyticsOfta() {
     html += renderBarHtml(buildCountArr(avList), true);
   }
   html += '</div>';
+  html += renderLeaderboard(data);
   document.getElementById('partner-analytics').innerHTML = html;
 }
 
