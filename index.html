@@ -634,6 +634,38 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:899px){#sb-spacer,#sb-extras{display:none}}
 
+/* ── PAYWALL ── */
+.paywall-overlay{position:fixed;inset:0;z-index:820;background:rgba(22,12,5,0.72);display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.paywall-overlay.hidden{display:none}
+.paywall-card{background:var(--card);border-radius:28px 28px 0 0;padding:0 0 env(safe-area-inset-bottom,24px);width:100%;max-width:480px;box-shadow:0 -8px 48px rgba(22,12,5,0.28);overflow:hidden}
+.paywall-header{background:linear-gradient(135deg,#221611 0%,#3A1E0D 100%);padding:28px 24px 24px;text-align:center;position:relative}
+.paywall-lock{width:44px;height:44px;background:rgba(200,90,40,0.18);border:1.5px solid rgba(200,90,40,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.paywall-title{font-family:var(--fontDisplay);font-size:1.5rem;font-weight:700;color:#F6F2EC;letter-spacing:-0.02em;margin-bottom:4px}
+.paywall-title em{color:#C85A28;font-style:italic}
+.paywall-subtitle{font-size:0.78rem;color:rgba(246,242,236,0.55);font-family:var(--fontMono);letter-spacing:0.05em;text-transform:uppercase}
+.paywall-body{padding:22px 24px 0}
+.paywall-features{list-style:none;padding:0;margin:0 0 22px;display:grid;grid-template-columns:1fr 1fr;gap:8px 12px}
+.paywall-features li{font-size:0.82rem;color:var(--dark);display:flex;align-items:center;gap:7px}
+.paywall-features li svg{flex-shrink:0;color:var(--ok)}
+.paywall-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.paywall-plan{border:2px solid var(--border);border-radius:14px;padding:14px 12px;text-align:center;cursor:pointer;position:relative;transition:border-color 0.15s,background 0.15s}
+.paywall-plan.selected{border-color:var(--accent);background:rgba(200,90,40,0.05)}
+.paywall-plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-family:var(--fontMono);font-size:0.58rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.paywall-plan-period{font-family:var(--fontMono);font-size:0.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+.paywall-plan-price{font-size:1.35rem;font-weight:800;color:var(--black);letter-spacing:-0.03em;line-height:1}
+.paywall-plan-price span{font-size:0.7rem;font-weight:400;color:var(--muted)}
+.paywall-plan-note{font-size:0.68rem;color:var(--muted);margin-top:3px}
+.paywall-cta{width:100%;padding:16px;background:var(--accent);color:#fff;border:none;border-radius:14px;font-family:var(--fontUI);font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:-0.01em;margin-bottom:12px;transition:background 0.15s}
+.paywall-cta:active{background:#A8431A}
+.paywall-dismiss{display:block;text-align:center;font-size:0.76rem;color:var(--muted);cursor:pointer;padding-bottom:20px}
+.paywall-dismiss:hover{color:var(--accent)}
+.pro-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(90deg,#B84D1E,#E07040);color:#fff;font-family:var(--fontMono);font-size:0.52rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:20px;vertical-align:middle;margin-left:6px}
+.free-bar-wrap{background:var(--code-bg,#F2EDE6);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.free-bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.free-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.4s}
+.free-bar-label{font-family:var(--fontMono);font-size:0.62rem;color:var(--muted);white-space:nowrap}
+@media(min-width:900px){.paywall-card{border-radius:20px;max-width:440px;margin-bottom:40px}}
+
 /* ── CALCULADORA LIO ── */
 .lio-overlay{position:fixed;inset:0;z-index:700;background:rgba(34,22,17,0.55);display:flex;align-items:flex-end;justify-content:center}
 .lio-overlay.hidden{display:none}
@@ -747,7 +779,7 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
       <circle cx="24" cy="24" r="2.4" fill="#C85A28"/>
     </svg>
     <div>
-      <div class="header-wordmark"><span>Phaco</span><span class="italic">log</span></div>
+      <div class="header-wordmark"><span>Phaco</span><span class="italic">log</span><span class="pro-badge" id="pro-badge" style="display:none">PRO</span></div>
       <div class="header-sub" id="header-nome-sub">Logbook</div>
     </div>
   </div>
@@ -768,6 +800,15 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
     <div class="home-greeting" id="home-saudacao">Bom dia, <em id="home-nome-italic">Dr.</em></div>
     <div class="home-summary" id="home-summary">&nbsp;</div>
     <div id="sync-status" style="font-size:0.68rem;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:4px"></div>
+  </div>
+  <!-- Barra de uso gratuito (oculta para Pro) -->
+  <div style="padding:16px 16px 0">
+    <div class="free-bar-wrap" id="free-usage-bar" style="display:none">
+      <svg width="16" height="16" fill="none" stroke="var(--muted)" stroke-width="2" viewBox="0 0 24 24" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <div class="free-bar-track"><div class="free-bar-fill" style="width:0%"></div></div>
+      <span class="free-bar-label">0/30 cirurgias</span>
+      <button onclick="showPaywall('limite')" style="flex-shrink:0;background:var(--accent);color:#fff;border:none;border-radius:20px;font-size:0.65rem;font-weight:700;font-family:var(--fontMono);padding:4px 10px;cursor:pointer;letter-spacing:0.04em">PRO</button>
+    </div>
   </div>
   <!-- Panorama -->
   <div style="padding:20px 16px 0">
@@ -1510,6 +1551,13 @@ var SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 var _sb=null;
 var currentUser=null;
 var _recoveryMode=false;
+var _isPro=false;
+var _paywallPlan='annual';
+var FREE_SURGERY_LIMIT=30;
+// Substitua pelos Payment Links reais criados no Stripe Dashboard
+// (adicione ?client_reference_id= no final — o JS completa com o user ID)
+var STRIPE_LINK_MONTHLY='https://buy.stripe.com/CONFIGURAR_MENSAL';
+var STRIPE_LINK_ANNUAL='https://buy.stripe.com/CONFIGURAR_ANUAL';
 
 let db=[], filaDB=[], currentPage='home', prevPage=null, selectedId=null, posOpContext=null, activeFilter='all', indicaContext=null;
 
@@ -1605,7 +1653,66 @@ function _applySession(user){
   var didMigrate=localStorage.getItem('sb_migration_done');
   if(!didMigrate){migrateLocalToSupabase();}else{syncDown();}
   renderHome();updateFilaBadge();
+  checkSubscription(incomingId);
   setTimeout(checkPushPrompt,1200);
+}
+
+function checkSubscription(userId){
+  if(!_sb||!userId){_isPro=false;updateProUI();return;}
+  _sb.from('subscriptions').select('status,current_period_end').eq('user_id',userId).maybeSingle().then(function(res){
+    var sub=res.data;
+    var now=new Date().toISOString();
+    _isPro=!!(sub&&sub.status==='active'&&(!sub.current_period_end||sub.current_period_end>now));
+    updateProUI();
+  });
+}
+
+function updateProUI(){
+  var badge=document.getElementById('pro-badge');
+  if(badge)badge.style.display=_isPro?'inline-flex':'none';
+  var freeBar=document.getElementById('free-usage-bar');
+  if(freeBar)freeBar.style.display=_isPro?'none':'flex';
+  if(!_isPro&&freeBar){
+    var used=db.length;
+    var pct=Math.min(100,Math.round(used/FREE_SURGERY_LIMIT*100));
+    var fill=freeBar.querySelector('.free-bar-fill');
+    var lbl=freeBar.querySelector('.free-bar-label');
+    if(fill)fill.style.width=pct+'%';
+    if(lbl)lbl.textContent=used+'/'+FREE_SURGERY_LIMIT+' cirurgias';
+    if(fill){fill.style.background=used>=FREE_SURGERY_LIMIT?'var(--danger)':used>=FREE_SURGERY_LIMIT*0.8?'var(--warn)':'var(--accent)';}
+  }
+}
+
+function showPaywall(ctx){
+  var labels={
+    limite:'Você atingiu o limite de '+FREE_SURGERY_LIMIT+' cirurgias do plano gratuito',
+    analise:'Analytics disponível apenas no plano Pro',
+    lio:'Calculadora de LIO disponível apenas no plano Pro',
+    metas:'Metas de residência disponíveis apenas no plano Pro',
+    mm:'Apresentações M&M disponíveis apenas no plano Pro',
+    export:'Exportação disponível apenas no plano Pro',
+    push:'Notificações disponíveis apenas no plano Pro'
+  };
+  var el=document.getElementById('paywall-ctx-label');
+  if(el)el.textContent=(ctx&&labels[ctx])||'Recurso exclusivo para assinantes Pro';
+  document.getElementById('paywall-overlay').classList.remove('hidden');
+}
+
+function closePaywall(){
+  document.getElementById('paywall-overlay').classList.add('hidden');
+}
+
+function selectPaywallPlan(plan){
+  _paywallPlan=plan;
+  document.getElementById('pw-plan-monthly').classList.toggle('selected',plan==='monthly');
+  document.getElementById('pw-plan-annual').classList.toggle('selected',plan==='annual');
+}
+
+function openCheckout(){
+  if(!currentUser){showToast('Faça login primeiro.');return;}
+  var baseLink=_paywallPlan==='annual'?STRIPE_LINK_ANNUAL:STRIPE_LINK_MONTHLY;
+  var url=baseLink+(baseLink.indexOf('?')>=0?'&':'?')+'client_reference_id='+encodeURIComponent(currentUser.id)+'&prefilled_email='+encodeURIComponent(currentUser.email||'');
+  window.open(url,'_blank','noopener');
 }
 
 function initSupabase(){
@@ -2021,6 +2128,7 @@ function urlBase64ToUint8Array(base64String){
   return outputArray;
 }
 function registrarPush(){
+  if(!_isPro){showPaywall('push');return;}
   if(!('serviceWorker' in navigator)||!('PushManager' in window)){
     showToast('Seu navegador não suporta notificações push.');return;
   }
@@ -2348,7 +2456,7 @@ function goPage(p){
   prevPage=currentPage;currentPage=p;
   if(p==='home')renderHome();
   if(p==='pacientes')renderPatients();
-  if(p==='analise')renderAnalytics();
+  if(p==='analise'){if(!_isPro){showPaywall('analise');return;}renderAnalytics();}
   if(p==='fila')renderFila();
   if(p==='nova')initIntercSteps();
   if(p==='atrasos')renderAtrasos();
@@ -3461,6 +3569,7 @@ function salvarPosOp(){
 
 // ── NOVA CIRURGIA ────────────────────────────────────────────────
 function salvarCirurgia(){
+  if(!_isPro&&db.length>=FREE_SURGERY_LIMIT){showPaywall('limite');return;}
   const nome=document.getElementById('f-nome').value.trim();
   if(!nome){alert('Preencha o nome do paciente.');return;}
   const interc=getIntercValues();
@@ -4824,6 +4933,46 @@ document.addEventListener('DOMContentLoaded',function(){
     Excluir tudo
   </button>
 </div>
+<!-- ══ PAYWALL ══ -->
+<div class="paywall-overlay hidden" id="paywall-overlay">
+  <div class="paywall-card">
+    <div class="paywall-header">
+      <div class="paywall-lock">
+        <svg width="20" height="20" fill="none" stroke="#C85A28" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="paywall-title">Phaco<em>log</em> Pro</div>
+      <div class="paywall-subtitle" id="paywall-ctx-label">Recurso exclusivo para assinantes</div>
+    </div>
+    <div class="paywall-body">
+      <ul class="paywall-features">
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Cirurgias ilimitadas</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Analytics completo</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Exportar CSV e PDF</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Calculadora de LIO</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Metas de residência</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Apresentações M&amp;M</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Backup na nuvem</li>
+        <li><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Notificações push</li>
+      </ul>
+      <div class="paywall-plans">
+        <div class="paywall-plan" id="pw-plan-monthly" onclick="selectPaywallPlan('monthly')">
+          <div class="paywall-plan-period">Mensal</div>
+          <div class="paywall-plan-price">R$&nbsp;19<span>,90/mês</span></div>
+          <div class="paywall-plan-note">&nbsp;</div>
+        </div>
+        <div class="paywall-plan selected" id="pw-plan-annual" onclick="selectPaywallPlan('annual')">
+          <div class="paywall-plan-badge">Melhor valor</div>
+          <div class="paywall-plan-period">Anual</div>
+          <div class="paywall-plan-price">R$&nbsp;159<span>/ano</span></div>
+          <div class="paywall-plan-note">R$ 13,25/mês</div>
+        </div>
+      </div>
+      <button class="paywall-cta" onclick="openCheckout()">Assinar agora &rarr;</button>
+      <span class="paywall-dismiss" onclick="closePaywall()">Continuar no plano gratuito</span>
+    </div>
+  </div>
+</div>
+
 <!-- FAB PANEL — DESKTOP (grade de tiles) -->
 <div id="fab-panel-desktop">
   <div class="fpd-header">
@@ -5000,6 +5149,7 @@ function mentalChartSVGExport(data){
 }
 
 function exportarAnalise(){
+  if(!_isPro){showPaywall('export');return;}
   if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
 
   // Coleta os mesmos dados do renderAnalytics
@@ -5152,6 +5302,7 @@ ${mConf.length>0?`<h2>Avaliação Mental</h2>
 // CALCULADORA DE LIO (SRK/II)
 // ══════════════════════════════════════════════════════════════════
 function openLIOCalc(){
+  if(!_isPro){showPaywall('lio');return;}
   document.getElementById('lio-overlay').classList.remove('hidden');
   document.getElementById('lio-result').style.display='none';
   document.getElementById('lio-error').textContent='';
@@ -5219,6 +5370,7 @@ function saveGoalsLS(arr){
   localStorage.setItem('cataracta_metas_v1',JSON.stringify(arr));
 }
 function openGoalModal(){
+  if(!_isPro){showPaywall('metas');return;}
   document.getElementById('goal-overlay').classList.remove('hidden');
   document.getElementById('goal-label').value='';
   document.getElementById('goal-tipo').value='Todas';
@@ -5255,6 +5407,7 @@ function deleteGoal(id){
 // APRESENTAÇÃO DE CASO M&M
 // ══════════════════════════════════════════════════════════════════
 function gerarMM(id){
+  if(!_isPro){showPaywall('mm');return;}
   var p=db.find(function(x){return x.id===id;});
   if(!p)return;
   var initials=p.nome?p.nome.split(' ').filter(function(w){return w.length>1;}).map(function(w){return w[0]+'.';}).join(''):'Paciente';
@@ -5621,6 +5774,7 @@ function initDiary(){
 }
 
 function exportarExcel(){
+  if(!_isPro){showPaywall('export');return;}
   if(db.length===0){alert('Nenhuma cirurgia registrada para exportar.');return;}
   // Gera CSV com BOM para Excel abrir corretamente com acentos
   const bom='\uFEFF';
