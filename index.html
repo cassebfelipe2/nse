@@ -617,11 +617,66 @@ body{font-family:var(--fontUI);background:var(--bg);color:var(--text);min-height
   /* Info grid: 3 columns */
   .info-grid{grid-template-columns:repeat(3,1fr)}
 
-  /* Modals — centered on desktop instead of bottom-sheet */
+  /* ── Modals: desktop dialog style (não bottom-sheet) ── */
+  /* Generic modal-overlay */
   .modal-overlay{align-items:center}
-  .modal{border-radius:20px;max-width:560px;margin:0 20px}
+  .modal{border-radius:18px;max-width:540px;margin:0 auto;padding:32px 32px 36px;
+    box-shadow:0 12px 48px rgba(34,22,17,0.20),0 2px 8px rgba(34,22,17,0.08)}
+  .modal-handle{display:none}
+
+  /* Push prompt */
   .push-prompt-overlay{align-items:center}
-  .push-prompt-card{border-radius:20px;max-width:440px}
+  .push-prompt-card{border-radius:18px;max-width:440px;padding:36px 32px 32px;
+    box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+  .push-prompt-handle{display:none}
+
+  /* LIO calc */
+  .lio-overlay{align-items:center}
+  .lio-card{border-radius:18px;max-width:520px;padding:32px 32px 32px;
+    box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+
+  /* Metas */
+  .goal-overlay{align-items:center}
+  .goal-modal-card{border-radius:18px;max-width:480px;padding:32px 32px 32px;
+    box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+
+  /* Paywall */
+  .paywall-overlay{align-items:center}
+  .paywall-card{border-radius:20px;max-width:520px;
+    box-shadow:0 16px 56px rgba(22,12,5,0.38)}
+
+  /* Laudo */
+  .laudo-overlay{align-items:center}
+  .laudo-sheet{border-radius:18px !important;max-width:560px;transform:none !important;
+    padding:32px 32px 36px;box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+  .laudo-handle{display:none}
+
+  /* M&M Protocolo */
+  .mmproto-overlay{align-items:center}
+  .mmproto-sheet{border-radius:18px !important;max-width:540px;transform:none !important;
+    padding:32px 32px 36px;box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+  .mmproto-sheet .laudo-handle{display:none}
+
+  /* CBO */
+  .cbo-overlay{align-items:center}
+  .cbo-sheet{border-radius:18px;max-width:520px;box-shadow:0 12px 48px rgba(34,22,17,0.20)}
+
+  /* Cal month */
+  .cal-modal-overlay{align-items:center}
+  .cal-modal{border-radius:18px !important;transform:none !important;max-width:480px}
+
+  /* Profile (inline style override needed for align-items + inner card) */
+  #profile-modal{align-items:center !important}
+  #profile-modal > div{
+    border-radius:18px !important;
+    box-shadow:0 12px 48px rgba(34,22,17,0.20) !important;
+    padding:32px 28px 32px !important;
+    max-width:480px !important
+  }
+  /* Hide drag handles on all inline-styled cards */
+  #profile-modal > div > div:first-child,
+  .lio-card > div:first-child,
+  .goal-modal-card > div:first-child{display:none !important}
 }
 /* ── MAPA CIRÚRGICO — PDF UPLOAD ─────────────────────────────────────── */
 .mapa-tabs{display:flex;border-bottom:1.5px solid var(--border);margin-bottom:16px}
